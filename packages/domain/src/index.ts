@@ -55,6 +55,12 @@ export type ActivityType =
 
 export type StudyResult = "correct" | "partial" | "incorrect" | "revealed" | "skipped";
 export type SupportLevel = "independent" | "assisted" | "hinted" | "revealed";
+export type ReviewGrade = "again" | "hard" | "good" | "easy";
+
+export interface MemoryReviewSignal {
+  readonly cueFamily: string;
+  readonly grade: ReviewGrade;
+}
 
 export interface StudyEvent {
   readonly id: string;
@@ -76,9 +82,11 @@ export interface StudyEvent {
   readonly confidence?: number;
   readonly contextId?: string;
   readonly sourceId?: string;
+  readonly memoryReview?: MemoryReviewSignal;
   readonly schedulerVersion?: string;
   readonly contentVersion?: string;
   readonly learnerModelVersion?: string;
+  readonly baseRevision?: number;
   readonly metadata?: Readonly<Record<string, unknown>>;
 }
 
@@ -90,22 +98,33 @@ export interface MasteryProjection {
   readonly estimate: number;
   readonly confidence: number;
   readonly evidenceCount: number;
+  readonly independentSuccesses: number;
+  readonly supportedSuccesses: number;
+  readonly failures: number;
+  readonly delayedSuccesses7d: number;
+  readonly delayedFailures7d: number;
+  readonly lapses: number;
+  readonly distinctEvidenceDays: number;
+  readonly firstEvidenceAt?: string;
   readonly lastEvidenceAt?: string;
   readonly modelVersion: string;
 }
 
 export interface MemoryState {
+  readonly id: string;
   readonly accountId: AccountId;
   readonly languageId: LanguageId;
   readonly entity: EntityRef;
   readonly dimension: SkillDimension;
   readonly cueFamily: string;
   readonly dueAt: string;
+  readonly lastReviewAt?: string;
   readonly stability?: number;
   readonly difficulty?: number;
   readonly retrievability?: number;
   readonly schedulerFamily: string;
   readonly schedulerVersion: string;
+  readonly revision: number;
 }
 
 export type CefrLevel = "pre-A1" | "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
@@ -128,6 +147,36 @@ export interface LanguageEnrollment {
   readonly primaryGoal?: string;
   readonly targetFrameworkId?: string;
   readonly targetLevel?: string;
+}
+
+export type LongitudinalMasteryState =
+  | "unseen"
+  | "seen"
+  | "learned"
+  | "retrievable"
+  | "usable"
+  | "durable";
+
+export interface RetentionForecast {
+  readonly oneDay: number;
+  readonly sevenDay: number;
+  readonly thirtyDay: number;
+  readonly ninetyDay: number;
+}
+
+export interface EntityMasterySummary {
+  readonly accountId: AccountId;
+  readonly entity: EntityRef;
+  readonly state: LongitudinalMasteryState;
+  readonly confidence: number;
+  readonly dimensions: readonly MasteryProjection[];
+  readonly weakestDimension?: SkillDimension;
+  readonly retention?: RetentionForecast;
+  readonly fragile: boolean;
+  readonly evidenceSpanDays: number;
+  readonly delayedSuccesses7d: number;
+  readonly delayedFailures7d: number;
+  readonly lapses: number;
 }
 
 export function entityKey(entity: EntityRef, dimension?: SkillDimension): string {
