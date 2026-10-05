@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://languages.thiepn.dev/contracts/p9-language-dashboard.schema.json",
+  "title": "THIEPN language dashboard payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema","schemaVersion","contractVersion","generatedAt","enrollments","snapshots"],
+  "properties": {
+    "schema": {"const":"thiepn-language-dashboard"},
+    "schemaVersion": {"const":1},
+    "contractVersion": {"const":"p9-dashboard-v1"},
+    "generatedAt": {"type":"string","format":"date-time"},
+    "enrollments": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["appId","languageId","visible","connectedAt","updatedAt"],"properties":{"appId":{"type":"string","minLength":1},"languageId":{"type":"string","minLength":1},"visible":{"type":"boolean"},"connectedAt":{"type":"string","format":"date-time"},"updatedAt":{"type":"string","format":"date-time"}}}},
+    "snapshots": {"type":"array","items":{"type":"object","additionalProperties":false,"required":["appId","languageId","revision","storedAt","snapshot"],"properties":{"appId":{"type":"string","minLength":1},"languageId":{"type":"string","minLength":1},"revision":{"type":"integer","minimum":1},"storedAt":{"type":"string","format":"date-time"},"snapshot":{"$ref":"p8-language-read-model.schema.json"}}}}
+  }
+}
