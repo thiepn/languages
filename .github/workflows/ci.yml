@@ -16,3 +16,20 @@ jobs:
       - run: corepack enable
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm verify
+
+  package-consumer:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm package:consumer
+      - uses: actions/upload-artifact@v4
+        with:
+          name: thiepn-languages-consumer-0.7.0
+          path: artifacts/*.tgz
