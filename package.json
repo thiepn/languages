@@ -11,7 +11,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "verify": "pnpm typecheck && pnpm test",
-    "package:consumer": "mkdir -p artifacts && pnpm pack --pack-destination artifacts"
+    "package:consumer": "mkdir -p artifacts && pnpm pack --pack-destination artifacts",
+    "compat:consumers": "node scripts/check-consumer-compatibility.mjs"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
