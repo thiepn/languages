@@ -1,7 +1,7 @@
 {
   "name": "@thiepn/languages",
   "private": true,
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "packageManager": "pnpm@11.19.0",
   "engines": {
@@ -21,8 +21,11 @@
   },
   "files": [
     "packages/consumer-contract/dist/**",
+    "packages/read-model/dist/**",
+    "contracts/p8-language-read-model.schema.json",
     "README.md",
-    "docs/P7_ACCEPTANCE.md"
+    "docs/P7_ACCEPTANCE.md",
+    "docs/P8_ACCEPTANCE.md"
   ],
   "exports": {
     "./consumer-contract": {
@@ -30,6 +33,12 @@
       "import": "./packages/consumer-contract/dist/index.js",
       "default": "./packages/consumer-contract/dist/index.js"
     },
-    "./consumer-contract/browser": "./packages/consumer-contract/dist/browser.js"
+    "./consumer-contract/browser": "./packages/consumer-contract/dist/browser.js",
+    "./read-model": {
+      "types": "./packages/read-model/dist/index.d.ts",
+      "import": "./packages/read-model/dist/index.js",
+      "default": "./packages/read-model/dist/index.js"
+    },
+    "./read-model/browser": "./packages/read-model/dist/browser.js"
   }
 }
