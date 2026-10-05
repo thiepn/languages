@@ -29,6 +29,13 @@ export function assembleJapaneseRuntimeContent(
   const language = input.c1Language;
   const course = input.c1Course;
 
+  const version =
+    input.assembledVersion ??
+    course?.version ??
+    language?.version ??
+    lexicon?.version ??
+    base.version;
+
   return {
     schemaVersion: Math.max(
       base.schemaVersion ?? 0,
@@ -36,12 +43,7 @@ export function assembleJapaneseRuntimeContent(
       language?.schemaVersion ?? 0,
       course?.schemaVersion ?? 0
     ),
-    version:
-      input.assembledVersion ??
-      course?.version ??
-      language?.version ??
-      lexicon?.version ??
-      base.version,
+    ...(version ? { version } : {}),
     sourceIds: unique([
       ...(base.sourceIds ?? []),
       ...(lexicon?.sourceIds ?? []),
