@@ -71,3 +71,16 @@ Japanese authoritative state ─┘
 ```
 
 The Hub data-plane implementation is ready to consume those snapshots. Live cross-device retrieval is intentionally not part of P8; it is the persistence/authentication work for P9.
+
+
+## Post-integration producer refresh
+
+Later app phases may advance without changing the P8 envelope.
+
+The current refresh policy is:
+
+- French P28–P30 longitudinal functional evidence is exposed as labelled progress metrics while P25 remains the proficiency authority.
+- Japanese P14 C1 autonomy/reliability is exposed as labelled progress metrics while milestone diagnostics remain the proficiency authority.
+- raw benchmark attempts, C1 portfolio responses, StudyEvents and memory traces remain product-private.
+
+The compatibility registry must be advanced only after those producer changes pass their native app test suites.
