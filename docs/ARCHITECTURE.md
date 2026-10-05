@@ -256,6 +256,65 @@ This supports both:
 
 The full platform monorepo is not treated as a stable public API merely because internal packages exist.
 
+
+
+## P8 read-model and Hub data-plane boundary
+
+P8 adds a one-way projection plane above the product-owned learner systems.
+
+```text
+French authoritative state ──► French P8 projection ──┐
+                                                     │
+Japanese authoritative state ─► Japanese P8 projection ─┤
+                                                        ▼
+                                               Hub data plane
+                                                        │
+                                                        ▼
+                                              language cards / next
+```
+
+The projection boundary is intentionally lossy.
+
+It carries only user-facing summaries:
+
+- enrollment;
+- workload;
+- activity;
+- labelled progress counters;
+- scoped proficiency evidence;
+- the product's own next action.
+
+It excludes raw learner evidence and private content.
+
+### Comparison policy
+
+The Hub may aggregate counts that retain their meaning across products, such as due-item counts and completed activity counts.
+
+The Hub may not:
+
+- average mastery;
+- average proficiency;
+- convert framework bands;
+- reconstruct a common CEFR/JLPT score;
+- rerank work inside a language;
+- reinterpret stale snapshots as current recommendations.
+
+A fresh app-supplied next action can be compared by the app-supplied priority to decide which language to surface first.
+
+### Freshness
+
+Snapshots have a generation timestamp.
+
+The default Hub freshness horizon is six hours. Stale language cards remain visible for context, but their next action is excluded from global recommendation selection.
+
+### Authority
+
+P8 remains read-only.
+
+French and Japanese continue to own content, learner state, StudyEvents, memory, mastery, proficiency, orchestration and sync. The Hub owns only presentation/aggregation of the projection.
+
+Authenticated cross-device persistence of those projections is a separate concern and is deferred to P9.
+
 ## Repository boundary
 
 `thiepn/languages` owns shared contracts and shared implementations.
