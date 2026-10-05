@@ -1,0 +1,46 @@
+{
+  "schema": "thiepn-language-consumer-baselines",
+  "schemaVersion": 1,
+  "platformPackageVersion": "0.7.0",
+  "platformContractVersion": "p7-readonly-v1",
+  "consumers": [
+    {
+      "appId": "french",
+      "languageId": "french",
+      "repository": "thiepn/french",
+      "branch": "main",
+      "repositoryRevision": "28a39ce1c59ab02301b408f016522dbddc28d0c0",
+      "sourceFingerprints": [
+        {
+          "path": "index.html",
+          "sha": "dee1b5108054aab8a5d42ab5ee733a0697e026f5"
+        }
+      ]
+    },
+    {
+      "appId": "japanese",
+      "languageId": "japanese",
+      "repository": "thiepn/japanese",
+      "branch": "main",
+      "repositoryRevision": "45d03f5b027bdb36fcf5a7f7df3c063e1ba09893",
+      "sourceFingerprints": [
+        {
+          "path": "content/seed/jp-core.json",
+          "sha": "e15c8ae44e3aac08750e8fa7e34ec0ad7d333927"
+        },
+        {
+          "path": "content/seed/jp-c1-lexicon.json",
+          "sha": "76bcdbc077141f0f23548eb54878423e12a00f38"
+        },
+        {
+          "path": "content/seed/jp-c1-language.json",
+          "sha": "2963715e7f502f4417518980f8cf36fe3bbb8ff7"
+        },
+        {
+          "path": "content/seed/jp-c1-course.json",
+          "sha": "6ef0df4f71edb3851c9fbf65b92aae14840e1bb8"
+        }
+      ]
+    }
+  ]
+}
