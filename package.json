@@ -1,12 +1,10 @@
 {
   "name": "@thiepn/languages",
   "private": true,
-  "version": "0.8.0",
+  "version": "0.9.0",
   "type": "module",
   "packageManager": "pnpm@11.19.0",
-  "engines": {
-    "node": ">=24.15.0 <25"
-  },
+  "engines": { "node": ">=24.15.0 <25" },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
@@ -22,10 +20,13 @@
   "files": [
     "packages/consumer-contract/dist/**",
     "packages/read-model/dist/**",
+    "packages/dashboard/dist/**",
     "contracts/p8-language-read-model.schema.json",
+    "contracts/p9-language-dashboard.schema.json",
     "README.md",
     "docs/P7_ACCEPTANCE.md",
-    "docs/P8_ACCEPTANCE.md"
+    "docs/P8_ACCEPTANCE.md",
+    "docs/P9_ACCEPTANCE.md"
   ],
   "exports": {
     "./consumer-contract": {
@@ -39,6 +40,12 @@
       "import": "./packages/read-model/dist/index.js",
       "default": "./packages/read-model/dist/index.js"
     },
-    "./read-model/browser": "./packages/read-model/dist/browser.js"
+    "./read-model/browser": "./packages/read-model/dist/browser.js",
+    "./dashboard": {
+      "types": "./packages/dashboard/dist/index.d.ts",
+      "import": "./packages/dashboard/dist/index.js",
+      "default": "./packages/dashboard/dist/index.js"
+    },
+    "./dashboard/browser": "./packages/dashboard/dist/browser.js"
   }
 }
