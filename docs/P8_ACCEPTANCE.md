@@ -1,6 +1,6 @@
 # P8 — Shared Read Models, Cross-Language Progress Contract & Hub Data Plane
 
-Status: **implemented in the platform repository; consumer producers are integrated after the platform merge**
+Status: **implemented and integrated across the platform, French and Japanese repositories**
 
 ## Objective
 
@@ -118,7 +118,9 @@ A stale snapshot remains visible but cannot win the next-language recommendation
 
 ## Transport
 
-P8 defines the payload contract and aggregation plane, not a second learner database. Producer integrations expose this read model through their existing app/account boundary. Standardized authenticated cross-device persistence is deferred to P9.
+P8 defines the payload contract and aggregation plane, not a second learner database. French and Japanese now produce the shared envelope from their existing authoritative state. Standardized authenticated cross-device persistence is deferred to P9.
+
+See `docs/P8_INTEGRATED_CONSUMERS.md` for the merged producer revisions and drift-tracking heads.
 
 ## Exit criteria
 

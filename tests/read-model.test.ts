@@ -141,4 +141,36 @@ describe("P8 shared language read models",()=>{
     expect(browser).toContain("averagesProficiency:false");
     expect(browser).toContain("recomputesNextAction:false");
   });
+  it("tracks the integrated French and Japanese P8 producers in the compatibility registry",async()=>{
+    const raw=await readFile(
+      new URL("../contracts/p7-consumer-baselines.json",import.meta.url),
+      "utf8"
+    );
+    const registry=JSON.parse(raw);
+    const french=registry.consumers.find((consumer:{appId:string})=>consumer.appId==="french");
+    const japanese=registry.consumers.find((consumer:{appId:string})=>consumer.appId==="japanese");
+
+    expect(french?.repositoryRevision).toBe(
+      "312469615d60c4e6e11b77a676aaf5e1ab44633e"
+    );
+    expect(french?.readModelVersion).toBe("p8-read-model-v1");
+    expect(french?.readModelProducerRevision).toBe("french-p8-read-model-v1");
+    expect(
+      french?.sourceFingerprints.some(
+        (entry:{path:string})=>entry.path==="vendor/thiepn-languages-read-model.js"
+      )
+    ).toBe(true);
+
+    expect(japanese?.repositoryRevision).toBe(
+      "1ba2b3ff4e062b9e8b67579d9f2526aeb633caf7"
+    );
+    expect(japanese?.readModelVersion).toBe("p8-read-model-v1");
+    expect(japanese?.readModelProducerRevision).toBe("japanese-p8-read-model-v1");
+    expect(
+      japanese?.sourceFingerprints.some(
+        (entry:{path:string})=>entry.path==="apps/web/src/languageReadModel.ts"
+      )
+    ).toBe(true);
+  });
+
 });

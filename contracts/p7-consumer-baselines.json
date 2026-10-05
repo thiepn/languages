@@ -9,33 +9,43 @@
       "languageId": "french",
       "repository": "thiepn/french",
       "branch": "main",
-      "repositoryRevision": "9ae75de4cb05fe781066e7d916f4325e991f256b",
+      "repositoryRevision": "312469615d60c4e6e11b77a676aaf5e1ab44633e",
       "sourceFingerprints": [
         {
           "path": "index.html",
-          "sha": "7a64019f56f0cc2ee148635643194bb1daab6b63"
+          "sha": "f3393a47eebfe7fe55446178b3ae5d21579c486a"
         },
         {
           "path": "vendor/thiepn-languages-consumer-contract.js",
           "sha": "2779e1f05de23b0830202f3c6c42359b0e73578d"
         },
         {
+          "path": "vendor/thiepn-languages-read-model.js",
+          "sha": "3783eb108da7154d06abf0e4bc95c40783fa1fd6"
+        },
+        {
           "path": "service-worker.js",
-          "sha": "b981a3a94cda6aacf41eeb3fc43f253a22e2cf4a"
+          "sha": "dd1010fbf55ea048c431aca69a2f465ef549c57e"
         },
         {
           "path": "scripts/verify-language-platform-p7.mjs",
           "sha": "af38b2ad8b735c37a7fb3c9387eeec869247c4a4"
+        },
+        {
+          "path": "scripts/verify-language-read-model-p8.mjs",
+          "sha": "af38d04d92faa6109c1f7745d0e5cfefab533e7a"
         }
       ],
-      "sourceBaselineRevision": "28a39ce1c59ab02301b408f016522dbddc28d0c0"
+      "sourceBaselineRevision": "28a39ce1c59ab02301b408f016522dbddc28d0c0",
+      "readModelVersion": "p8-read-model-v1",
+      "readModelProducerRevision": "french-p8-read-model-v1"
     },
     {
       "appId": "japanese",
       "languageId": "japanese",
       "repository": "thiepn/japanese",
       "branch": "main",
-      "repositoryRevision": "984d897cc99fe070089f9257f07a16eef82a8123",
+      "repositoryRevision": "1ba2b3ff4e062b9e8b67579d9f2526aeb633caf7",
       "sourceFingerprints": [
         {
           "path": "content/seed/jp-core.json",
@@ -55,7 +65,7 @@
         },
         {
           "path": "apps/web/package.json",
-          "sha": "b169f5efaba3f3e923ef219202fe08e73d06a069"
+          "sha": "f823624dbd8615ee8c9886fbfdeafc78041cbd91"
         },
         {
           "path": "apps/web/src/platformCompatibility.ts",
@@ -64,9 +74,19 @@
         {
           "path": "apps/web/src/study/ReleaseOperationsPanel.tsx",
           "sha": "e0e5847b0c889b817284726d68f55eb82b228f54"
+        },
+        {
+          "path": "apps/web/src/languageReadModel.ts",
+          "sha": "356f860b570af3e61145b634788c9818c3b44742"
+        },
+        {
+          "path": "tests/platform/read-model.test.ts",
+          "sha": "c8b1982d3e7a9dec74b7b1ab204167eeffa53e2f"
         }
       ],
-      "sourceBaselineRevision": "45d03f5b027bdb36fcf5a7f7df3c063e1ba09893"
+      "sourceBaselineRevision": "45d03f5b027bdb36fcf5a7f7df3c063e1ba09893",
+      "readModelVersion": "p8-read-model-v1",
+      "readModelProducerRevision": "japanese-p8-read-model-v1"
     }
   ]
 }
