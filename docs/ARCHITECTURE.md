@@ -2,20 +2,21 @@
 
 ## Purpose
 
-THIEPN Languages is the shared contract and platform layer beneath individual language products. It standardizes evidence, memory scheduling, mastery interpretation, content boundaries, curriculum dependencies and language registration without forcing French, Japanese or future languages into identical pedagogy.
+THIEPN Languages is the shared contract and platform layer beneath individual language products. It standardizes evidence, memory scheduling, mastery interpretation, skill transfer, adaptive orchestration, content boundaries, curriculum dependencies and language registration without forcing French, Japanese or future languages into identical pedagogy.
 
 ## Core invariants
 
 1. **One account, many language enrollments.**
-2. **Learner evidence is language-namespaced.** An entity identity is never globally meaningful without its language.
-3. **Memory, mastery and proficiency are separate concepts.**
-4. **Study evidence is append-oriented and replayable.** UI state must not become authoritative learning evidence.
+2. **Learner evidence is language-namespaced.**
+3. **Memory, mastery, orchestration and proficiency are separate concepts.**
+4. **Study evidence is append-oriented and replayable.**
 5. **Canonical linguistic content, pedagogical sequencing, source material and learner state are separate domains.**
-6. **Language-specific capabilities are declared by language packs.** Core code must not accumulate `if (language === "...")` branches.
-7. **Curriculum order is a dependency graph.** A flat lesson sequence may be a presentation, not the canonical dependency model.
-8. **Course completion is not a proficiency claim.**
-9. **External content keeps provenance and licensing policy.**
-10. **Existing French and Japanese products remain authoritative until explicit migration phases.**
+6. **Language-specific capabilities and skill graphs are declared by language packs/profile data.**
+7. **Core code must not accumulate `if (language === "...")` branches.**
+8. **Curriculum order and skill transfer are explicit graphs, not hidden screen order.**
+9. **Course completion is not a proficiency claim.**
+10. **External content keeps provenance and licensing policy.**
+11. **Existing French and Japanese products remain authoritative until explicit migration phases.**
 
 ## Learner-state pipeline
 
@@ -33,93 +34,115 @@ StudyEvent
                                       └──► retention forecast
 ```
 
-A correct activity may improve mastery without touching the SRS schedule. A scheduled review may update memory state while still preserving its skill-specific mastery evidence.
+## Orchestration pipeline
 
-## Mastery
+```text
+P2 mastery projections / specialist subsystem evidence
+                 │
+                 ▼
+        language skill profiles
+                 │
+         ┌───────┴────────┐
+         │                │
+ prerequisite graph   transfer graph
+         │                │
+         └───────┬────────┘
+                 ▼
+       next-best-activity ranking
+                 │
+                 ▼
+       short adaptive study block
+```
 
-P2 models mastery by **entity × skill dimension**.
+The orchestrator never writes mastery merely because it recommended or launched an activity.
 
-Evidence preserves:
+## Skill profiles
 
-- independent vs supported success;
-- failures;
-- delayed retrieval success/failure;
-- distinct evidence days;
-- evidence span;
-- lapses;
-- confidence.
+A language defines skill nodes such as vocabulary, reading, listening, conversation, kana or kanji. Each node declares the evidence dimensions that support it.
 
-The entity-level longitudinal states are:
+Profiles expose:
 
-`Unseen → Seen → Learned → Retrievable → Usable → Durable`
+- strength;
+- evidence confidence;
+- evidence count;
+- orchestration state.
 
-Durable is deliberately difficult to earn. Same-day repetition is insufficient.
+Missing evidence is represented as uncertainty, not a measured failure.
 
-## Memory
+## Graph semantics
 
-The scheduler interface owns:
+### Prerequisite
 
-- card creation;
-- review transitions;
-- due dates;
-- scheduler-specific state;
-- retrievability at a point in time.
+A prerequisite edge affects readiness.
 
-P2 provides an FSRS adapter pinned to the version already used by Japanese. The learner engine does not depend on FSRS-specific card internals.
+Low readiness suppresses downstream ranking and can cause an adaptive block to insert prerequisite support before the anchor task.
 
-Forgetting calibration is a **forecast correction layer**, not a scheduler mutation.
+Prerequisite edges must be acyclic.
+
+### Transfer
+
+A transfer edge detects an evidence-backed gap between an upstream and downstream skill.
+
+Transfer edges may represent mutually supportive real-world skills and therefore are not required to form a DAG.
+
+A transfer gap requires confidence on both sides. Strong upstream evidence cannot manufacture a downstream failure where downstream evidence is absent.
+
+## Adaptive ranking
+
+P3 ranking combines bounded factors:
+
+- confirmed skill need;
+- evidence uncertainty;
+- upstream transfer gap;
+- prerequisite readiness;
+- runtime urgency;
+- novelty/repetition;
+- language activity base priority;
+- small learned calibration bonus.
+
+Resume-first state outranks new recommendations.
+
+Priority is a scheduling score, not a mastery score.
+
+## Adaptive blocks
+
+Blocks contain at most three activities and default to an approximate 26-minute budget.
+
+Composition can:
+
+1. insert prerequisite support when readiness is low;
+2. run the anchor activity;
+3. add downstream transfer when readiness is adequate;
+4. fill remaining capacity with complementary high-value work.
+
+The activity's native subsystem remains authoritative for completion and evidence.
+
+## Calibration boundary
+
+Activity observations can make small ranking adjustments only after repeated completed sessions. The learned bonus is bounded to ±6 points and never modifies mastery, memory or proficiency.
 
 ## Shared vs language-specific
 
-Shared core owns:
+Shared core owns graph semantics, validation, ranking and block composition.
 
-- language/account identity
-- entity references
-- study-event vocabulary
-- skill/evidence vocabulary
-- replayable learner projection
-- memory-scheduler interface
-- mastery/durability semantics
-- proficiency-evidence shape
-- provenance and licensing primitives
-- curriculum dependency integrity
-- language registration and capability discovery
+Language profiles own:
 
-Language packs own:
+- skill-node identities;
+- evidence dimensions;
+- prerequisite/transfer edges;
+- activities;
+- language-specific timing/default priorities.
 
-- script-specific modules
-- morphology behavior
-- segmentation behavior
-- pronunciation specifics
-- transliteration
-- writing-system pedagogy
-- language-specific curriculum data
-- language-specific content fields
-- exam overlays and mappings
+French and Japanese therefore share orchestration mechanics without sharing an identical skill graph.
 
 ## Proficiency
 
-CEFR is the default cross-language coordinate system, but it is not treated as a universal language syllabus.
-
-No memory trace or entity mastery state is itself a CEFR/JLPT/DELF claim. Proficiency requires separate breadth, task and assessment evidence.
-
-## Evidence policy
-
-A StudyEvent can contribute mastery when it records an actual assessed outcome.
-
-- lookup: no mastery
-- mining: no mastery
-- skipped task: no mastery
-- revealed answer: weak negative/uncertainty evidence
-- hinted correct: positive but discounted
-- independent correct: strongest ordinary evidence
-
-Only an explicit `memoryReview` changes the SRS state.
+No orchestration score, memory trace or entity mastery state is itself a CEFR/JLPT/DELF claim. Proficiency requires separate breadth, task and assessment evidence.
 
 ## Repository boundary
 
 `thiepn/languages` owns shared contracts and shared implementations.
 
-`thiepn/french` and `thiepn/japanese` remain separately deployable products. They should consume stable shared packages gradually rather than being copied wholesale into this repository.
+`thiepn/french` and `thiepn/japanese` remain separately deployable products and should adopt shared packages through explicit compatibility phases.
 
-The future Hub is a consumer of enrollment, progress and recommendation state. It must not create a parallel SRS, mastery model or curriculum.
+The future Hub consumes standardized enrollment/progress/recommendation state. It must not create parallel mastery, scheduling or curriculum engines.

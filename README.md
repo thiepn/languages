@@ -10,10 +10,12 @@ Shared language-learning platform for THIEPN language products.
 - `packages/curriculum` — curriculum dependency-graph validation
 - `packages/scheduler` — replaceable memory scheduler boundary + FSRS adapter
 - `packages/learner-engine` — replayable evidence, mastery, durability and retention projections
-- `languages/french` and `languages/japanese` — contract fixtures proving structurally different languages fit the same core
+- `packages/skill-graph` — language-specific skill/prerequisite/transfer graphs and evidence profiles
+- `packages/orchestrator` — next-best-activity ranking, bounded calibration and adaptive blocks
+- `languages/french` and `languages/japanese` — structurally different manifests and learning graphs proving the shared contracts
 - `apps/hub` — reserved boundary for the future multi-language hub
 
-See `docs/ARCHITECTURE.md`, `docs/P1_ACCEPTANCE.md`, `docs/P2_ACCEPTANCE.md` and `docs/P2_COMPATIBILITY.md`.
+See `docs/ARCHITECTURE.md` and the phase acceptance documents in `docs/`.
 
 ## Migration policy
 
