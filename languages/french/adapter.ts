@@ -430,7 +430,7 @@ function resolveFrenchCards(
 
   return words
     .map((word, index): FrenchCatalogCard | undefined => {
-      const level = normalizeFrameworkLevel(word.level);
+      const level = normalizeFrenchLevel(word.level);
       const fr = String(word.word ?? "").trim();
       const en = String(word.meaning ?? "").trim();
       if (!level || !["A1", "A2", "B1", "B2"].includes(level) || !fr || !en) {
@@ -991,4 +991,10 @@ function slug(value: string): string {
       .replace(/^-|-$/g, "")
       .slice(0, 60) || "source"
   );
+}
+
+function normalizeFrenchLevel(value: unknown): string | undefined {
+  return String(value ?? "").trim().toLowerCase() === "starter"
+    ? "A1"
+    : normalizeFrameworkLevel(value);
 }
