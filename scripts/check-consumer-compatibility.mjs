@@ -24,6 +24,7 @@ for (const consumer of baseline.consumers) {
   observations.push({
     appId: consumer.appId,
     repository: consumer.repository,
+    sourceBaselineRevision: consumer.sourceBaselineRevision ?? consumer.repositoryRevision,
     expectedRevision: consumer.repositoryRevision,
     observedRevision: head,
     revisionMatch: head === consumer.repositoryRevision,

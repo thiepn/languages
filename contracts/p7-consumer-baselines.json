@@ -9,20 +9,33 @@
       "languageId": "french",
       "repository": "thiepn/french",
       "branch": "main",
-      "repositoryRevision": "28a39ce1c59ab02301b408f016522dbddc28d0c0",
+      "repositoryRevision": "9ae75de4cb05fe781066e7d916f4325e991f256b",
       "sourceFingerprints": [
         {
           "path": "index.html",
-          "sha": "dee1b5108054aab8a5d42ab5ee733a0697e026f5"
+          "sha": "7a64019f56f0cc2ee148635643194bb1daab6b63"
+        },
+        {
+          "path": "vendor/thiepn-languages-consumer-contract.js",
+          "sha": "2779e1f05de23b0830202f3c6c42359b0e73578d"
+        },
+        {
+          "path": "service-worker.js",
+          "sha": "b981a3a94cda6aacf41eeb3fc43f253a22e2cf4a"
+        },
+        {
+          "path": "scripts/verify-language-platform-p7.mjs",
+          "sha": "af38b2ad8b735c37a7fb3c9387eeec869247c4a4"
         }
-      ]
+      ],
+      "sourceBaselineRevision": "28a39ce1c59ab02301b408f016522dbddc28d0c0"
     },
     {
       "appId": "japanese",
       "languageId": "japanese",
       "repository": "thiepn/japanese",
       "branch": "main",
-      "repositoryRevision": "45d03f5b027bdb36fcf5a7f7df3c063e1ba09893",
+      "repositoryRevision": "984d897cc99fe070089f9257f07a16eef82a8123",
       "sourceFingerprints": [
         {
           "path": "content/seed/jp-core.json",
@@ -39,8 +52,21 @@
         {
           "path": "content/seed/jp-c1-course.json",
           "sha": "6ef0df4f71edb3851c9fbf65b92aae14840e1bb8"
+        },
+        {
+          "path": "apps/web/package.json",
+          "sha": "b169f5efaba3f3e923ef219202fe08e73d06a069"
+        },
+        {
+          "path": "apps/web/src/platformCompatibility.ts",
+          "sha": "d9633533a07ab222b5e03eefce3c6f472b1b1d1a"
+        },
+        {
+          "path": "apps/web/src/study/ReleaseOperationsPanel.tsx",
+          "sha": "e0e5847b0c889b817284726d68f55eb82b228f54"
         }
-      ]
+      ],
+      "sourceBaselineRevision": "45d03f5b027bdb36fcf5a7f7df3c063e1ba09893"
     }
   ]
 }

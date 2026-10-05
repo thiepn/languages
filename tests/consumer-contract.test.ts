@@ -75,11 +75,11 @@ describe("P7 consumer distribution contract", () => {
       expect(runtime).toBeDefined();
       if (!runtime) throw new Error("MISSING_RUNTIME_BASELINE:" + consumer.appId);
       expect(runtime.repository).toBe(consumer.repository);
-      expect(runtime.repositoryRevision).toBe(consumer.repositoryRevision);
+      expect(runtime.repositoryRevision).toBe(consumer.sourceBaselineRevision);
       expect(
         isBaselineRevisionCompatible(
           consumer.appId,
-          consumer.repositoryRevision
+          consumer.sourceBaselineRevision
         )
       ).toBe(true);
     }
