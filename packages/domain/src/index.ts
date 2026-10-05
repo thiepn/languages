@@ -129,6 +129,12 @@ export interface MemoryState {
 
 export type CefrLevel = "pre-A1" | "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
+export type ProficiencyClaimKind =
+  | "modeled_estimate"
+  | "internal_promotion"
+  | "external_result"
+  | "self_report";
+
 export interface ProficiencyEvidence {
   readonly frameworkId: string;
   readonly level: string;
@@ -136,7 +142,9 @@ export interface ProficiencyEvidence {
   readonly dimensions: Readonly<Record<string, number>>;
   readonly confidence: number;
   readonly assessedAt: string;
-  readonly claimType: "internal" | "external_exam" | "self_report";
+  readonly claimType: ProficiencyClaimKind;
+  readonly issuer?: string;
+  readonly externalCredentialId?: string;
 }
 
 export interface LanguageEnrollment {
