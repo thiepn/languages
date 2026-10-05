@@ -293,7 +293,14 @@ function auditRecords(
   }
 
   const seen = new Set<string>();
-  const validLevels = new Set(candidate.proficiencyPolicy.levels.map((level) => level.level));
+  const primaryFramework = candidate.manifest.definition.frameworks.find(
+    (framework) =>
+      framework.id === candidate.manifest.definition.primaryFrameworkId
+  );
+  const validLevels = new Set(
+    primaryFramework?.levels ??
+      candidate.proficiencyPolicy.levels.map((level) => level.level)
+  );
 
   for (const record of candidate.records) {
     const key = recordKey(record.type, record.id);

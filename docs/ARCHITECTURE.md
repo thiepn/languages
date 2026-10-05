@@ -17,6 +17,7 @@ THIEPN Languages is the shared contract and platform layer beneath individual la
 9. **Course completion is not a proficiency claim.**
 10. **Public canonical content must have explicit provenance and redistributable rights.**
 11. **Existing French and Japanese products remain authoritative until explicit migration phases.**
+12. **Migration adapters report loss, ambiguity and source drift; they never silently upgrade approximate legacy data into canonical truth.**
 
 ## Learner-state pipeline
 
@@ -119,10 +120,79 @@ P5 reads those coverage requirements directly and audits whether the product act
 
 Language-specific P5 quality policies may add additional warning/failure criteria, but they cannot weaken P4's promotion-critical requirements.
 
+## P6 compatibility and migration layer
+
+The shared model does not imply that every existing app has the same source architecture.
+
+```text
+thiepn/french
+single-file app + pinned external vocabulary
+        │
+        ▼
+French legacy/catalog adapter
+        │
+        ├── canonical inventory
+        ├── P5 release candidate
+        └── legacy review evidence
+
+thiepn/japanese
+structured seeds + StudyEvents + FSRS traces
+        │
+        ▼
+Japanese structured adapter
+        │
+        ├── assembled canonical inventory
+        ├── P5 release candidate
+        ├── StudyEvent translation
+        └── direct FSRS trace migration
+
+both
+        │
+        ▼
+shared P1–P5 contracts
+```
+
+Adapters are compatibility boundaries, not new authorities.
+
+They may:
+
+- translate known legacy fields;
+- normalize framework labels;
+- assemble documented source overlays;
+- preserve provenance;
+- emit migration/readiness issues.
+
+They may not:
+
+- invent missing learner evidence;
+- infer official proficiency;
+- promote private learner data into public content;
+- silently treat lossy source conversion as exact migration.
+
+### French compatibility rule
+
+French's raw pinned vocabulary is transformed by application-specific preparation before becoming the working catalog. Exact migration therefore prefers the app's prepared `catalogSnapshot()`.
+
+Raw pinned vocabulary can be used for inventory/fallback analysis, but the adapter must report the resulting fidelity limitation.
+
+### Japanese compatibility rule
+
+Japanese current canonical runtime content is a documented assembly of the base seed and three C1 overlays. Omitting those overlays is not equivalent to the current production course.
+
+Japanese StudyEvents and memory traces remain separate during migration. The event adapter does not fabricate P2 `memoryReview` signals. Existing FSRS traces migrate independently.
+
+### Canonical level vs promotion level
+
+Canonical course content may extend beyond the levels for which THIEPN currently implements internal promotion gates.
+
+P5 therefore validates a content level against the language manifest's primary proficiency framework. P4 remains independently responsible for deciding which bands have actual promotion policies.
+
+Japanese C1 content can consequently be valid canonical content without implying that THIEPN currently awards a C1 internal promotion.
+
 ## Repository boundary
 
 `thiepn/languages` owns shared contracts and shared implementations.
 
-`thiepn/french` and `thiepn/japanese` remain separately deployable products. P6 adapters will translate their real current inventories into the shared contracts before migration.
+`thiepn/french` and `thiepn/japanese` remain separately deployable products. P6 now provides explicit adapters for their current source and learner-state shapes; those adapters are read-only compatibility tooling and do not modify either production app.
 
 The future Hub consumes standardized learner and certification state. It must not create parallel mastery, scheduling, promotion, curriculum or release-quality engines.
