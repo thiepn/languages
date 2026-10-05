@@ -16,6 +16,7 @@ jobs:
       - run: corepack enable
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm verify
+      - run: pnpm package:consumer
 
   package-consumer:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
