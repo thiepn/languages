@@ -175,9 +175,11 @@ export function inspectFrenchAppSource(indexHtml: string): FrenchSourceInspectio
     ? splitTopLevel(functionObject).filter((row) => /:\s*\{/.test(row)).length
     : 0;
 
+  const appVersion = matchConstString(indexHtml, "APP_VERSION");
+  const pinnedVocabularyBlobSha = matchConstString(indexHtml, "PINNED_BLOB_SHA");
   return {
-    appVersion: matchConstString(indexHtml, "APP_VERSION"),
-    pinnedVocabularyBlobSha: matchConstString(indexHtml, "PINNED_BLOB_SHA"),
+    ...(appVersion ? { appVersion } : {}),
+    ...(pinnedVocabularyBlobSha ? { pinnedVocabularyBlobSha } : {}),
     readings,
     scenarios,
     missions,
