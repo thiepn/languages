@@ -144,3 +144,21 @@ P8 is complete when:
 **P9 — Authenticated Read-Model Persistence, Hub Enrollment Registry & Live Cross-Device Language Dashboard**
 
 P9 should persist each app's P8 projection behind the existing THIEPN Account/Core boundary, connect the Hub to those authenticated snapshots, and make \`languages.thiepn.dev\` show live cross-device French/Japanese state without reading app-private databases directly.
+
+
+## Producer evolution
+
+The shared envelope is versioned independently from each application's projection implementation.
+
+A product may advance its `producerRevision` while remaining on `p8-read-model-v1` when it only:
+
+- adds or removes labelled product-specific progress metrics;
+- improves how existing authoritative product state is summarized;
+- keeps workload/activity/proficiency/next-action semantics compatible;
+- preserves the privacy and authority boundaries.
+
+Such a refresh does **not** require a new cross-language schema version.
+
+The refreshed French and Japanese producers demonstrate this rule: newer longitudinal functional/C1 evidence is surfaced as progress metrics rather than being converted into a new cross-language proficiency score.
+
+Consumer drift baselines are advanced only after the corresponding product-native CI has passed on the refreshed producer.
