@@ -73,6 +73,7 @@ describe("P7 consumer distribution contract", () => {
     for (const consumer of registry.consumers) {
       const runtime = LANGUAGE_PLATFORM_BASELINES[consumer.appId];
       expect(runtime).toBeDefined();
+      if (!runtime) throw new Error("MISSING_RUNTIME_BASELINE:" + consumer.appId);
       expect(runtime.repository).toBe(consumer.repository);
       expect(runtime.repositoryRevision).toBe(consumer.repositoryRevision);
       expect(
