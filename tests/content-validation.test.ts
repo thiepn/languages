@@ -188,10 +188,8 @@ describe("shared language-pack release certification", () => {
 
   it("requires explicit attribution when the source policy requires it", () => {
     const candidate = frenchCandidate();
-    const source: SourceRecord = {
-      ...redistributableSource,
-      attribution: undefined
-    };
+    const { attribution: _attribution, ...sourceWithoutAttribution } = redistributableSource;
+    const source: SourceRecord = sourceWithoutAttribution;
 
     const certification = certifyLanguagePack({
       ...candidate,
