@@ -13,7 +13,8 @@ Shared language-learning platform for THIEPN language products.
 - `packages/skill-graph` — language-specific skill/prerequisite/transfer graphs and evidence profiles
 - `packages/orchestrator` — next-best-activity ranking, bounded calibration and adaptive blocks
 - `packages/proficiency` — assessment gates, coverage-aware internal promotion, milestones and scoped framework mappings
-- `languages/french` and `languages/japanese` — language-specific manifests, learning graphs and proficiency policies
+- `packages/content-validation` — structural, provenance, licensing, coverage and editorial release certification
+- `languages/french` and `languages/japanese` — language-specific manifests, learning graphs, proficiency policies and quality policies
 - `apps/hub` — reserved boundary for the future multi-language hub
 
 See `docs/ARCHITECTURE.md` and the phase acceptance documents in `docs/`.

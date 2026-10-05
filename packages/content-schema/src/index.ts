@@ -21,6 +21,7 @@ export interface SourceRecord {
   readonly version?: string;
   readonly licenseName?: string;
   readonly canonicalUrl?: string;
+  readonly attribution?: string;
   readonly policy: LicensePolicy;
 }
 
@@ -35,6 +36,7 @@ export interface Lexeme<TLanguageData = unknown> extends ProvenancedContent {
   readonly canonicalForm: string;
   readonly forms: readonly OrthographicForm[];
   readonly senseIds: readonly string[];
+  readonly level?: string;
   readonly tags?: readonly string[];
   readonly priority?: number;
   readonly languageData?: TLanguageData;
@@ -96,6 +98,7 @@ export interface WritingUnit<TLanguageData = unknown> extends ProvenancedContent
   readonly id: string;
   readonly surface: string;
   readonly system: string;
+  readonly level?: string;
   readonly meanings?: readonly string[];
   readonly readings?: readonly string[];
   readonly languageData?: TLanguageData;
