@@ -2,7 +2,7 @@
 
 ## Purpose
 
-THIEPN Languages is the shared contract and platform layer beneath individual language products. It standardizes evidence, memory scheduling, mastery interpretation, skill transfer, adaptive orchestration, proficiency promotion, content boundaries, curriculum dependencies and language registration without forcing French, Japanese or future languages into identical pedagogy.
+THIEPN Languages is the shared contract and platform layer beneath individual language products. It standardizes evidence, memory scheduling, mastery interpretation, skill transfer, adaptive orchestration, proficiency promotion, content quality, release certification, curriculum dependencies and language registration without forcing French, Japanese or future languages into identical pedagogy.
 
 ## Core invariants
 
@@ -11,11 +11,11 @@ THIEPN Languages is the shared contract and platform layer beneath individual la
 3. **Memory, mastery, orchestration, internal promotion and external certification are separate concepts.**
 4. **Study evidence is append-oriented and replayable.**
 5. **Canonical linguistic content, pedagogical sequencing, source material and learner state are separate domains.**
-6. **Language-specific capabilities, skill graphs and proficiency policies are declared as data.**
+6. **Language-specific capabilities, skill graphs, proficiency policies and quality policies are declared as data.**
 7. **Core code must not accumulate language-name conditionals.**
 8. **Curriculum order and skill transfer are explicit graphs, not hidden screen order.**
 9. **Course completion is not a proficiency claim.**
-10. **External content keeps provenance and licensing policy.**
+10. **Public canonical content must have explicit provenance and redistributable rights.**
 11. **Existing French and Japanese products remain authoritative until explicit migration phases.**
 
 ## Learner-state pipeline
@@ -44,104 +44,85 @@ prerequisite + transfer graph
 next-best activity / adaptive block
 ```
 
-The orchestrator consumes evidence but does not create mastery.
-
 ## Proficiency pipeline
 
 ```text
-skill/task assessment evidence
-          +
-curriculum/assessment coverage
-          +
-framework-specific promotion policy
-          ↓
-individual gate evaluations
-          ↓
-all gates pass?
-      ┌──────┴──────┐
-     no            yes
-     │              │
-not ready /     prerequisite
-coverage gap       satisfied?
-                    │
-                    ↓
-             internal promotion
-                    │
-                    └── historical milestone
+assessment evidence
+      +
+coverage
+      +
+language proficiency policy
+      ↓
+conjunctive gate evaluation
+      ↓
+internal promotion milestone
 ```
 
-No weighted average can override a failed required gate.
-
-## Claim hierarchy
-
-The platform distinguishes:
+## Release-certification pipeline
 
 ```text
-course progress
-      ≠
-skill/entity mastery
-      ≠
-internal promotion
-      ≠
-modeled proficiency
-      ≠
-external exam result/certification
+manifest + skill graph + proficiency policy
+                  +
+source registry + canonical inventory
+                  +
+cross-content references
+                  +
+coverage + editorial metrics
+                  ↓
+             P5 audit
+        ┌─────────┼──────────┐
+        │         │          │
+    structural  licensing  coverage/quality
+      defects     safety      warnings
+        │         │          │
+        └────┬────┘          │
+             ▼               ▼
+          blocked      certified_with_warnings
+                               │
+                               ▼
+                           certified
+                    when warnings are resolved
 ```
 
-These states may inform one another, but they are not interchangeable.
+## Certification and promotion are different
 
-## Coverage boundary
+A release can be safe to publish while a higher proficiency band is not ready to support promotion.
 
-A promotion gate needs both learner evidence and sufficient product coverage.
+For example, valid A1–B1 content plus incomplete B2 listening can be:
 
-Missing assessment/curriculum coverage is a product limitation. It must not be represented as learner failure or used to generate remediation pressure.
+- public-release ready;
+- certified with warnings;
+- promotion-ready for A1–B1;
+- not promotion-ready for B2.
 
-## External framework mappings
+This distinction prevents content incompleteness from becoming a false learner assessment.
 
-Framework mappings are scoped.
+## Provenance boundary
 
-A mapping records its covered competences and whether it is full or partial. Partial mappings cannot support a global promotion claim.
+Public canonical content fails closed on licensing.
 
-Exam overlays therefore remain evidence sources for the domains they actually assess rather than replacing the platform's broader communicative model.
+A public record must:
 
-## Promotion history
+- identify its source records;
+- use sources with explicit rights declarations;
+- respect raw-vs-derived redistribution permission;
+- provide attribution where required;
+- never publish a source marked private-only.
 
-Internal promotion is sequential when configured by the language policy.
+Private learner documents may remain stored privately without satisfying public redistribution rules. They do not silently become canonical public course content.
 
-Earned milestones remain historical facts. A later decline results in `promoted_maintenance_needed`, not deletion of the milestone.
+## Coverage ownership
 
-## P3 integration
+P4 owns what evidence a promotion gate needs.
 
-A failed learner-remediable promotion gate can produce a bounded activity boost for the shared orchestrator.
+P5 reads those coverage requirements directly and audits whether the product actually supplies the content needed to gather that evidence.
 
-Coverage gaps do not produce such a boost because the learner cannot fix missing product content.
-
-## Shared vs language-specific
-
-Shared core owns:
-
-- assessment evidence semantics;
-- gate evaluation;
-- prerequisite promotion logic;
-- milestone behavior;
-- framework mapping scope;
-- claim boundaries;
-- remediation-signal bounds.
-
-Language profiles own:
-
-- framework choice;
-- level sequence;
-- gate identities;
-- thresholds;
-- required coverage;
-- remediation skill/activity mapping;
-- external exam/framework declarations.
+Language-specific P5 quality policies may add additional warning/failure criteria, but they cannot weaken P4's promotion-critical requirements.
 
 ## Repository boundary
 
 `thiepn/languages` owns shared contracts and shared implementations.
 
-`thiepn/french` and `thiepn/japanese` remain separately deployable products and should adopt shared packages through explicit compatibility phases.
+`thiepn/french` and `thiepn/japanese` remain separately deployable products. P6 adapters will translate their real current inventories into the shared contracts before migration.
 
-The future Hub consumes standardized enrollment, progress, recommendation and proficiency state. It must not create parallel mastery, scheduling, promotion or curriculum engines.
+The future Hub consumes standardized learner and certification state. It must not create parallel mastery, scheduling, promotion, curriculum or release-quality engines.
