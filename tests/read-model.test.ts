@@ -151,10 +151,10 @@ describe("P8 shared language read models",()=>{
     const japanese=registry.consumers.find((consumer:{appId:string})=>consumer.appId==="japanese");
 
     expect(french?.repositoryRevision).toBe(
-      "312469615d60c4e6e11b77a676aaf5e1ab44633e"
+      "b4755ae1f59f91b8552d5cfed425f5ff49e00ebc"
     );
     expect(french?.readModelVersion).toBe("p8-read-model-v1");
-    expect(french?.readModelProducerRevision).toBe("french-p8-read-model-v1");
+    expect(french?.readModelProducerRevision).toBe("french-p8-read-model-v2");
     expect(
       french?.sourceFingerprints.some(
         (entry:{path:string})=>entry.path==="vendor/thiepn-languages-read-model.js"
@@ -162,13 +162,18 @@ describe("P8 shared language read models",()=>{
     ).toBe(true);
 
     expect(japanese?.repositoryRevision).toBe(
-      "1ba2b3ff4e062b9e8b67579d9f2526aeb633caf7"
+      "e4c72347f16892c59a2ad94ab788c4157859a1ea"
     );
     expect(japanese?.readModelVersion).toBe("p8-read-model-v1");
-    expect(japanese?.readModelProducerRevision).toBe("japanese-p8-read-model-v1");
+    expect(japanese?.readModelProducerRevision).toBe("japanese-p8-read-model-v2");
     expect(
       japanese?.sourceFingerprints.some(
         (entry:{path:string})=>entry.path==="apps/web/src/languageReadModel.ts"
+      )
+    ).toBe(true);
+    expect(
+      japanese?.sourceFingerprints.some(
+        (entry:{path:string})=>entry.path==="apps/web/src/study/c1Reliability.ts"
       )
     ).toBe(true);
   });
