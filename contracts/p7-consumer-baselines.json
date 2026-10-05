@@ -9,11 +9,11 @@
       "languageId": "french",
       "repository": "thiepn/french",
       "branch": "main",
-      "repositoryRevision": "312469615d60c4e6e11b77a676aaf5e1ab44633e",
+      "repositoryRevision": "b4755ae1f59f91b8552d5cfed425f5ff49e00ebc",
       "sourceFingerprints": [
         {
           "path": "index.html",
-          "sha": "f3393a47eebfe7fe55446178b3ae5d21579c486a"
+          "sha": "4e4a1372acfe903473152446e1f8a335ef301be3"
         },
         {
           "path": "vendor/thiepn-languages-consumer-contract.js",
@@ -25,7 +25,7 @@
         },
         {
           "path": "service-worker.js",
-          "sha": "dd1010fbf55ea048c431aca69a2f465ef549c57e"
+          "sha": "7b6a813b3f469c5b31fc4809ff7fe849157da6c4"
         },
         {
           "path": "scripts/verify-language-platform-p7.mjs",
@@ -33,19 +33,19 @@
         },
         {
           "path": "scripts/verify-language-read-model-p8.mjs",
-          "sha": "af38d04d92faa6109c1f7745d0e5cfefab533e7a"
+          "sha": "580e0fc5cbe47b75bf88ee8afbf8bbf5a27d10f0"
         }
       ],
       "sourceBaselineRevision": "28a39ce1c59ab02301b408f016522dbddc28d0c0",
       "readModelVersion": "p8-read-model-v1",
-      "readModelProducerRevision": "french-p8-read-model-v1"
+      "readModelProducerRevision": "french-p8-read-model-v2"
     },
     {
       "appId": "japanese",
       "languageId": "japanese",
       "repository": "thiepn/japanese",
       "branch": "main",
-      "repositoryRevision": "1ba2b3ff4e062b9e8b67579d9f2526aeb633caf7",
+      "repositoryRevision": "e4c72347f16892c59a2ad94ab788c4157859a1ea",
       "sourceFingerprints": [
         {
           "path": "content/seed/jp-core.json",
@@ -77,16 +77,20 @@
         },
         {
           "path": "apps/web/src/languageReadModel.ts",
-          "sha": "356f860b570af3e61145b634788c9818c3b44742"
+          "sha": "949867f6ddec20198e8ded919fc5da2ac55c1e11"
+        },
+        {
+          "path": "apps/web/src/study/c1Reliability.ts",
+          "sha": "ec8ae7a21854a10df5f92d7c0f74275d84f9d7dc"
         },
         {
           "path": "tests/platform/read-model.test.ts",
-          "sha": "c8b1982d3e7a9dec74b7b1ab204167eeffa53e2f"
+          "sha": "8e2d0594fdfa8013664d2d2ab0375ad1f225c1f4"
         }
       ],
       "sourceBaselineRevision": "45d03f5b027bdb36fcf5a7f7df3c063e1ba09893",
       "readModelVersion": "p8-read-model-v1",
-      "readModelProducerRevision": "japanese-p8-read-model-v1"
+      "readModelProducerRevision": "japanese-p8-read-model-v2"
     }
   ]
 }
