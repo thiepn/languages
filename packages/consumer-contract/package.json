@@ -1,0 +1,14 @@
+{
+  "name": "@thiepn/language-consumer-contract",
+  "private": true,
+  "version": "0.7.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./browser": "./dist/browser.js"
+  }
+}

@@ -189,6 +189,73 @@ P5 therefore validates a content level against the language manifest's primary p
 
 Japanese C1 content can consequently be valid canonical content without implying that THIEPN currently awards a C1 internal promotion.
 
+
+## P7 distribution and consumer boundary
+
+P7 introduces the first cross-repository package surface.
+
+```text
+thiepn/languages
+      │
+      ├── @thiepn/languages/consumer-contract
+      │          │
+      │          ├── TypeScript/ESM consumer → Japanese
+      │          └── browser artifact → French
+      │
+      └── compatibility baseline + drift watch
+```
+
+The consumer contract is deliberately smaller than the internal platform.
+
+It exposes only:
+
+- package/contract version;
+- audited consumer baselines;
+- read-only integration descriptors;
+- authority assertions;
+- compatibility checks.
+
+It does not expose shared scheduler/mastery/orchestrator authority to production apps yet.
+
+### Authority rule
+
+During P7 the existing product remains authoritative for content, learner state, StudyEvents, memory, mastery, proficiency, orchestration and sync.
+
+The shared platform is observational.
+
+A consumer may read a platform descriptor and compare compatibility. It may not route authoritative writes through the platform merely because a shared package is installed.
+
+### Drift monitoring
+
+Cross-repository drift is checked separately from normal PR verification.
+
+A drift result means the previous audited compatibility assumption is stale. It does not automatically mean the consumer is broken.
+
+The required process is:
+
+```text
+consumer revision changes
+        ↓
+drift detected
+        ↓
+adapter + compatibility review
+        ↓
+baseline advanced explicitly
+```
+
+This keeps independent app development possible without weakening compatibility discipline.
+
+### Distribution rule
+
+The first consumer artifact is zero-dependency plain JavaScript with matching type declarations.
+
+This supports both:
+
+- package-manager consumers;
+- static/browser consumers.
+
+The full platform monorepo is not treated as a stable public API merely because internal packages exist.
+
 ## Repository boundary
 
 `thiepn/languages` owns shared contracts and shared implementations.
