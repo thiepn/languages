@@ -2,17 +2,17 @@
 
 ## Purpose
 
-THIEPN Languages is the shared contract and platform layer beneath individual language products. It standardizes evidence, memory scheduling, mastery interpretation, skill transfer, adaptive orchestration, content boundaries, curriculum dependencies and language registration without forcing French, Japanese or future languages into identical pedagogy.
+THIEPN Languages is the shared contract and platform layer beneath individual language products. It standardizes evidence, memory scheduling, mastery interpretation, skill transfer, adaptive orchestration, proficiency promotion, content boundaries, curriculum dependencies and language registration without forcing French, Japanese or future languages into identical pedagogy.
 
 ## Core invariants
 
 1. **One account, many language enrollments.**
 2. **Learner evidence is language-namespaced.**
-3. **Memory, mastery, orchestration and proficiency are separate concepts.**
+3. **Memory, mastery, orchestration, internal promotion and external certification are separate concepts.**
 4. **Study evidence is append-oriented and replayable.**
 5. **Canonical linguistic content, pedagogical sequencing, source material and learner state are separate domains.**
-6. **Language-specific capabilities and skill graphs are declared by language packs/profile data.**
-7. **Core code must not accumulate `if (language === "...")` branches.**
+6. **Language-specific capabilities, skill graphs and proficiency policies are declared as data.**
+7. **Core code must not accumulate language-name conditionals.**
 8. **Curriculum order and skill transfer are explicit graphs, not hidden screen order.**
 9. **Course completion is not a proficiency claim.**
 10. **External content keeps provenance and licensing policy.**
@@ -30,114 +30,113 @@ StudyEvent
     └── explicit memoryReview only
              │
              └──► MemoryScheduler ──► due date / stability / retrievability
-                                      │
-                                      └──► retention forecast
 ```
 
 ## Orchestration pipeline
 
 ```text
-P2 mastery projections / specialist subsystem evidence
-                 │
-                 ▼
-        language skill profiles
-                 │
-         ┌───────┴────────┐
-         │                │
- prerequisite graph   transfer graph
-         │                │
-         └───────┬────────┘
-                 ▼
-       next-best-activity ranking
-                 │
-                 ▼
-       short adaptive study block
+P2 evidence
+    ↓
+P3 language skill profiles
+    ↓
+prerequisite + transfer graph
+    ↓
+next-best activity / adaptive block
 ```
 
-The orchestrator never writes mastery merely because it recommended or launched an activity.
+The orchestrator consumes evidence but does not create mastery.
 
-## Skill profiles
+## Proficiency pipeline
 
-A language defines skill nodes such as vocabulary, reading, listening, conversation, kana or kanji. Each node declares the evidence dimensions that support it.
+```text
+skill/task assessment evidence
+          +
+curriculum/assessment coverage
+          +
+framework-specific promotion policy
+          ↓
+individual gate evaluations
+          ↓
+all gates pass?
+      ┌──────┴──────┐
+     no            yes
+     │              │
+not ready /     prerequisite
+coverage gap       satisfied?
+                    │
+                    ↓
+             internal promotion
+                    │
+                    └── historical milestone
+```
 
-Profiles expose:
+No weighted average can override a failed required gate.
 
-- strength;
-- evidence confidence;
-- evidence count;
-- orchestration state.
+## Claim hierarchy
 
-Missing evidence is represented as uncertainty, not a measured failure.
+The platform distinguishes:
 
-## Graph semantics
+```text
+course progress
+      ≠
+skill/entity mastery
+      ≠
+internal promotion
+      ≠
+modeled proficiency
+      ≠
+external exam result/certification
+```
 
-### Prerequisite
+These states may inform one another, but they are not interchangeable.
 
-A prerequisite edge affects readiness.
+## Coverage boundary
 
-Low readiness suppresses downstream ranking and can cause an adaptive block to insert prerequisite support before the anchor task.
+A promotion gate needs both learner evidence and sufficient product coverage.
 
-Prerequisite edges must be acyclic.
+Missing assessment/curriculum coverage is a product limitation. It must not be represented as learner failure or used to generate remediation pressure.
 
-### Transfer
+## External framework mappings
 
-A transfer edge detects an evidence-backed gap between an upstream and downstream skill.
+Framework mappings are scoped.
 
-Transfer edges may represent mutually supportive real-world skills and therefore are not required to form a DAG.
+A mapping records its covered competences and whether it is full or partial. Partial mappings cannot support a global promotion claim.
 
-A transfer gap requires confidence on both sides. Strong upstream evidence cannot manufacture a downstream failure where downstream evidence is absent.
+Exam overlays therefore remain evidence sources for the domains they actually assess rather than replacing the platform's broader communicative model.
 
-## Adaptive ranking
+## Promotion history
 
-P3 ranking combines bounded factors:
+Internal promotion is sequential when configured by the language policy.
 
-- confirmed skill need;
-- evidence uncertainty;
-- upstream transfer gap;
-- prerequisite readiness;
-- runtime urgency;
-- novelty/repetition;
-- language activity base priority;
-- small learned calibration bonus.
+Earned milestones remain historical facts. A later decline results in `promoted_maintenance_needed`, not deletion of the milestone.
 
-Resume-first state outranks new recommendations.
+## P3 integration
 
-Priority is a scheduling score, not a mastery score.
+A failed learner-remediable promotion gate can produce a bounded activity boost for the shared orchestrator.
 
-## Adaptive blocks
-
-Blocks contain at most three activities and default to an approximate 26-minute budget.
-
-Composition can:
-
-1. insert prerequisite support when readiness is low;
-2. run the anchor activity;
-3. add downstream transfer when readiness is adequate;
-4. fill remaining capacity with complementary high-value work.
-
-The activity's native subsystem remains authoritative for completion and evidence.
-
-## Calibration boundary
-
-Activity observations can make small ranking adjustments only after repeated completed sessions. The learned bonus is bounded to ±6 points and never modifies mastery, memory or proficiency.
+Coverage gaps do not produce such a boost because the learner cannot fix missing product content.
 
 ## Shared vs language-specific
 
-Shared core owns graph semantics, validation, ranking and block composition.
+Shared core owns:
+
+- assessment evidence semantics;
+- gate evaluation;
+- prerequisite promotion logic;
+- milestone behavior;
+- framework mapping scope;
+- claim boundaries;
+- remediation-signal bounds.
 
 Language profiles own:
 
-- skill-node identities;
-- evidence dimensions;
-- prerequisite/transfer edges;
-- activities;
-- language-specific timing/default priorities.
-
-French and Japanese therefore share orchestration mechanics without sharing an identical skill graph.
-
-## Proficiency
-
-No orchestration score, memory trace or entity mastery state is itself a CEFR/JLPT/DELF claim. Proficiency requires separate breadth, task and assessment evidence.
+- framework choice;
+- level sequence;
+- gate identities;
+- thresholds;
+- required coverage;
+- remediation skill/activity mapping;
+- external exam/framework declarations.
 
 ## Repository boundary
 
@@ -145,4 +144,4 @@ No orchestration score, memory trace or entity mastery state is itself a CEFR/JL
 
 `thiepn/french` and `thiepn/japanese` remain separately deployable products and should adopt shared packages through explicit compatibility phases.
 
-The future Hub consumes standardized enrollment/progress/recommendation state. It must not create parallel mastery, scheduling or curriculum engines.
+The future Hub consumes standardized enrollment, progress, recommendation and proficiency state. It must not create parallel mastery, scheduling, promotion or curriculum engines.
