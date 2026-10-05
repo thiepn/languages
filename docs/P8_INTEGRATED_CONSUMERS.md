@@ -13,11 +13,11 @@ P8 is integrated in both production language repositories.
 
 Current integrated head:
 
-`312469615d60c4e6e11b77a676aaf5e1ab44633e`
+`b4755ae1f59f91b8552d5cfed425f5ff49e00ebc`
 
 Producer revision:
 
-`french-p8-read-model-v1`
+`french-p8-read-model-v2`
 
 French vendors the P8 browser artifact and derives its projection from existing authoritative systems:
 
@@ -25,7 +25,8 @@ French vendors the P8 browser artifact and derives its projection from existing 
 - activity and streak calculations;
 - target-date curriculum state;
 - P25 internal CEFR-aligned promotion gates;
-- P22/P23 coach recommendation.
+- P22/P23 coach recommendation;
+- P28 fixed functional-benchmark history and P29 maintenance/long-term-transfer summaries.
 
 No raw review log or private account data is included in the projection.
 
@@ -33,11 +34,11 @@ No raw review log or private account data is included in the projection.
 
 Current integrated head:
 
-`1ba2b3ff4e062b9e8b67579d9f2526aeb633caf7`
+`e4c72347f16892c59a2ad94ab788c4157859a1ea`
 
 Producer revision:
 
-`japanese-p8-read-model-v1`
+`japanese-p8-read-model-v2`
 
 Japanese pins the P8 package by Git commit and derives its projection from:
 
@@ -45,6 +46,7 @@ Japanese pins the P8 package by Git commit and derives its projection from:
 - course-unit progress;
 - kana/vocabulary/grammar/sentence/lexical-fluency summaries;
 - A1/B1/B2/C1-foundation internal milestone evidence;
+- P14 C1 autonomy/reliability portfolio summaries;
 - StudyEvents only long enough to calculate user-facing activity counts, streak and last-study timestamp.
 
 Raw StudyEvents and FSRS traces do not leave the product through P8.
