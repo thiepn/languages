@@ -1,7 +1,7 @@
 {
   "name": "@thiepn/languages",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.7.0",
   "type": "module",
   "packageManager": "pnpm@11.19.0",
   "engines": {
@@ -10,11 +10,25 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "verify": "pnpm typecheck && pnpm test"
+    "verify": "pnpm typecheck && pnpm test",
+    "package:consumer": "mkdir -p artifacts && pnpm pack --pack-destination artifacts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
     "typescript": "7.0.2",
     "vitest": "5.0.2"
+  },
+  "files": [
+    "packages/consumer-contract/dist/**",
+    "README.md",
+    "docs/P7_ACCEPTANCE.md"
+  ],
+  "exports": {
+    "./consumer-contract": {
+      "types": "./packages/consumer-contract/dist/index.d.ts",
+      "import": "./packages/consumer-contract/dist/index.js",
+      "default": "./packages/consumer-contract/dist/index.js"
+    },
+    "./consumer-contract/browser": "./packages/consumer-contract/dist/browser.js"
   }
 }
