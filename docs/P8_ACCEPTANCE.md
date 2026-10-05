@@ -160,3 +160,5 @@ A product may advance its `producerRevision` while remaining on `p8-read-model-v
 Such a refresh does **not** require a new cross-language schema version.
 
 The refreshed French and Japanese producers demonstrate this rule: newer longitudinal functional/C1 evidence is surfaced as progress metrics rather than being converted into a new cross-language proficiency score.
+
+Consumer drift baselines are advanced only after the corresponding product-native CI has passed on the refreshed producer.
