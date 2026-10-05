@@ -1,0 +1,9 @@
+{
+  "name": "@thiepn/languages-hub",
+  "private": true,
+  "version": "0.8.0",
+  "type": "module",
+  "dependencies": {
+    "@thiepn/language-read-model": "workspace:*"
+  }
+}
