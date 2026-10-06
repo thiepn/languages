@@ -1,0 +1,36 @@
+name: P12 Production Burn-In
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: languages-p12-public-burn-in
+  cancel-in-progress: true
+
+jobs:
+  public-production-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm install --no-frozen-lockfile
+      - name: Audit public production dependencies
+        shell: bash
+        run: |
+          pnpm p12:audit | tee p12-public-evidence.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: p12-public-evidence
+          path: p12-public-evidence.json
+          if-no-files-found: ignore
+          retention-days: 14

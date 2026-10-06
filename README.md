@@ -20,7 +20,8 @@ Shared language-learning platform for THIEPN language products.
 - packages/dashboard — P9 authenticated persistence/dashboard client contract
 - packages/shell — P10 product-family shell view model and browser contract
 - languages/french and languages/japanese — language-specific manifests, learning graphs, proficiency/quality policies and production-app adapters
-- apps/hub — P11 production Languages shell for languages.thiepn.dev with isolated Account PKCE and Core dashboard transport
+- apps/hub — production Languages shell for languages.thiepn.dev with isolated Account PKCE and Core dashboard transport
+- P12 production burn-in — scheduled public dependency monitoring plus authenticated cross-product verification tooling
 
 See docs/ARCHITECTURE.md and the phase acceptance documents in docs/.
 
@@ -75,3 +76,12 @@ The production build is pinned to:
 - `@supabase/supabase-js@2.117.2`
 
 The Pages deployment workflow refuses alternate production hostnames and runs post-deployment Chromium/Firefox/WebKit, mobile, offline, Account-handoff and Core-CORS qualification. See `docs/P11_ACCEPTANCE.md` for the remaining manual real-user/physical-device gates.
+
+
+## P12 authenticated production burn-in
+
+P12 does not redesign the learning platform. It qualifies the real production chain and fixes only defects exposed by production use.
+
+`pnpm p12:audit` always verifies the public Languages, Account and Core production surfaces. When supplied a short-lived Account bearer locally through `THIEPN_P12_ACCESS_TOKEN`, it additionally verifies the authenticated P9 dashboard without printing the token or Account identity. Optional expected-app and visibility round-trip checks are documented in `docs/P12_ACCEPTANCE.md`.
+
+A scheduled GitHub workflow runs the public portion every six hours. Real-user bearer tokens are intentionally never stored in GitHub Actions.

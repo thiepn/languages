@@ -265,7 +265,7 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
 }
 
 const browserApi = Object.freeze({
-  version: "0.11.0",
+  version: "0.12.0",
   contractVersion: "p11-account-session-v1",
   createProductionLanguagesAccountSession,
 });
