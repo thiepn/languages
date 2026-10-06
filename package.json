@@ -29,6 +29,9 @@
     "packages/shell/dist/**",
     "contracts/p8-language-read-model.schema.json",
     "contracts/p9-language-dashboard.schema.json",
+    "packages/ai-client/src/index.ts",
+    "packages/ai-client/dist/index.js",
+    "packages/ai-client/dist/browser.js",
     "README.md",
     "docs/P7_ACCEPTANCE.md",
     "docs/P8_ACCEPTANCE.md",
@@ -60,6 +63,12 @@
       "import": "./packages/shell/dist/index.js",
       "default": "./packages/shell/dist/index.js"
     },
-    "./shell/browser": "./packages/shell/dist/browser.js"
+    "./shell/browser": "./packages/shell/dist/browser.js",
+    "./ai-client": {
+      "types": "./packages/ai-client/src/index.ts",
+      "import": "./packages/ai-client/dist/index.js",
+      "default": "./packages/ai-client/dist/index.js"
+    },
+    "./ai-client/browser": "./packages/ai-client/dist/browser.js"
   }
 }
