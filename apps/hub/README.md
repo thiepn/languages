@@ -27,4 +27,4 @@ The Hub consumes `@thiepn/languages/read-model` snapshots from independent langu
 - become a second curriculum or scheduler;
 - write learner state during P8.
 
-P8 remains a read-oriented projection boundary. Authenticated cross-device persistence is deferred to P9.
+P8 remains the read-oriented projection boundary. P9 adds authenticated cross-device persistence around that same projection without changing Hub authority; production HTTP activation still depends on the reviewed Core Gateway deployment gate.
