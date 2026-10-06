@@ -74,7 +74,7 @@ jobs:
         run: |
           for endpoint in health ready version; do
             curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
-              "https://api.thiepn.dev/$endpoint" -o "/tmp/core-$endpoint.json"
+              "https://thiepn-core-gateway.thiepn.workers.dev/$endpoint" -o "/tmp/core-$endpoint.json"
           done
 
           cors_code="$(curl --silent --show-error --location --proto '=https' --tlsv1.2 \
@@ -85,7 +85,7 @@ jobs:
             -D /tmp/core-cors-headers \
             -o /tmp/core-cors-body \
             -w '%{http_code}' \
-            https://api.thiepn.dev/v1/languages/dashboard)"
+            https://thiepn-core-gateway.thiepn.workers.dev/v1/languages/dashboard)"
           if [ "$cors_code" -lt 200 ] || [ "$cors_code" -ge 300 ]; then
             echo "Core CORS preflight failed with HTTP $cors_code"
             cat /tmp/core-cors-body || true
@@ -102,7 +102,7 @@ jobs:
             -H 'Authorization: Bearer invalid-p11-preflight' \
             -o /tmp/core-auth-body \
             -w '%{http_code}' \
-            https://api.thiepn.dev/v1/languages/dashboard)"
+            https://thiepn-core-gateway.thiepn.workers.dev/v1/languages/dashboard)"
           if [ "$auth_code" != "401" ] && [ "$auth_code" != "403" ]; then
             echo "Core invalid-token probe expected 401/403, got HTTP $auth_code"
             cat /tmp/core-auth-body || true
@@ -143,7 +143,7 @@ jobs:
           test -f dist/hub/vendor/account-session.js
           grep -R -q 'https://languages.thiepn.dev' dist/hub/vendor/account-session.js
           grep -R -q 'https://account.thiepn.dev/languages/entry' dist/hub/vendor/account-session.js
-          grep -R -q 'https://api.thiepn.dev' dist/hub/vendor/account-session.js
+          grep -R -q 'https://thiepn-core-gateway.thiepn.workers.dev' dist/hub/vendor/account-session.js
           grep -R -q 'hycegznamzjhwinegaai.supabase.co' dist/hub/vendor/account-session.js
           if grep -R -n -E 'SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{20,}' apps/hub dist/hub >/dev/null 2>&1; then
             echo "Server-only credential value leaked into production Hub"
@@ -277,7 +277,7 @@ jobs:
           await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
           const core = await page.evaluate(async () => {
             try {
-              const response = await fetch("https://api.thiepn.dev/v1/languages/dashboard",{
+              const response = await fetch("https://thiepn-core-gateway.thiepn.workers.dev/v1/languages/dashboard",{
                 headers:{Authorization:"Bearer invalid-p11-probe"}
               });
               return {ok:true,status:response.status};
