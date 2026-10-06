@@ -4,7 +4,7 @@ Status: **active; public production burn-in automated, producer transport/auth d
 
 ## Objective
 
-P12 proves that the already-designed Languages architecture works with real production identity and real product-owned learner state.
+P12 proves that the Languages architecture works with real production identity and real product-owned learner state. As part of defect-only hardening, the earlier direct Google PKCE handoff is replaced by the ecosystem-wide first-party THIEPN Account OAuth contract.
 
 This phase does **not** redesign scheduling, mastery, proficiency, orchestration, content ownership or enrollment. French and Japanese remain authoritative. Languages continues to consume only their privacy-minimal P8 projections.
 
@@ -91,6 +91,23 @@ Japanese publication remains gated by:
 
 Japanese already republishes after connection/account activation and after completed study sessions; P12 does not introduce a second scheduling or event system.
 
+## First-party Account SSO hardening
+
+Languages is registered in the Account app registry with canonical product URL `https://languages.thiepn.dev/` and only required `identity.basic`.
+
+The browser must use the shared `@thiepn/account-session` runtime with a dedicated public OAuth client:
+
+- exact callback: `https://languages.thiepn.dev/auth/callback/`;
+- Authorization Code + PKCE S256;
+- token endpoint authentication method `none`;
+- requested scopes: `openid email profile offline_access`;
+- app-local token storage;
+- no browser client secret;
+- no direct Google provider call;
+- silent Account-session eligibility through `https://account.thiepn.dev/sso/probe`.
+
+A fresh browser with no Account session stays signed out. An eligible existing Account session may attach Languages without another Google login. A deliberate Languages disconnect remains authoritative and blocks silent reattachment until an explicit reconnect.
+
 ## Public burn-in automation
 
 `.github/workflows/p12-production-burn-in.yml` runs every six hours and on manual dispatch.
@@ -148,7 +165,7 @@ It toggles the selected Hub visibility value, reloads the dashboard to prove per
 
 P12 is not complete until all of the following are observed with a real account:
 
-1. **Google sign-in** — Languages returns from Google with a valid Languages-origin session.
+1. **Account SSO** — Languages authorizes as its own public OAuth client of THIEPN Account; Google appears only when Account itself needs upstream authentication.
 2. **French publication** — after explicit French sync/reconciliation, Core stores a fresh French P8 projection.
 3. **Japanese publication** — after Japanese Account connection, Core stores a fresh Japanese P8 projection.
 4. **Hub load** — Languages loads both real snapshots from Core without demo fallback.
@@ -157,7 +174,7 @@ P12 is not complete until all of the following are observed with a real account:
 7. **Visibility persistence** — hide/show persists through Core and survives reload.
 8. **Local sign-out** — Languages local sign-out does not falsely claim to terminate Account/French/Japanese sessions.
 9. **Account switching** — Account A data is never visible after switching to Account B.
-10. **Cancellation/retry** — cancelling Google or abandoning a callback returns to a recoverable signed-out state.
+10. **Cancellation/retry** — cancelling Account authorization, cancelling upstream Google login when Account requires it, or abandoning a callback returns to a recoverable state.
 11. **Long-session refresh** — an authenticated session survives normal token refresh without losing dashboard access.
 12. **Cross-device** — the same Account can load the persisted dashboard from a second real browser/device.
 13. **Physical mobile** — at least one real Android or iOS browser completes sign-in, dashboard load and Continue navigation.
