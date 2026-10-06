@@ -20,7 +20,6 @@ export type LanguagesIdentity =
     };
 
 export interface PendingLanguagesLogin {
-  readonly flow: string;
   readonly started: number;
   readonly returnTo: "/";
 }
@@ -34,39 +33,23 @@ export function validAccountId(value: unknown): value is string {
   );
 }
 
-export function createFlowNonce(
-  randomValues: Uint8Array = crypto.getRandomValues(new Uint8Array(32)),
-): string {
-  if (!(randomValues instanceof Uint8Array) || randomValues.length !== 32) {
-    throw new Error("INVALID_FLOW_RANDOMNESS");
-  }
-  return Array.from(randomValues, byte => byte.toString(16).padStart(2, "0")).join("");
-}
-
 export function readPendingLanguagesLogin(
   raw: string | null,
-  flow: string | null,
   now = Date.now(),
 ): PendingLanguagesLogin | null {
   try {
-    if (
-      !raw ||
-      raw.length > 1024 ||
-      !flow ||
-      !/^[a-f0-9]{64}$/.test(flow)
-    ) return null;
+    if (!raw || raw.length > 1024) return null;
     const value: unknown = JSON.parse(raw);
     if (!value || typeof value !== "object" || Array.isArray(value)) return null;
     const row = value as Record<string, unknown>;
     if (
-      row.flow !== flow ||
       row.returnTo !== "/" ||
       !Number.isFinite(row.started) ||
       typeof row.started !== "number" ||
       now < row.started ||
       now - row.started > 10 * 60 * 1000
     ) return null;
-    return { flow, started: row.started, returnTo: "/" };
+    return { started: row.started, returnTo: "/" };
   } catch {
     return null;
   }
@@ -75,18 +58,19 @@ export function readPendingLanguagesLogin(
 export function readLanguagesCallback(
   query: URLSearchParams,
   fragment: string,
-): { readonly code: string; readonly flow: string } | null {
-  if (fragment || [...query.keys()].sort().join(",") !== "code,flow") return null;
+): { readonly code: string } | null {
+  if (
+    fragment ||
+    [...query.keys()].join(",") !== "code" ||
+    query.getAll("code").length !== 1
+  ) return null;
   const code = query.get("code");
-  const flow = query.get("flow");
   if (
     !code ||
     code.length > 2048 ||
-    /[\s\x00-\x1f\x7f]/.test(code) ||
-    !flow ||
-    !/^[a-f0-9]{64}$/.test(flow)
+    /[\s\x00-\x1f\x7f]/.test(code)
   ) return null;
-  return { code, flow };
+  return { code };
 }
 
 export function buildAccountEntryUrl(authorizationUrl: string): string {
