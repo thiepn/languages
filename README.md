@@ -20,7 +20,7 @@ Shared language-learning platform for THIEPN language products.
 - packages/dashboard — P9 authenticated persistence/dashboard client contract
 - packages/shell — P10 product-family shell view model and browser contract
 - languages/french and languages/japanese — language-specific manifests, learning graphs, proficiency/quality policies and production-app adapters
-- apps/hub — buildable P10 responsive Languages shell for languages.thiepn.dev
+- apps/hub — P11 production Languages shell for languages.thiepn.dev with isolated Account PKCE and Core dashboard transport
 
 See docs/ARCHITECTURE.md and the phase acceptance documents in docs/.
 
@@ -62,4 +62,16 @@ Run pnpm build:hub to produce dist/hub. The build contains a dependency-free res
 - loading, signed-out, error, stale and offline states;
 - no demo learner-state fallback.
 
-Production Account session injection and live deployment are intentionally deferred to P11 so the shell does not invent or duplicate the Account session contract.
+## P11 production Account session and deployment
+
+P11 replaces the placeholder runtime-config seam with a production browser adapter using the same Account Supabase identity authority as the rest of THIEPN. Languages owns an isolated PKCE session on its own origin; Account receives only a validated tokenless authorization request through `/languages/entry`.
+
+The production build is pinned to:
+
+- `https://languages.thiepn.dev`
+- `https://account.thiepn.dev/languages/entry`
+- `https://api.thiepn.dev`
+- Account Supabase project `hycegznamzjhwinegaai`
+- `@supabase/supabase-js@2.117.2`
+
+The Pages deployment workflow refuses alternate production hostnames and runs post-deployment Chromium/Firefox/WebKit, mobile, offline, Account-handoff and Core-CORS qualification. See `docs/P11_ACCEPTANCE.md` for the remaining manual real-user/physical-device gates.

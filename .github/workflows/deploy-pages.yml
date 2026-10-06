@@ -1,0 +1,249 @@
+name: Deploy Languages
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: languages-production
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    if: >
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Require canonical GitHub Pages configuration
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          code="$(curl -sS -o /tmp/pages.json -w '%{http_code}'             -H 'Accept: application/vnd.github+json'             -H "Authorization: Bearer $GH_TOKEN"             -H 'X-GitHub-Api-Version: 2026-03-10'             "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages")"
+          if [ "$code" != "200" ]; then
+            echo "GitHub Pages is not enabled for this repository (HTTP $code)."
+            echo "Enable Pages with GitHub Actions as the publishing source, then rerun."
+            exit 1
+          fi
+          cname="$(python -c 'import json; print((json.load(open("/tmp/pages.json")).get("cname") or ""))')"
+          if [ "$cname" != "languages.thiepn.dev" ]; then
+            echo "Pages custom domain must be languages.thiepn.dev (current: $cname)"
+            exit 1
+          fi
+
+  build:
+    if: >
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Resolve release SHA
+        id: release
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "sha=${{ github.event.workflow_run.head_sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "sha=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.release.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm verify
+      - name: Verify production session bundle
+        shell: bash
+        run: |
+          test -f dist/hub/index.html
+          test -f dist/hub/auth/callback/index.html
+          test -f dist/hub/vendor/account-session.js
+          grep -R -q 'https://languages.thiepn.dev' dist/hub/vendor/account-session.js
+          grep -R -q 'https://account.thiepn.dev/languages/entry' dist/hub/vendor/account-session.js
+          grep -R -q 'https://api.thiepn.dev' dist/hub/vendor/account-session.js
+          grep -R -q 'hycegznamzjhwinegaai.supabase.co' dist/hub/vendor/account-session.js
+          if grep -R -n -E 'service_role|sb_secret_' dist/hub >/dev/null 2>&1; then
+            echo "Server-only credential marker leaked into production Hub"
+            grep -R -n -E 'service_role|sb_secret_' dist/hub || true
+            exit 1
+          fi
+      - name: Add release metadata and fallback
+        env:
+          RELEASE_SHA: ${{ steps.release.outputs.sha }}
+        shell: bash
+        run: |
+          cp dist/hub/index.html dist/hub/404.html
+          cat > dist/hub/release.json <<EOF
+          {
+            "product": "THIEPN Languages",
+            "version": "0.11.0",
+            "commit": "$RELEASE_SHA",
+            "canonicalOrigin": "https://languages.thiepn.dev",
+            "accountSessionContract": "p11-account-session-v1"
+          }
+          EOF
+          sha256sum             dist/hub/index.html             dist/hub/auth/callback/index.html             dist/hub/vendor/account-session.js             dist/hub/release.json             | sed 's#  dist/hub/#  #' > dist/hub/SHA256SUMS
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/hub
+
+  deploy:
+    needs: [preflight, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy Languages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify deployed release SHA
+        env:
+          EXPECTED_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+        shell: bash
+        run: |
+          for attempt in {1..12}; do
+            if curl --fail --silent --show-error --location --proto '=https' --tlsv1.2               https://languages.thiepn.dev/release.json -o /tmp/release.json; then
+              deployed="$(python -c 'import json; print(json.load(open("/tmp/release.json"))["commit"])')"
+              if [ "$deployed" = "$EXPECTED_SHA" ]; then
+                echo "Verified deployed SHA: $deployed"
+                exit 0
+              fi
+              echo "Deployment is serving $deployed; waiting for $EXPECTED_SHA"
+            fi
+            sleep 5
+          done
+          echo "Canonical Languages release SHA could not be verified"
+          exit 1
+
+  live-qualification:
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      - run: pnpm install --no-frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Qualify deployed shell, Account handoff, Core CORS and responsive states
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium, firefox, webkit } from "@playwright/test";
+
+          const canonical = "https://languages.thiepn.dev/";
+          const accountEntry = "https://account.thiepn.dev/languages/entry";
+          const callback = "https://languages.thiepn.dev/auth/callback/";
+          const engines = [
+            ["chromium", chromium],
+            ["firefox", firefox],
+            ["webkit", webkit],
+          ];
+
+          for (const [name, engine] of engines) {
+            const browser = await engine.launch({headless:true});
+            const context = await browser.newContext({viewport:{width:1440,height:900}});
+            const page = await context.newPage();
+            const pageErrors = [];
+            page.on("pageerror", error => pageErrors.push(String(error)));
+
+            const response = await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
+            if (!response?.ok()) throw new Error(`${name}: production HTML failed: ${response?.status()}`);
+
+            const signIn = page.getByRole("button",{name:"Continue with THIEPN Account"});
+            if (!await signIn.isVisible()) throw new Error(`${name}: signed-out entry did not render`);
+            if (pageErrors.length) throw new Error(`${name}: page errors: ${pageErrors.join("\n")}`);
+
+            const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+            if (overflow > 1) throw new Error(`${name}: desktop horizontal overflow ${overflow}px`);
+
+            await context.close();
+            await browser.close();
+          }
+
+          const browser = await chromium.launch({headless:true});
+          const context = await browser.newContext({viewport:{width:1440,height:900}});
+          const page = await context.newPage();
+          await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
+
+          await page.getByRole("button",{name:"Continue with THIEPN Account"}).click();
+          await page.waitForURL(url => url.origin === "https://account.thiepn.dev" && url.pathname === "/languages/entry",{timeout:15000});
+
+          const entryUrl = new URL(page.url());
+          if (entryUrl.origin+entryUrl.pathname !== accountEntry) throw new Error("Unexpected Account entry destination");
+          const request = entryUrl.searchParams.get("request");
+          if (!request) throw new Error("Account entry is missing tokenless authorization request");
+          const authorize = new URL(request);
+          if (authorize.origin !== "https://hycegznamzjhwinegaai.supabase.co" || authorize.pathname !== "/auth/v1/authorize") throw new Error("Wrong Account issuer");
+          if (authorize.searchParams.get("provider") !== "google") throw new Error("Wrong OAuth provider");
+          if (authorize.searchParams.get("code_challenge_method")?.toLowerCase() !== "s256") throw new Error("PKCE is not S256");
+          if (!/^[A-Za-z0-9_-]{43}$/.test(authorize.searchParams.get("code_challenge") ?? "")) throw new Error("Invalid PKCE challenge");
+          if (authorize.searchParams.get("prompt") !== "select_account") throw new Error("Account chooser is not explicit");
+          const redirect = new URL(authorize.searchParams.get("redirect_to") ?? "");
+          if (redirect.origin+redirect.pathname !== callback || !/^[a-f0-9]{64}$/.test(redirect.searchParams.get("flow") ?? "")) throw new Error("Languages callback contract mismatch");
+
+          const accountContinue = page.getByRole("link",{name:"Continue with Google"});
+          if (!await accountContinue.isVisible()) throw new Error("Live Account did not accept Languages tokenless entry");
+
+          await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
+          const core = await page.evaluate(async () => {
+            try {
+              const response = await fetch("https://api.thiepn.dev/v1/languages/dashboard",{
+                headers:{Authorization:"Bearer invalid-p11-probe"}
+              });
+              return {ok:true,status:response.status};
+            } catch (error) {
+              return {ok:false,error:String(error)};
+            }
+          });
+          if (!core.ok) throw new Error("Core browser/CORS probe failed: "+core.error);
+          if (![401,403].includes(core.status)) throw new Error("Core invalid-token probe returned "+core.status);
+
+          await context.setOffline(true);
+          await page.evaluate(() => window.dispatchEvent(new Event("offline")));
+          await page.waitForTimeout(150);
+          if (!await page.getByRole("button",{name:"Continue with THIEPN Account"}).isVisible()) throw new Error("Loaded shell did not survive offline transition");
+          await context.close();
+
+          const mobile = await browser.newContext({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
+          const mobilePage = await mobile.newPage();
+          await mobilePage.goto(canonical,{waitUntil:"networkidle",timeout:30000});
+          if (!await mobilePage.getByRole("button",{name:"Continue with THIEPN Account"}).isVisible()) throw new Error("Mobile sign-in entry not visible");
+          const mobileOverflow = await mobilePage.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+          if (mobileOverflow > 1) throw new Error("Mobile horizontal overflow "+mobileOverflow+"px");
+          await mobile.close();
+
+          const callbackContext = await browser.newContext();
+          const callbackPage = await callbackContext.newPage();
+          const callbackResponse = await callbackPage.goto(
+            callback+"?code=fake-code&flow="+"a".repeat(64),
+            {waitUntil:"networkidle",timeout:30000},
+          );
+          if (!callbackResponse?.ok()) throw new Error("Callback route did not return a real 2xx page");
+          await callbackPage.getByRole("heading",{name:"Progress is temporarily unavailable"}).waitFor({timeout:10000});
+          await callbackContext.close();
+          await browser.close();
+
+          console.log("Languages P11 live browser qualification passed.");
+          NODE

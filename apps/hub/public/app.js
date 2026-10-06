@@ -2,46 +2,117 @@
 const root=document.getElementById("app");
 const Dashboard=global.THIEPN_LANGUAGE_DASHBOARD;
 const Shell=global.THIEPN_LANGUAGE_SHELL;
-const config=global.THIEPN_LANGUAGES_CONFIG||{};
+const AccountSession=global.THIEPN_LANGUAGES_ACCOUNT_SESSION;
+
+let session=null;
 let client=null;
+let identity={status:"checking"};
 let state={status:"loading"};
 let lastRemote=null;
 let busy=false;
 let actionError="";
+let booted=false;
 
-if(!Dashboard||!Shell){
+if(!Dashboard||!Shell||!AccountSession){
   renderFatal("The Languages runtime did not load.");
   return;
 }
 
-if(config.coreBaseUrl&&typeof config.getAccessToken==="function"){
+try{
+  session=AccountSession.createProductionLanguagesAccountSession();
   client=Dashboard.createCoreLanguageDashboardClient({
-    baseUrl:config.coreBaseUrl,
-    getAccessToken:config.getAccessToken,
+    baseUrl:session.coreBaseUrl,
+    getAccessToken:()=>session.getAccessToken(),
     fetchImpl:global.fetch.bind(global)
   });
-}else{
-  state={status:"signed-out"};
+}catch(error){
+  renderFatal("The production Account session adapter is unavailable: "+String(error?.message||error));
+  return;
 }
 
-global.addEventListener("online",()=>refresh());
+session.subscribe(next=>{
+  identity=next;
+  if(booted)void applyIdentity(next);
+});
+
+global.addEventListener("online",()=>void handleOnline());
 global.addEventListener("offline",()=>render());
 
-if(client)refresh();else render();
+void boot();
+
+async function boot(){
+  const next=await session.initialize();
+  identity=next;
+  booted=true;
+  await applyIdentity(next);
+}
+
+async function applyIdentity(next){
+  if(next.status==="checking"){
+    state={status:"loading"};
+    render();
+    return;
+  }
+  if(next.status==="signed-out"){
+    lastRemote=null;
+    state={status:"signed-out"};
+    render();
+    return;
+  }
+  if(next.status==="unavailable"){
+    if(global.navigator&&global.navigator.onLine===false&&lastRemote){
+      state={status:"ready",remote:lastRemote};
+    }else{
+      state={status:"error",code:next.code};
+    }
+    render();
+    return;
+  }
+  await refresh();
+}
+
+async function handleOnline(){
+  if(identity.status==="signed-in"){
+    await refresh();
+    return;
+  }
+  const next=await session.verify();
+  identity=next;
+  await applyIdentity(next);
+}
 
 async function refresh(){
-  if(!client){state={status:"signed-out"};render();return}
-  if(global.navigator&&global.navigator.onLine===false&&lastRemote){
-    state={status:"ready",remote:lastRemote};render();return;
+  if(identity.status!=="signed-in"){
+    state={status:"signed-out"};
+    render();
+    return;
   }
-  state={status:"loading"};actionError="";render();
+  if(global.navigator&&global.navigator.onLine===false){
+    if(lastRemote)state={status:"ready",remote:lastRemote};
+    else state={status:"error",code:"OFFLINE_NO_CACHED_DASHBOARD"};
+    render();
+    return;
+  }
+
+  state={status:"loading"};
+  actionError="";
+  render();
+
   try{
     const remote=await client.load();
     lastRemote=remote;
     state={status:"ready",remote};
   }catch(error){
     const code=String(error?.code||error?.message||"LANGUAGE_DASHBOARD_LOAD_FAILED");
-    state=code==="AUTH_REQUIRED"?{status:"signed-out"}:{status:"error",code};
+    if(code==="AUTH_REQUIRED"||code==="CORE_AUTH_REQUIRED"||code==="CORE_AUTH_INVALID"){
+      const next=await session.verify();
+      identity=next;
+      if(next.status!=="signed-in"){
+        await applyIdentity(next);
+        return;
+      }
+    }
+    state={status:"error",code};
   }
   render();
 }
@@ -85,18 +156,24 @@ function topbar(model){
   const nav=h("nav",{class:"nav","aria-label":"Language navigation"});
   model.nav.forEach(item=>nav.append(h("a",{href:item.href,...(item.active?{"aria-current":"page"}:{})},item.label)));
   const actions=h("div",{class:"top-actions"});
-  if(config.accountUrl){
-    actions.append(h("a",{class:"icon-button",href:config.accountUrl,"aria-label":"Account"},icon("user")));
+
+  actions.append(h("a",{class:"icon-button",href:session.accountUrl,"aria-label":"Open THIEPN Account"},icon("user")));
+
+  if(identity.status==="signed-in"){
+    const signOut=h("button",{class:"icon-button",type:"button","aria-label":"Sign out of Languages",disabled:busy},icon("logout"));
+    signOut.addEventListener("click",()=>void signOutLanguages());
+    actions.append(signOut);
   }
-  const refreshButton=h("button",{class:"icon-button",type:"button","aria-label":"Refresh language progress",disabled:busy},icon("refresh"));
-  refreshButton.addEventListener("click",refresh);
+
+  const refreshButton=h("button",{class:"icon-button",type:"button","aria-label":"Refresh language progress",disabled:busy||identity.status!=="signed-in"},icon("refresh"));
+  refreshButton.addEventListener("click",()=>void refresh());
   actions.append(refreshButton);
   return h("header",{class:"topbar"},brand,nav,actions);
 }
 
 function heroIntro(model){
   const copy=model.status==="signed-out"
-    ?["Your languages, one place.","Continue each language without merging their learning systems."]
+    ?["Your languages, one place.","Sign in with THIEPN Account to load the same privacy-minimal dashboard across devices."]
     :["Keep every language moving.","See what needs attention, then continue inside the language product that owns the study state."];
   return h("section",{class:"hero-wrap"},
     h("p",{class:"kicker"},"THIEPN language family"),
@@ -127,25 +204,78 @@ function loadingState(){
 
 function signedOut(model){
   const actions=h("div",{class:"state-actions"});
-  if(config.signInUrl)actions.append(h("a",{class:"primary-button",href:config.signInUrl},"Sign in"));
+  const signIn=h("button",{class:"primary-button",type:"button",disabled:busy},"Continue with THIEPN Account");
+  signIn.addEventListener("click",()=>void signInLanguages());
+  actions.append(signIn);
   model.addLanguages.slice(0,2).forEach(entry=>actions.append(h("a",{class:"secondary-button",href:entry.appRoute},entry.displayName)));
   return h("section",{class:"state-card"},
     h("h2",{},"Sign in to load your language dashboard"),
-    h("p",{},config.signInUrl
-      ?"Your Account session unlocks the same privacy-minimal French and Japanese summary on every signed-in device."
-      :"This host has not connected the THIEPN Account session adapter yet. You can still open each language product directly."),
+    h("p",{},"Languages creates its own browser session under your canonical THIEPN Account identity. Account never receives this app's access token or PKCE verifier."),
     actions
   );
 }
 
 function errorState(model){
   const retry=h("button",{class:"primary-button",type:"button",disabled:busy},"Retry");
-  retry.addEventListener("click",refresh);
+  retry.addEventListener("click",()=>void retryCurrentState());
+  const actions=h("div",{class:"state-actions"},retry);
+  if(identity.status==="unavailable"){
+    const signIn=h("button",{class:"secondary-button",type:"button",disabled:busy},"Start sign-in again");
+    signIn.addEventListener("click",()=>void signInLanguages());
+    actions.append(signIn);
+  }
   return h("section",{class:"state-card"},
     h("h2",{},"Progress is temporarily unavailable"),
-    h("p",{},"The Hub could not load its read-only language projection. No study state was changed. Error: "+String(model.errorCode||"unknown")),
-    h("div",{class:"state-actions"},retry)
+    h("p",{},"The Hub could not load or verify its read-only language projection. No study state was changed. Error: "+String(model.errorCode||"unknown")),
+    actions
   );
+}
+
+async function retryCurrentState(){
+  if(busy)return;
+  busy=true;
+  actionError="";
+  render();
+  try{
+    if(identity.status==="signed-in")await refresh();
+    else{
+      const next=await session.verify();
+      identity=next;
+      await applyIdentity(next);
+    }
+  }finally{
+    busy=false;
+    render();
+  }
+}
+
+async function signInLanguages(){
+  if(busy)return;
+  busy=true;
+  actionError="";
+  render();
+  try{
+    await session.signIn();
+  }catch(error){
+    busy=false;
+    actionError="Sign-in could not start: "+String(error?.message||"LOGIN_START_FAILED");
+    const next=session.identity();
+    identity=next;
+    state=next.status==="unavailable"?{status:"error",code:next.code}:{status:"signed-out"};
+    render();
+  }
+}
+
+async function signOutLanguages(){
+  if(busy)return;
+  busy=true;
+  actionError="";
+  render();
+  const next=await session.signOut();
+  busy=false;
+  identity=next;
+  lastRemote=null;
+  await applyIdentity(next);
 }
 
 function readyState(model){
@@ -236,7 +366,7 @@ function languageCard(card){
   const actions=h("div",{class:"card-actions"});
   if(card.continueHref)actions.append(h("a",{class:"secondary-button",href:card.continueHref},card.continueLabel));
   const hide=h("button",{class:"text-button",type:"button",disabled:busy},"Hide");
-  hide.addEventListener("click",()=>setVisibility(card.appId,card.languageId,false));
+  hide.addEventListener("click",()=>void setVisibility(card.appId,card.languageId,false));
   actions.append(hide);
   cardEl.append(header,stats,levels,progress,actions);
   return cardEl;
@@ -256,9 +386,9 @@ function addSection(model){
   const grid=h("div",{class:"add-grid"});
   model.addLanguages.forEach(entry=>{
     let action;
-    if(entry.mode==="show"&&client){
+    if(entry.mode==="show"&&identity.status==="signed-in"){
       action=h("button",{class:"secondary-button",type:"button",disabled:busy},entry.actionLabel);
-      action.addEventListener("click",()=>setVisibility(entry.appId,entry.languageId,true));
+      action.addEventListener("click",()=>void setVisibility(entry.appId,entry.languageId,true));
     }else{
       action=h("a",{class:"secondary-button",href:entry.appRoute},entry.actionLabel);
     }
@@ -274,8 +404,10 @@ function addSection(model){
 }
 
 async function setVisibility(appId,languageId,visible){
-  if(!client||busy)return;
-  busy=true;actionError="";render();
+  if(identity.status!=="signed-in"||busy)return;
+  busy=true;
+  actionError="";
+  render();
   try{
     await client.setVisible(appId,languageId,visible);
     const remote=await client.load();
@@ -284,7 +416,8 @@ async function setVisibility(appId,languageId,visible){
   }catch(error){
     actionError="Dashboard visibility could not be updated: "+String(error?.code||error?.message||"unknown error");
   }finally{
-    busy=false;render();
+    busy=false;
+    render();
   }
 }
 
@@ -314,14 +447,24 @@ function h(tag,attrs,...children){
 
 function icon(name){
   const svg=document.createElementNS("http://www.w3.org/2000/svg","svg");
-  svg.setAttribute("viewBox","0 0 24 24");svg.setAttribute("fill","none");svg.setAttribute("stroke","currentColor");svg.setAttribute("stroke-width","1.8");svg.setAttribute("stroke-linecap","round");svg.setAttribute("stroke-linejoin","round");
+  svg.setAttribute("viewBox","0 0 24 24");
+  svg.setAttribute("fill","none");
+  svg.setAttribute("stroke","currentColor");
+  svg.setAttribute("stroke-width","1.8");
+  svg.setAttribute("stroke-linecap","round");
+  svg.setAttribute("stroke-linejoin","round");
   const paths={
     language:["M5 8h8","M9 5v3c0 4-2 7-5 9","M6 13c1.5 1.7 3.2 3 5.2 3.9","M15 19l3.2-8 3.2 8","M16.2 16h4"],
     user:["M20 21a8 8 0 0 0-16 0","M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8"],
     refresh:["M20 6v5h-5","M4 18v-5h5","M18.5 9A7 7 0 0 0 6.2 6.2L4 9","M5.5 15A7 7 0 0 0 17.8 17.8L20 15"],
+    logout:["M10 17l5-5-5-5","M15 12H3","M21 19V5a2 2 0 0 0-2-2h-6"],
     arrow:["M5 12h14","m13-6 6 6-6 6"]
   };
-  (paths[name]||[]).forEach(d=>{const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("d",d);svg.append(p)});
+  (paths[name]||[]).forEach(d=>{
+    const p=document.createElementNS("http://www.w3.org/2000/svg","path");
+    p.setAttribute("d",d);
+    svg.append(p);
+  });
   return svg;
 }
 
