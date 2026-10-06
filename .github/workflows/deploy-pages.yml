@@ -258,7 +258,7 @@ jobs:
           const issuerOrigin = "https://hycegznamzjhwinegaai.supabase.co";
           const callback = "https://languages.thiepn.dev/auth/callback/";
           const contract = await readFile("apps/hub/src/account-session-contract.ts", "utf8");
-          const clientId = contract.match(/LANGUAGES_OAUTH_CLIENT_ID\\s*=\\s*"([^"]+)"/)?.[1] ?? "";
+          const clientId = contract.match(/LANGUAGES_OAUTH_CLIENT_ID\s*=\s*"([^"]+)"/)?.[1] ?? "";
           if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clientId)) {
             throw new Error("Languages OAuth client ID is invalid");
           }
