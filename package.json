@@ -1,7 +1,7 @@
 {
   "name": "@thiepn/languages",
   "private": true,
-  "version": "0.10.0",
+  "version": "0.11.0",
   "type": "module",
   "packageManager": "pnpm@11.19.0",
   "engines": { "node": ">=24.15.0 <25" },
@@ -16,6 +16,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "typescript": "7.0.2",
+    "vite": "8.3.1",
     "vitest": "5.0.2"
   },
   "files": [
@@ -29,7 +30,8 @@
     "docs/P7_ACCEPTANCE.md",
     "docs/P8_ACCEPTANCE.md",
     "docs/P9_ACCEPTANCE.md",
-    "docs/P10_ACCEPTANCE.md"
+    "docs/P10_ACCEPTANCE.md",
+    "docs/P11_ACCEPTANCE.md"
   ],
   "exports": {
     "./consumer-contract": {
