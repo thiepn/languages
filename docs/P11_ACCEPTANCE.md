@@ -1,6 +1,6 @@
 # P11 — Production Account Session Adapter, Live Deployment & Browser/Device Qualification
 
-Status: **implementation complete; production activation blocked by Core Gateway enablement and Languages GitHub Pages setup, with final Auth redirect/live-user evidence still pending**
+Status: **implementation complete; Core Gateway deployed successfully; production activation now blocked by Languages GitHub Pages setup and final Auth redirect/live-user evidence**
 
 ## Objective
 
@@ -17,7 +17,7 @@ Languages uses the existing THIEPN Account Supabase project as identity authorit
 - storage: Languages-origin local storage under `thiepn:languages-auth:v1`
 - callback: `https://languages.thiepn.dev/auth/callback/`
 - Account entry: `https://account.thiepn.dev/languages/entry`
-- Core API: `https://api.thiepn.dev`
+- Core API: `https://thiepn-core-gateway.thiepn.workers.dev`
 
 The Account repository owns the tokenless entry route. Account receives only the provider authorization URL. The PKCE verifier and all Languages access/refresh tokens remain on the Languages origin.
 
@@ -107,7 +107,7 @@ Confirmed:
 
 Still blocked:
 
-- every observed Core `Deploy Gateway` run is skipped by the repository's existing `CORE_DEPLOY_ENABLED` production gate; no successful Gateway deployment is recorded;
+- Core Gateway is deployed successfully at `https://thiepn-core-gateway.thiepn.workers.dev` and its production `/health`, `/ready` and `/version` smoke checks pass;
 - the Languages deployment preflight receives GitHub Pages HTTP 404, meaning Pages is not yet enabled for `thiepn/languages`;
 - the exact Supabase Auth redirect allowlist entry cannot be verified or changed through the connected Supabase tooling;
 - real Google sign-in and physical-device acceptance cannot be certified before the public origin and Core API are live.
@@ -121,7 +121,7 @@ P11 is live only when all are true:
 1. Account PR containing `/languages/entry` is deployed;
 2. Account Supabase Auth redirect allowlist includes exactly `https://languages.thiepn.dev/auth/callback/`;
 3. THIEPN Core P9 migration and Gateway routes are deployed;
-4. `api.thiepn.dev` resolves to the production Core Gateway;
+4. the deployed Core Worker endpoint `https://thiepn-core-gateway.thiepn.workers.dev` passes the production smoke and Languages CORS/auth preflight;
 5. GitHub Pages is enabled for `thiepn/languages` with custom domain `languages.thiepn.dev`;
 6. DNS for `languages.thiepn.dev` resolves to the Pages site;
 7. the Deploy Languages workflow passes through live qualification.
