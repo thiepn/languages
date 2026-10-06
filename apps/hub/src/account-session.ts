@@ -1,22 +1,24 @@
-import { createClient } from "@supabase/supabase-js";
+import {
+  createThiepnAccountSession,
+  type ThiepnIdentity,
+} from "@thiepn/account-session";
 import {
   ACCOUNT_SUPABASE_PUBLISHABLE_KEY,
   ACCOUNT_SUPABASE_URL,
-  buildAccountEntryUrl,
+  interpretLanguagesSsoProbeMessage,
+  LANGUAGES_ACCOUNT_ORIGIN,
   LANGUAGES_ACCOUNT_URL,
-  LANGUAGES_AUTH_STORAGE_KEY,
   LANGUAGES_CALLBACK_PATH,
   LANGUAGES_CALLBACK_URL,
   LANGUAGES_CORE_URL,
-  LANGUAGES_LOGIN_STORAGE_KEY,
-  LANGUAGES_ORIGIN,
-  readLanguagesCallback,
-  readPendingLanguagesLogin,
-  validAccountId,
+  LANGUAGES_OAUTH_CLIENT_ID,
+  LANGUAGES_SSO_STORAGE_KEY,
   type LanguagesIdentity,
+  type LanguagesSsoProbeResult,
 } from "./account-session-contract";
 
 type Listener = (identity: LanguagesIdentity) => void;
+const PROBE_TIMEOUT_MS = 2500;
 
 export interface ProductionLanguagesAccountSession {
   readonly accountUrl: string;
@@ -32,36 +34,36 @@ export interface ProductionLanguagesAccountSession {
   subscribe(listener: Listener): () => void;
 }
 
+function mapIdentity(identity: ThiepnIdentity): LanguagesIdentity {
+  if (identity.status === "signed-in") {
+    return {
+      status: "signed-in",
+      id: identity.id,
+      label: identity.email ?? "THIEPN member",
+    };
+  }
+  if (identity.status === "unavailable") {
+    return { status: "unavailable", code: identity.code };
+  }
+  return { status: "signed-out" };
+}
+
 export function createProductionLanguagesAccountSession(): ProductionLanguagesAccountSession {
-  if (globalThis.location?.origin !== LANGUAGES_ORIGIN) {
+  if (globalThis.location?.origin !== new URL(LANGUAGES_ORIGIN).origin) {
     throw new Error("LANGUAGES_PRODUCTION_ORIGIN_REQUIRED");
   }
 
-  const client = createClient(
-    ACCOUNT_SUPABASE_URL,
-    ACCOUNT_SUPABASE_PUBLISHABLE_KEY,
-    {
-      global: {
-        fetch: async (input, init) => {
-          const signals = init?.signal ? [init.signal] : [];
-          return fetch(input, {
-            ...init,
-            signal: AbortSignal.any([...signals, AbortSignal.timeout(8000)]),
-          });
-        },
-      },
-      auth: {
-        storageKey: LANGUAGES_AUTH_STORAGE_KEY,
-        flowType: "pkce",
-        detectSessionInUrl: false,
-        persistSession: true,
-        autoRefreshToken: true,
-      },
-    },
-  );
+  const account = createThiepnAccountSession({
+    issuer: ACCOUNT_SUPABASE_URL,
+    publishableKey: ACCOUNT_SUPABASE_PUBLISHABLE_KEY,
+    clientId: LANGUAGES_OAUTH_CLIENT_ID,
+    redirectUri: LANGUAGES_CALLBACK_URL,
+    scopes: ["openid", "email", "profile", "offline_access"],
+    storageKey: LANGUAGES_SSO_STORAGE_KEY,
+    authPolicy: "required",
+  });
 
   let current: LanguagesIdentity = { status: "checking" };
-  let generation = 0;
   let busy = false;
   const listeners = new Set<Listener>();
 
@@ -71,149 +73,74 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
     return next;
   };
 
-  const unavailable = (code: string) =>
-    publish({ status: "unavailable", code });
-
-  async function verify(): Promise<LanguagesIdentity> {
-    const epoch = ++generation;
-    publish({ status: "checking" });
-    try {
-      const { data: sessionData, error: sessionError } =
-        await client.auth.getSession();
-      if (sessionError) throw sessionError;
-      const session = sessionData.session;
-      if (!session) {
-        if (epoch === generation) return publish({ status: "signed-out" });
-        return current;
-      }
-
-      const { data: userData, error: userError } = await client.auth.getUser();
-      if (epoch !== generation) return current;
-      if (
-        userError ||
-        !userData.user ||
-        !validAccountId(userData.user.id) ||
-        userData.user.id !== session.user.id
-      ) {
-        return unavailable("ACCOUNT_IDENTITY_UNVERIFIED");
-      }
-
-      return publish({
-        status: "signed-in",
-        id: userData.user.id,
-        label: userData.user.email ?? "THIEPN member",
-      });
-    } catch {
-      if (epoch !== generation) return current;
-      return unavailable("ACCOUNT_SESSION_UNAVAILABLE");
+  account.subscribe(identity => {
+    if (!busy || identity.status !== "signed-out") {
+      publish(mapIdentity(identity));
     }
-  }
+  });
 
-  async function completeCallback(): Promise<LanguagesIdentity> {
-    const query = new URLSearchParams(globalThis.location.search);
-    const fragment = globalThis.location.hash;
-    const callback = readLanguagesCallback(query, fragment);
+  async function probeAccountSession(): Promise<LanguagesSsoProbeResult> {
+    return await new Promise(resolve => {
+      const iframe = globalThis.document.createElement("iframe");
+      iframe.hidden = true;
+      iframe.tabIndex = -1;
+      iframe.setAttribute("aria-hidden", "true");
+      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+      iframe.referrerPolicy = "origin";
+      iframe.src =
+        `${LANGUAGES_ACCOUNT_ORIGIN}/sso/probe?client_id=${encodeURIComponent(LANGUAGES_OAUTH_CLIENT_ID)}`;
 
-    globalThis.history.replaceState(null, "", LANGUAGES_CALLBACK_PATH);
-
-    let pending = null;
-    try {
-      pending = readPendingLanguagesLogin(
-        globalThis.sessionStorage.getItem(LANGUAGES_LOGIN_STORAGE_KEY),
+      let settled = false;
+      const finish = (result: LanguagesSsoProbeResult) => {
+        if (settled) return;
+        settled = true;
+        globalThis.clearTimeout(timer);
+        globalThis.removeEventListener("message", onMessage);
+        iframe.remove();
+        resolve(result);
+      };
+      const onMessage = (event: MessageEvent) => {
+        if (event.origin !== LANGUAGES_ACCOUNT_ORIGIN) return;
+        if (event.source !== iframe.contentWindow) return;
+        const result = interpretLanguagesSsoProbeMessage(event.data);
+        if (result) finish(result);
+      };
+      const timer = globalThis.setTimeout(
+        () => finish("unavailable"),
+        PROBE_TIMEOUT_MS,
       );
-      globalThis.sessionStorage.removeItem(LANGUAGES_LOGIN_STORAGE_KEY);
-    } catch {
-      return unavailable("LOGIN_STORAGE_UNAVAILABLE");
-    }
-
-    if (!pending || !callback) {
-      return unavailable("LOGIN_CALLBACK_INVALID");
-    }
-
-    busy = true;
-    publish({ status: "checking" });
-    try {
-      const { error } = await client.auth.exchangeCodeForSession(callback.code);
-      if (error) throw error;
-      busy = false;
-      return await verify();
-    } catch {
-      busy = false;
-      return unavailable("LOGIN_CODE_EXCHANGE_FAILED");
-    }
+      globalThis.addEventListener("message", onMessage);
+      globalThis.document.body.append(iframe);
+    });
   }
 
-  async function beginSignIn(switching: boolean): Promise<void> {
+  async function beginAuthorization(): Promise<void> {
     if (busy) return;
     busy = true;
-    ++generation;
     publish({ status: "checking" });
-
     try {
-      globalThis.localStorage.setItem(`${LANGUAGES_AUTH_STORAGE_KEY}:probe`, "1");
-      globalThis.localStorage.removeItem(`${LANGUAGES_AUTH_STORAGE_KEY}:probe`);
-
-      if (switching) {
-        const { error } = await client.auth.signOut({ scope: "local" });
-        if (error) throw error;
-      }
-
-      globalThis.sessionStorage.setItem(
-        LANGUAGES_LOGIN_STORAGE_KEY,
-        JSON.stringify({ started: Date.now(), returnTo: "/" }),
-      );
-
-      const { data, error } = await client.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: LANGUAGES_CALLBACK_URL,
-          skipBrowserRedirect: true,
-          queryParams: { prompt: "select_account" },
-        },
-      });
-      if (error || !data.url) throw new Error("LOGIN_START_FAILED");
-
-      globalThis.location.assign(buildAccountEntryUrl(data.url));
+      const url = await account.authorizationUrl();
+      globalThis.location.assign(url);
     } catch {
       busy = false;
-      unavailable("LOGIN_START_FAILED");
+      publish({ status: "unavailable", code: "LOGIN_START_FAILED" });
       throw new Error("LOGIN_START_FAILED");
     }
   }
 
-  async function signOut(): Promise<LanguagesIdentity> {
-    if (busy) return current;
-    busy = true;
-    ++generation;
+  async function verify(): Promise<LanguagesIdentity> {
     publish({ status: "checking" });
-    try {
-      const { error } = await client.auth.signOut({ scope: "local" });
-      if (error) throw error;
-      busy = false;
-      return publish({ status: "signed-out" });
-    } catch {
-      busy = false;
-      return unavailable("LOCAL_SIGN_OUT_FAILED");
-    }
+    const result = mapIdentity(await account.verify());
+    return publish(result);
   }
 
-  async function getAccessToken(): Promise<string | null> {
-    if (current.status !== "signed-in") return null;
-    try {
-      const { data, error } = await client.auth.getSession();
-      if (
-        error ||
-        !data.session ||
-        data.session.user.id !== current.id ||
-        !data.session.access_token
-      ) {
-        publish({ status: "signed-out" });
-        return null;
-      }
-      return data.session.access_token;
-    } catch {
-      return null;
-    }
+  async function completeCallback(): Promise<LanguagesIdentity> {
+    busy = true;
+    publish({ status: "checking" });
+    const result = mapIdentity(await account.completeCallback(globalThis.location));
+    globalThis.history.replaceState(null, "", LANGUAGES_CALLBACK_PATH);
+    busy = false;
+    return publish(result);
   }
 
   async function initialize(): Promise<LanguagesIdentity> {
@@ -224,23 +151,36 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
       }
       return result;
     }
-    return verify();
+
+    const verified = await verify();
+    if (verified.status !== "signed-out") return verified;
+    if (globalThis.navigator?.onLine === false) return verified;
+
+    const probe = await probeAccountSession();
+    if (probe === "signed-in") {
+      await beginAuthorization();
+      return current;
+    }
+    return verified;
   }
 
-  client.auth.onAuthStateChange(event => {
-    if (event === "INITIAL_SESSION" || busy) return;
-    queueMicrotask(() => {
-      if (!busy && globalThis.location.pathname !== LANGUAGES_CALLBACK_PATH) {
-        void verify();
-      }
-    });
-  });
+  async function signOut(): Promise<LanguagesIdentity> {
+    if (busy) return current;
+    busy = true;
+    account.signOutLocal();
+    busy = false;
+    return publish({ status: "signed-out" });
+  }
 
   globalThis.addEventListener("pageshow", event => {
     if (event.persisted && !busy) void verify();
   });
   globalThis.document.addEventListener("visibilitychange", () => {
-    if (!globalThis.document.hidden && !busy && globalThis.navigator.onLine) {
+    if (
+      !globalThis.document.hidden &&
+      !busy &&
+      globalThis.navigator.onLine
+    ) {
       void verify();
     }
   });
@@ -252,9 +192,9 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
     identity: () => current,
     initialize,
     verify,
-    getAccessToken,
-    signIn: () => beginSignIn(false),
-    switchAccount: () => beginSignIn(true),
+    getAccessToken: () => account.getAccessToken(),
+    signIn: beginAuthorization,
+    switchAccount: beginAuthorization,
     signOut,
     subscribe(listener: Listener) {
       listeners.add(listener);
@@ -266,7 +206,7 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
 
 const browserApi = Object.freeze({
   version: "0.12.0",
-  contractVersion: "p11-account-session-v1",
+  contractVersion: "first-party-sso-v1",
   createProductionLanguagesAccountSession,
 });
 
