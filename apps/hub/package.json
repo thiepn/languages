@@ -1,9 +1,10 @@
 {
   "name": "@thiepn/languages-hub",
   "private": true,
-  "version": "0.10.0",
+  "version": "0.11.0",
   "type": "module",
   "dependencies": {
+    "@supabase/supabase-js": "2.117.2",
     "@thiepn/language-read-model": "workspace:*",
     "@thiepn/language-dashboard": "workspace:*",
     "@thiepn/language-shell": "workspace:*"
