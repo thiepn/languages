@@ -1,6 +1,6 @@
 # P11 — Production Account Session Adapter, Live Deployment & Browser/Device Qualification
 
-Status: **implementation complete; Core Gateway deployed successfully; production activation now blocked by Languages GitHub Pages setup and final Auth redirect/live-user evidence**
+Status: **implementation and automated production deployment complete; authenticated cross-product burn-in has moved to P12**
 
 ## Objective
 
@@ -100,19 +100,24 @@ The repository workflow does not possess a real user's Google credentials or phy
 
 Confirmed:
 
-- Account `/languages/entry` is merged and the corresponding Account production deployment completed successfully.
-- Languages P11 source CI passes on `main`.
-- The exact P11 production build passes, including the bundled Account adapter and credential-leak gate.
-- The Core `languages_dashboard_p9` database migration is applied and its three `gateway.languages_*` RPCs exist.
+- Account `/languages/entry` is deployed.
+- the exact Languages PKCE callback is used by the production client and accepted by the Account entry boundary;
+- the operator added `https://languages.thiepn.dev/auth/callback/` to the Account Auth redirect allowlist;
+- Core P9 database migration and Gateway routes are deployed;
+- the live Core Worker is `https://thiepn-core-gateway.thiepn.workers.dev`;
+- GitHub Pages is enabled for `thiepn/languages` with custom domain `languages.thiepn.dev`;
+- the P11 production deployment, dependency preflight and live browser qualification passed;
+- Chromium, Firefox, WebKit, mobile viewport, Account handoff, Core CORS/auth and callback recovery checks are green.
 
-Still blocked:
+Not claimed by P11 automation:
 
-- Core Gateway is deployed successfully at `https://thiepn-core-gateway.thiepn.workers.dev` and its production `/health`, `/ready` and `/version` smoke checks pass;
-- the Languages deployment preflight receives GitHub Pages HTTP 404, meaning Pages is not yet enabled for `thiepn/languages`;
-- the exact Supabase Auth redirect allowlist entry cannot be verified or changed through the connected Supabase tooling;
-- real Google sign-in and physical-device acceptance cannot be certified before the public origin and Core API are live.
+- a durable real-user authenticated Languages dashboard session;
+- real French/Japanese producer publication into Core;
+- account-switch isolation with two real Accounts;
+- long-session refresh;
+- second-device and physical-mobile evidence.
 
-The scheduled consumer compatibility watch is also reporting French/Japanese repository drift while those products continue to evolve. That watch is intentionally strict and is not being weakened or auto-baselined during active consumer changes.
+Those are now explicit P12 burn-in gates rather than P11 deployment blockers.
 
 ## Production prerequisites
 
@@ -130,4 +135,4 @@ P11 is live only when all are true:
 
 **P12 — Authenticated Production Burn-In, Cross-Product Publish Verification & Defect-Only Hardening**
 
-P12 should use a real signed-in test account to confirm French and Japanese publish fresh P8 projections into Core, verify cross-device visibility/Continue behavior over time, and fix only defects uncovered by production use.
+P12 is active. It uses real production evidence to confirm French and Japanese publish fresh P8 projections into Core, verifies authenticated visibility/Continue behavior and cross-device use, and fixes only defects uncovered by production burn-in. See `docs/P12_ACCEPTANCE.md`.
