@@ -1,40 +1,64 @@
 import {describe,expect,it} from "vitest";
 import {
   ACCOUNT_SUPABASE_URL,
-  buildAccountEntryUrl,
-  LANGUAGES_ACCOUNT_ENTRY_URL,
-  readLanguagesCallback,
-  readPendingLanguagesLogin,
-  validAccountId
+  interpretLanguagesSsoProbeMessage,
+  LANGUAGES_ACCOUNT_ORIGIN,
+  LANGUAGES_CALLBACK_URL,
+  LANGUAGES_OAUTH_CLIENT_ID,
 } from "../apps/hub/src/account-session-contract";
 
-describe("P11 Account session boundary",()=>{
-  it("validates canonical Account UUIDs",()=>{
-    expect(validAccountId("123e4567-e89b-42d3-a456-426614174000")).toBe(true);
-    expect(validAccountId("not-a-user")).toBe(false);
+describe("THIEPN Account first-party SSO boundary",()=>{
+  it("pins a real public Languages OAuth client before release",()=>{
+    expect(LANGUAGES_OAUTH_CLIENT_ID).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+    );
+    expect(LANGUAGES_OAUTH_CLIENT_ID).not.toBe(
+      "00000000-0000-4000-8000-000000000000",
+    );
+    expect(ACCOUNT_SUPABASE_URL).toBe(
+      "https://hycegznamzjhwinegaai.supabase.co",
+    );
+    expect(LANGUAGES_CALLBACK_URL).toBe(
+      "https://languages.thiepn.dev/auth/callback/",
+    );
   });
 
-  it("accepts only fresh pending-login state",()=>{
-    const now=1_800_000;
-    const raw=JSON.stringify({started:now-30_000,returnTo:"/"});
-    expect(readPendingLanguagesLogin(raw,now)).toEqual({started:now-30_000,returnTo:"/"});
-    expect(readPendingLanguagesLogin(raw,now+10*60*1000+1)).toBeNull();
-    expect(readPendingLanguagesLogin(JSON.stringify({started:now-1,returnTo:"https://evil.test"}),now)).toBeNull();
+  it("accepts only the exact Account probe response for Languages",()=>{
+    expect(interpretLanguagesSsoProbeMessage({
+      type:"thiepn:sso-probe:v1",
+      clientId:LANGUAGES_OAUTH_CLIENT_ID,
+      signedIn:true,
+      eligible:true,
+    })).toBe("signed-in");
+    expect(interpretLanguagesSsoProbeMessage({
+      type:"thiepn:sso-probe:v1",
+      clientId:LANGUAGES_OAUTH_CLIENT_ID,
+      signedIn:true,
+      eligible:false,
+    })).toBe("disconnected");
+    expect(interpretLanguagesSsoProbeMessage({
+      type:"thiepn:sso-probe:v1",
+      clientId:LANGUAGES_OAUTH_CLIENT_ID,
+      signedIn:false,
+      eligible:true,
+    })).toBe("signed-out");
+    expect(interpretLanguagesSsoProbeMessage({
+      type:"thiepn:sso-probe:v1",
+      clientId:"11111111-1111-4111-8111-111111111111",
+      signedIn:true,
+      eligible:true,
+    })).toBeNull();
+    expect(LANGUAGES_ACCOUNT_ORIGIN).toBe("https://account.thiepn.dev");
   });
 
-  it("accepts only an exact code callback with no fragment or extra fields",()=>{
-    expect(readLanguagesCallback(new URLSearchParams({code:"one-use-code"}),"")).toEqual({code:"one-use-code"});
-    expect(readLanguagesCallback(new URLSearchParams({code:"one-use-code",extra:"x"}),"")).toBeNull();
-    expect(readLanguagesCallback(new URLSearchParams("code=one&code=two"),"")).toBeNull();
-    expect(readLanguagesCallback(new URLSearchParams({code:"one-use-code"}),"#access_token=x")).toBeNull();
-  });
-
-  it("wraps only the pinned Account authorization endpoint in the tokenless Account entry",()=>{
-    const authorize=new URL("/auth/v1/authorize",ACCOUNT_SUPABASE_URL);
-    authorize.searchParams.set("provider","google");
-    const entry=new URL(buildAccountEntryUrl(authorize.href));
-    expect(entry.origin+entry.pathname).toBe(LANGUAGES_ACCOUNT_ENTRY_URL);
-    expect(entry.searchParams.get("request")).toBe(authorize.href);
-    expect(()=>buildAccountEntryUrl("https://evil.test/auth/v1/authorize")).toThrow("INVALID_AUTHORIZATION_URL");
+  it("contains no direct Google provider login in the production adapter",async()=>{
+    const source=await import("node:fs/promises").then(fs=>
+      fs.readFile("apps/hub/src/account-session.ts","utf8"),
+    );
+    expect(source).not.toContain('provider: "google"');
+    expect(source).not.toContain("signInWithOAuth");
+    expect(source).not.toContain("/languages/entry");
+    expect(source).toContain("createThiepnAccountSession");
+    expect(source).toContain("/sso/probe?client_id=");
   });
 });
