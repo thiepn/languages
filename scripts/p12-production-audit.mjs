@@ -191,6 +191,7 @@ if (token) {
           ),
           "Visibility state could not be restored",
         );
+        data = restored;
       }
     }
   }
