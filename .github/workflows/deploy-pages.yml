@@ -41,6 +41,74 @@ jobs:
             exit 1
           fi
 
+
+  dependencies:
+    if: >
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Verify deployed Account release
+        shell: bash
+        run: |
+          curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+            https://account.thiepn.dev/release.json -o /tmp/account-release.json
+          python - <<'PY'
+          import json
+          release=json.load(open("/tmp/account-release.json"))
+          if release.get("product")!="THIEPN Account":
+              raise SystemExit("Unexpected Account product marker")
+          if release.get("serviceMode")!="real":
+              raise SystemExit("Account is not deployed in real service mode")
+          if release.get("canonicalOrigin")!="https://account.thiepn.dev":
+              raise SystemExit("Account canonical origin mismatch")
+          commit=release.get("commit","")
+          if len(commit)!=40 or any(c not in "0123456789abcdefABCDEF" for c in commit):
+              raise SystemExit("Account release commit is invalid")
+          print("Account production release:",commit)
+          PY
+      - name: Require live Core Gateway and Languages CORS
+        shell: bash
+        run: |
+          for endpoint in health ready version; do
+            curl --fail --silent --show-error --location --proto '=https' --tlsv1.2 \
+              "https://api.thiepn.dev/$endpoint" -o "/tmp/core-$endpoint.json"
+          done
+
+          cors_code="$(curl --silent --show-error --location --proto '=https' --tlsv1.2 \
+            -X OPTIONS \
+            -H 'Origin: https://languages.thiepn.dev' \
+            -H 'Access-Control-Request-Method: GET' \
+            -H 'Access-Control-Request-Headers: authorization' \
+            -D /tmp/core-cors-headers \
+            -o /tmp/core-cors-body \
+            -w '%{http_code}' \
+            https://api.thiepn.dev/v1/languages/dashboard)"
+          if [ "$cors_code" -lt 200 ] || [ "$cors_code" -ge 300 ]; then
+            echo "Core CORS preflight failed with HTTP $cors_code"
+            cat /tmp/core-cors-body || true
+            exit 1
+          fi
+          if ! grep -Fqi 'access-control-allow-origin: https://languages.thiepn.dev' /tmp/core-cors-headers; then
+            echo "Core Gateway did not authorize the Languages production origin"
+            cat /tmp/core-cors-headers
+            exit 1
+          fi
+
+          auth_code="$(curl --silent --show-error --location --proto '=https' --tlsv1.2 \
+            -H 'Origin: https://languages.thiepn.dev' \
+            -H 'Authorization: Bearer invalid-p11-preflight' \
+            -o /tmp/core-auth-body \
+            -w '%{http_code}' \
+            https://api.thiepn.dev/v1/languages/dashboard)"
+          if [ "$auth_code" != "401" ] && [ "$auth_code" != "403" ]; then
+            echo "Core invalid-token probe expected 401/403, got HTTP $auth_code"
+            cat /tmp/core-auth-body || true
+            exit 1
+          fi
+
   build:
     if: >
       (github.event_name == 'workflow_dispatch') ||
@@ -103,7 +171,7 @@ jobs:
           path: dist/hub
 
   deploy:
-    needs: [preflight, build]
+    needs: [preflight, dependencies, build]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     environment:
