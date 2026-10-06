@@ -105,7 +105,8 @@ without a user token and verifies:
 - Account canonical release metadata and real-service mode;
 - Core `/health`, `/ready` and `/version`;
 - Core Languages route rejects an invalid bearer;
-- Core CORS still authorizes exactly `https://languages.thiepn.dev`.
+- Core CORS still authorizes exactly `https://languages.thiepn.dev` for Hub reads;
+- Core CORS authorizes authenticated POST preflights from `https://french.thiepn.dev` and `https://japanese.thiepn.dev` to their read-model publication routes.
 
 This detects production infrastructure regressions after deployment.
 
