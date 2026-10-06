@@ -1,6 +1,6 @@
 # P11 — Production Account Session Adapter, Live Deployment & Browser/Device Qualification
 
-Status: **implementation and automated production deployment complete; authenticated cross-product burn-in has moved to P12**
+Status: **historical P11 deployment complete; direct Google handoff superseded by THIEPN first-party Account OAuth during P12 hardening**
 
 ## Objective
 
@@ -136,3 +136,21 @@ P11 is live only when all are true:
 **P12 — Authenticated Production Burn-In, Cross-Product Publish Verification & Defect-Only Hardening**
 
 P12 is active. It uses real production evidence to confirm French and Japanese publish fresh P8 projections into Core, verifies authenticated visibility/Continue behavior and cross-device use, and fixes only defects uncovered by production burn-in. See `docs/P12_ACCEPTANCE.md`.
+
+
+## P12 identity hardening addendum
+
+The P11 tokenless `/languages/entry` Google handoff is now a legacy compatibility route, not the intended Languages authentication path.
+
+The current first-party architecture is:
+
+- Languages is its own public OAuth 2.1 client of THIEPN Account;
+- Authorization Code + PKCE S256 is owned by the shared `@thiepn/account-session` runtime;
+- Languages never calls `signInWithOAuth({provider:"google"})`;
+- Google remains an upstream Account login method only;
+- Languages keeps only its own app-scoped access/refresh tokens on `languages.thiepn.dev`;
+- a hidden Account `/sso/probe` checks whether an existing Account browser session is eligible for automatic first-party attachment;
+- deliberate app disconnect suppresses silent reattachment until an explicit reconnect attempt;
+- local Languages sign-out clears only the Languages OAuth session.
+
+P11 remains useful as historical evidence for the original production callback, Core CORS, Pages deployment and browser qualification. P12 owns certification of the replacement first-party SSO path.
