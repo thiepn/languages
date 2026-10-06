@@ -269,7 +269,7 @@ jobs:
           if (!/^[A-Za-z0-9_-]{43}$/.test(authorize.searchParams.get("code_challenge") ?? "")) throw new Error("Invalid PKCE challenge");
           if (authorize.searchParams.get("prompt") !== "select_account") throw new Error("Account chooser is not explicit");
           const redirect = new URL(authorize.searchParams.get("redirect_to") ?? "");
-          if (redirect.origin+redirect.pathname !== callback || !/^[a-f0-9]{64}$/.test(redirect.searchParams.get("flow") ?? "")) throw new Error("Languages callback contract mismatch");
+          if (redirect.href !== callback) throw new Error("Languages callback contract mismatch");
 
           const accountContinue = page.getByRole("link",{name:"Continue with Google"});
           if (!await accountContinue.isVisible()) throw new Error("Live Account did not accept Languages tokenless entry");
@@ -305,7 +305,7 @@ jobs:
           const callbackContext = await browser.newContext();
           const callbackPage = await callbackContext.newPage();
           const callbackResponse = await callbackPage.goto(
-            callback+"?code=fake-code&flow="+"a".repeat(64),
+            callback+"?code=fake-code",
             {waitUntil:"networkidle",timeout:30000},
           );
           if (!callbackResponse?.ok()) throw new Error("Callback route did not return a real 2xx page");
