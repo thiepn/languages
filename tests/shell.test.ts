@@ -61,7 +61,8 @@ describe("P10 language product-family shell",()=>{
 
   it("never exposes a stale product next action as an authoritative card action",()=>{
     const remote=payload();
-    remote.snapshots[0]={...remote.snapshots[0],snapshot:language("french",99,"2026-10-05T00:00:00.000Z")};
+    const frenchSnapshot=remote.snapshots[0]!;
+    remote.snapshots[0]={...frenchSnapshot,snapshot:language("french",99,"2026-10-05T00:00:00.000Z")};
     const shell=buildLanguageShellModel({
       state:{status:"ready",remote},
       now:"2026-10-06T10:05:00.000Z",
