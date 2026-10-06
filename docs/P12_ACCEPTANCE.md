@@ -174,6 +174,19 @@ Expected steady-state rows:
 
 Revision may increase as a product republishes. A newer product snapshot may replace an older one; Core must reject conflicting same-timestamp payloads and must not let an older snapshot overwrite a newer one.
 
+## Hub-side stale-action defect found during burn-in
+
+The P12 code audit found that stale projections were already excluded from the top-level Continue hero, but a stale individual language card could still expose its old product-supplied next-action route and label.
+
+The shell patch changes only presentation safety:
+
+- fresh cards may use the product-supplied next action;
+- stale cards show **Open language** and route only to the product root;
+- the stale next-action route/label is never presented as authoritative;
+- the Hub still does not recompute a replacement action.
+
+This is covered by a shell regression test.
+
 ## Defect-only policy
 
 During P12:
