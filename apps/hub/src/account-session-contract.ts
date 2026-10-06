@@ -5,7 +5,7 @@ export const LANGUAGES_CALLBACK_PATH = "/auth/callback/";
 export const LANGUAGES_CALLBACK_URL = `${LANGUAGES_ORIGIN}${LANGUAGES_CALLBACK_PATH}`;
 export const LANGUAGES_ACCOUNT_ENTRY_URL = "https://account.thiepn.dev/languages/entry";
 export const LANGUAGES_ACCOUNT_URL = "https://account.thiepn.dev/";
-export const LANGUAGES_CORE_URL = "https://api.thiepn.dev";
+export const LANGUAGES_CORE_URL = "https://thiepn-core-gateway.thiepn.workers.dev";
 export const LANGUAGES_AUTH_STORAGE_KEY = "thiepn:languages-auth:v1";
 export const LANGUAGES_LOGIN_STORAGE_KEY = "thiepn:languages-login:v1";
 

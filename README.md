@@ -70,7 +70,7 @@ The production build is pinned to:
 
 - `https://languages.thiepn.dev`
 - `https://account.thiepn.dev/languages/entry`
-- `https://api.thiepn.dev`
+- `https://thiepn-core-gateway.thiepn.workers.dev`
 - Account Supabase project `hycegznamzjhwinegaai`
 - `@supabase/supabase-js@2.117.2`
 
