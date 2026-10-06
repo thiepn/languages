@@ -119,7 +119,7 @@ for (const endpoint of ["health", "ready", "version"]) {
 
 for (const producer of [
   { appId: "french", origin: "https://french.thiepn.dev" },
-  { appId: "japanese", origin: "https://japanese.thiepn.dev" },
+  { appId: "japanese", origin: "https://thiepn.dev" },
 ]) {
   const response = await fetch(
     `${CORE_ORIGIN}/v1/languages/read-models/${producer.appId}`,
