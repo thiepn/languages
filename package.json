@@ -1,14 +1,15 @@
 {
   "name": "@thiepn/languages",
   "private": true,
-  "version": "0.9.0",
+  "version": "0.10.0",
   "type": "module",
   "packageManager": "pnpm@11.19.0",
   "engines": { "node": ">=24.15.0 <25" },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "verify": "pnpm typecheck && pnpm test",
+    "build:hub": "node scripts/build-hub.mjs",
+    "verify": "pnpm typecheck && pnpm test && pnpm build:hub",
     "package:consumer": "mkdir -p artifacts && pnpm pack --pack-destination artifacts",
     "compat:consumers": "node scripts/check-consumer-compatibility.mjs"
   },
@@ -21,12 +22,14 @@
     "packages/consumer-contract/dist/**",
     "packages/read-model/dist/**",
     "packages/dashboard/dist/**",
+    "packages/shell/dist/**",
     "contracts/p8-language-read-model.schema.json",
     "contracts/p9-language-dashboard.schema.json",
     "README.md",
     "docs/P7_ACCEPTANCE.md",
     "docs/P8_ACCEPTANCE.md",
-    "docs/P9_ACCEPTANCE.md"
+    "docs/P9_ACCEPTANCE.md",
+    "docs/P10_ACCEPTANCE.md"
   ],
   "exports": {
     "./consumer-contract": {
@@ -46,6 +49,12 @@
       "import": "./packages/dashboard/dist/index.js",
       "default": "./packages/dashboard/dist/index.js"
     },
-    "./dashboard/browser": "./packages/dashboard/dist/browser.js"
+    "./dashboard/browser": "./packages/dashboard/dist/browser.js",
+    "./shell": {
+      "types": "./packages/shell/dist/index.d.ts",
+      "import": "./packages/shell/dist/index.js",
+      "default": "./packages/shell/dist/index.js"
+    },
+    "./shell/browser": "./packages/shell/dist/browser.js"
   }
 }
