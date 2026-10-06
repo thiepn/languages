@@ -49,7 +49,7 @@ function payload({japaneseVisible=true}:{japaneseVisible?:boolean}={}){
 describe("P10 language product-family shell",()=>{
   it("builds a unified shell while keeping authoritative study routes",()=>{
     const shell=buildLanguageShellModel({state:{status:"ready",remote:payload()},now:"2026-10-06T10:05:00.000Z"});
-    expect(LANGUAGE_SHELL_PACKAGE_VERSION).toBe("0.10.0");
+    expect(LANGUAGE_SHELL_PACKAGE_VERSION).toBe("0.10.1");
     expect(shell.contractVersion).toBe(LANGUAGE_SHELL_CONTRACT_VERSION);
     expect(shell.status).toBe("ready");
     expect(shell.cards).toHaveLength(2);
@@ -57,6 +57,21 @@ describe("P10 language product-family shell",()=>{
     expect(shell.hero?.href).toBe("https://french.thiepn.dev/#study");
     expect(shell.summary?.dueItems).toBe(16);
     expect(shell.cards[0]?.visibilityAction.mode).toBe("hide");
+  });
+
+  it("never exposes a stale product next action as an authoritative card action",()=>{
+    const remote=payload();
+    remote.snapshots[0]={...remote.snapshots[0],snapshot:language("french",99,"2026-10-05T00:00:00.000Z")};
+    const shell=buildLanguageShellModel({
+      state:{status:"ready",remote},
+      now:"2026-10-06T10:05:00.000Z",
+      maxAgeMs:6*60*60*1000
+    });
+    const french=shell.cards.find(card=>card.appId==="french");
+    expect(french?.freshness).toBe("stale");
+    expect(french?.continueHref).toBe("https://french.thiepn.dev/");
+    expect(french?.continueLabel).toBe("Open language");
+    expect(shell.hero?.appId).toBe("japanese");
   });
 
   it("turns hidden Hub visibility into a show action, not a learning enrollment",()=>{
