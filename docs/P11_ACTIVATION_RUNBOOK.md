@@ -81,7 +81,7 @@ Expected gate order:
 7. 390×844 mobile qualification
 8. Account tokenless-entry/PKCE contract check
 9. Core CORS + invalid-bearer check
-10. callback recovery and offline-shell checks
+10. exact PKCE callback recovery and offline-shell checks
 
 Any failure is a failed P11 activation. Do not mark the phase complete by skipping a gate.
 

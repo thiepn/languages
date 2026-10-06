@@ -3,7 +3,6 @@ import {
   ACCOUNT_SUPABASE_PUBLISHABLE_KEY,
   ACCOUNT_SUPABASE_URL,
   buildAccountEntryUrl,
-  createFlowNonce,
   LANGUAGES_ACCOUNT_URL,
   LANGUAGES_AUTH_STORAGE_KEY,
   LANGUAGES_CALLBACK_PATH,
@@ -121,7 +120,6 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
     try {
       pending = readPendingLanguagesLogin(
         globalThis.sessionStorage.getItem(LANGUAGES_LOGIN_STORAGE_KEY),
-        callback?.flow ?? null,
       );
       globalThis.sessionStorage.removeItem(LANGUAGES_LOGIN_STORAGE_KEY);
     } catch {
@@ -160,17 +158,15 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
         if (error) throw error;
       }
 
-      const flow = createFlowNonce();
       globalThis.sessionStorage.setItem(
         LANGUAGES_LOGIN_STORAGE_KEY,
-        JSON.stringify({ flow, started: Date.now(), returnTo: "/" }),
+        JSON.stringify({ started: Date.now(), returnTo: "/" }),
       );
 
-      const redirectTo = `${LANGUAGES_CALLBACK_URL}?flow=${flow}`;
       const { data, error } = await client.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo,
+          redirectTo: LANGUAGES_CALLBACK_URL,
           skipBrowserRedirect: true,
           queryParams: { prompt: "select_account" },
         },

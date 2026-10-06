@@ -29,15 +29,15 @@ Local Languages sign-out uses `signOut({scope:"local"})`; it does not claim to t
 
 A callback is accepted only when:
 
-- query keys are exactly `code` and `flow`;
+- query keys are exactly `code`;
 - there is no URL fragment;
 - the code is non-empty, bounded and contains no control/whitespace characters;
-- `flow` is exactly 64 lowercase hexadecimal characters;
-- matching pending state exists in tab-local session storage;
+- the query contains exactly one authorization `code` and no extra fields;
+- matching fresh pending-login state exists in tab-local session storage;
 - pending state is no older than 10 minutes;
 - return target is exactly `/`.
 
-Pending callback state is consumed before code exchange.
+Pending callback state is consumed before code exchange. The authorization code is bound to the browser-held PKCE verifier, so the production callback needs no custom query-string nonce.
 
 ## Production build
 
@@ -80,7 +80,7 @@ Automated live evidence covers:
 2. fresh browser renders signed-out production state without runtime errors;
 3. desktop has no horizontal overflow;
 4. mobile 390×844 layout has no horizontal overflow and exposes the sign-in action;
-5. Sign in produces the tokenless Account entry, pinned issuer, Google provider, S256 PKCE, account chooser, exact Languages callback and 256-bit flow nonce;
+5. Sign in produces the tokenless Account entry, pinned issuer, Google provider, S256 PKCE, account chooser and the exact allowlisted Languages callback;
 6. live Account accepts the generated Languages entry and renders Continue with Google;
 7. Core `/v1/languages/dashboard` is reachable cross-origin and rejects an invalid bearer token with 401/403 rather than a CORS/network failure;
 8. an already-loaded shell survives transition to offline mode;
