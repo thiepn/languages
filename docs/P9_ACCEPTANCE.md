@@ -1,6 +1,6 @@
 # P9 — Authenticated Read-Model Persistence, Hub Enrollment Registry & Live Cross-Device Language Dashboard
 
-Status: **shared contract implemented; Core and producer wiring are the remaining integration gates**
+Status: **implementation complete; production Core Gateway activation pending**
 
 ## Objective
 
@@ -37,17 +37,29 @@ The registry stores only `appId`, `languageId`, `visible`, `connectedAt` and `up
 - return current Hub visibility plus latest snapshots;
 - keep this projection namespace separate from app-private learner databases.
 
+## Integration record
+
+- shared contract: `thiepn/languages@55d369f`
+- Core persistence + authenticated routes: `thiepn/core@999c305`
+- Japanese Account registry: `thiepn/account@7843035`
+- French authenticated producer: `thiepn/french@488028f`
+- Japanese Account-scoped producer: `thiepn/japanese@31e1425`
+
+The Core `languages_dashboard_p9` migration is applied to the hosted THIEPN Core project. The Japanese Account registry migration is applied to THIEPN Account and the Account deployment completed successfully. French P9 CI passes and the GitHub Pages deployment completed successfully. Japanese P9 passed its full repository CI before merge.
+
+The remaining production activation gate is the Core Worker. Main Core CI passes, but the normal `Deploy Gateway` workflow is intentionally skipped while `CORE_DEPLOY_ENABLED` is not enabled. The database contract is therefore live, while the public `/v1/languages/*` HTTP routes must not be claimed live until that reviewed deployment gate is enabled and the remote smoke checks pass.
+
 ## Exit criteria
 
 1. dashboard package + JSON contract versioned and tested;
-2. Core private languages namespace and authenticated routes live;
+2. Core private languages namespace live; authenticated route code merged, with production Worker activation pending;
 3. French publishes after authenticated reconciliation;
 4. Japanese publishes once its Account session handoff is live;
 5. Hub reads Core persistence, not app-private databases;
 6. visibility and learning enrollment remain separate;
 7. stale writes cannot replace newer projections;
 8. privacy-minimal P8 boundary remains enforced;
-9. cross-device load/publish tests pass.
+9. cross-device load/publish tests pass; final production HTTP smoke remains gated on Core Worker activation.
 
 ## Next phase
 
