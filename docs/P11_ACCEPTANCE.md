@@ -1,6 +1,6 @@
 # P11 — Production Account Session Adapter, Live Deployment & Browser/Device Qualification
 
-Status: **implementation complete; production activation is gated by exact Pages/DNS/Auth configuration and live workflow evidence**
+Status: **implementation complete; production activation blocked by Core Gateway enablement and Languages GitHub Pages setup, with final Auth redirect/live-user evidence still pending**
 
 ## Objective
 
@@ -61,6 +61,13 @@ It requires GitHub Pages to be enabled with the exact custom domain:
 
 The workflow refuses to deploy to a repository Pages URL or a different hostname because the production Account adapter is origin-pinned.
 
+Before deployment, a separate dependency preflight now also requires:
+
+- the deployed Account `release.json` to identify the real canonical Account release;
+- live Core `/health`, `/ready` and `/version` endpoints;
+- a successful CORS preflight for `https://languages.thiepn.dev`;
+- the Languages dashboard route to reject a deliberately invalid bearer with 401/403 rather than being absent or publicly readable.
+
 After deployment it verifies `release.json` against the exact release SHA.
 
 ## Live qualification
@@ -88,6 +95,24 @@ The repository workflow does not possess a real user's Google credentials or phy
 - authenticated French/Japanese P9 data on two independent physical devices;
 - real Android/iOS browser lifecycle behavior outside browser-engine emulation;
 - Supabase redirect allowlist acceptance for the exact callback if the provider configuration has not yet been changed.
+
+## Current production evidence — 2026-10-06
+
+Confirmed:
+
+- Account `/languages/entry` is merged and the corresponding Account production deployment completed successfully.
+- Languages P11 source CI passes on `main`.
+- The exact P11 production build passes, including the bundled Account adapter and credential-leak gate.
+- The Core `languages_dashboard_p9` database migration is applied and its three `gateway.languages_*` RPCs exist.
+
+Still blocked:
+
+- every observed Core `Deploy Gateway` run is skipped by the repository's existing `CORE_DEPLOY_ENABLED` production gate; no successful Gateway deployment is recorded;
+- the Languages deployment preflight receives GitHub Pages HTTP 404, meaning Pages is not yet enabled for `thiepn/languages`;
+- the exact Supabase Auth redirect allowlist entry cannot be verified or changed through the connected Supabase tooling;
+- real Google sign-in and physical-device acceptance cannot be certified before the public origin and Core API are live.
+
+The scheduled consumer compatibility watch is also reporting French/Japanese repository drift while those products continue to evolve. That watch is intentionally strict and is not being weakened or auto-baselined during active consumer changes.
 
 ## Production prerequisites
 
