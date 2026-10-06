@@ -6,7 +6,7 @@ export const LANGUAGE_SHELL_CONTRACT_VERSION="p10-shell-v1";
 
 export const DEFAULT_LANGUAGE_CATALOG=deepFreeze([
   {appId:"french",languageId:"french",displayName:"French",nativeName:"Français",appRoute:"https://french.thiepn.dev/"},
-  {appId:"japanese",languageId:"japanese",displayName:"Japanese",nativeName:"日本語",appRoute:"https://japanese.thiepn.dev/"}
+  {appId:"japanese",languageId:"japanese",displayName:"Japanese",nativeName:"日本語",appRoute:"https://thiepn.dev/japanese/"}
 ]);
 
 export function buildLanguageShellModel(options){
