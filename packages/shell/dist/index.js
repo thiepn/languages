@@ -1,7 +1,7 @@
 import {visibleLanguageSnapshots} from "../../dashboard/dist/index.js";
 import {buildHubLanguageDataPlane} from "../../read-model/dist/index.js";
 
-export const LANGUAGE_SHELL_PACKAGE_VERSION="0.10.0";
+export const LANGUAGE_SHELL_PACKAGE_VERSION="0.10.1";
 export const LANGUAGE_SHELL_CONTRACT_VERSION="p10-shell-v1";
 
 export const DEFAULT_LANGUAGE_CATALOG=deepFreeze([
@@ -45,7 +45,8 @@ export function buildLanguageShellModel(options){
   const cards=plane.languages.map(language=>{
     const fallback=catalogByKey.get(key(language.appId,language.languageId));
     const appRoute=language.presentation.appRoute??fallback?.appRoute;
-    const continueHref=language.nextAction.route??appRoute;
+    const stale=language.hubFreshness==="stale";
+    const continueHref=stale?appRoute:(language.nextAction.route??appRoute);
     return {
       appId:language.appId,
       languageId:language.languageId,
@@ -53,7 +54,7 @@ export function buildLanguageShellModel(options){
       ...(language.presentation.nativeName?{nativeName:language.presentation.nativeName}:fallback?.nativeName?{nativeName:fallback.nativeName}:{}),
       ...(appRoute?{appRoute}:{}),
       ...(continueHref?{continueHref}:{}),
-      continueLabel:language.nextAction.kind==="none"?"Open language":language.nextAction.label,
+      continueLabel:stale||language.nextAction.kind==="none"?"Open language":language.nextAction.label,
       freshness:language.hubFreshness,
       enrollmentStatus:language.enrollment.status,
       ...(language.enrollment.targetBand?{targetBand:language.enrollment.targetBand}:{}),
