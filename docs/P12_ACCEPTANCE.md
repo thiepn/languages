@@ -72,6 +72,8 @@ French remains the owner of learner state and synchronization.
 
 ### Japanese
 
+The current Japanese candidate is deployed at `https://thiepn.dev/japanese/`; the Hub catalog and producer CORS checks must use that real route/origin rather than the unused `japanese.thiepn.dev` hostname.
+
 The Japanese P9 publisher must target:
 
 `https://thiepn-core-gateway.thiepn.workers.dev`
@@ -106,7 +108,7 @@ without a user token and verifies:
 - Core `/health`, `/ready` and `/version`;
 - Core Languages route rejects an invalid bearer;
 - Core CORS still authorizes exactly `https://languages.thiepn.dev` for Hub reads;
-- Core CORS authorizes authenticated POST preflights from `https://french.thiepn.dev` and `https://japanese.thiepn.dev` to their read-model publication routes.
+- Core CORS authorizes authenticated POST preflights from `https://french.thiepn.dev` and the deployed Japanese origin `https://thiepn.dev` to their read-model publication routes.
 
 This detects production infrastructure regressions after deployment.
 
