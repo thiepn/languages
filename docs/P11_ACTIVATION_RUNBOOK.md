@@ -19,22 +19,24 @@ In GitHub:
    - `SUPABASE_SERVICE_ROLE_KEY`
 3. Under **Settings → Secrets and variables → Actions → Variables**, set:
    - `CORE_DEPLOY_ENABLED=true`
-   - `CORE_GATEWAY_URL=https://api.thiepn.dev`
+   - `CORE_GATEWAY_URL=https://thiepn-core-gateway.thiepn.workers.dev`
 4. Run **Actions → Deploy Gateway → Run workflow** from `main`.
 5. Require the workflow's remote `/health`, `/ready` and `/version` smoke checks to pass.
 
 Do not put any server-only secret into the Languages repository or browser bundle.
 
-## 2. Confirm the Core custom domain
+## 2. Confirm the deployed Core Worker
 
 The Core Worker must serve:
 
-- `https://api.thiepn.dev/health`
-- `https://api.thiepn.dev/ready`
-- `https://api.thiepn.dev/version`
-- `https://api.thiepn.dev/v1/languages/dashboard`
+- `https://thiepn-core-gateway.thiepn.workers.dev/health`
+- `https://thiepn-core-gateway.thiepn.workers.dev/ready`
+- `https://thiepn-core-gateway.thiepn.workers.dev/version`
+- `https://thiepn-core-gateway.thiepn.workers.dev/v1/languages/dashboard`
 
 The dashboard route must require an Account bearer token and its CORS policy must allow exactly the reviewed browser origins, including `https://languages.thiepn.dev`.
+
+A future `api.thiepn.dev` custom domain is optional infrastructure polish and is not a P11 activation dependency.
 
 ## 3. Configure the Account Auth callback
 
