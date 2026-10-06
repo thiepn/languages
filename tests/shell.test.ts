@@ -17,14 +17,14 @@ function language(appId:string,priority:number,generatedAt="2026-10-06T10:00:00.
     presentation:{
       displayName:french?"French":"Japanese",
       nativeName:french?"Français":"日本語",
-      appRoute:french?"https://french.thiepn.dev/":"https://japanese.thiepn.dev/"
+      appRoute:french?"https://french.thiepn.dev/":"https://thiepn.dev/japanese/"
     },
     enrollment:{status:"active",targetBand:"B1"},
     workload:{dueItems:french?12:4,totalItems:french?20:9,estimatedMinutes:french?30:18},
     activity:{todayEvents:french?8:3,sevenDayEvents:30,streakDays:french?9:4,lastStudiedAt:"2026-10-06T09:30:00.000Z"},
     progress:{metrics:[{id:"course",label:"Course",current:french?64:21,total:100,unit:"percent"}]},
     proficiency:{framework:"internal",claim:"internal",currentBand:french?"A2":"A1",frontierBand:"B1"},
-    nextAction:{id:"next",label:french?"Speaking practice":"Continue Japanese",kind:"study",priority,reason:"Authoritative product recommendation.",route:(french?"https://french.thiepn.dev/":"https://japanese.thiepn.dev/")+"#study"},
+    nextAction:{id:"next",label:french?"Speaking practice":"Continue Japanese",kind:"study",priority,reason:"Authoritative product recommendation.",route:(french?"https://french.thiepn.dev/":"https://thiepn.dev/japanese/")+"#study"},
     source:{stateRevision:"r1"}
   });
 }
@@ -89,7 +89,7 @@ describe("P10 language product-family shell",()=>{
     const shell=buildLanguageShellModel({state:{status:"ready",remote},now:"2026-10-06T10:05:00.000Z"});
     const japanese=shell.addLanguages.find(entry=>entry.appId==="japanese");
     expect(japanese?.mode).toBe("open-product");
-    expect(japanese?.appRoute).toBe("https://japanese.thiepn.dev/");
+    expect(japanese?.appRoute).toBe("https://thiepn.dev/japanese/");
   });
 
   it("preserves the last loaded model offline and surfaces connectivity explicitly",()=>{
