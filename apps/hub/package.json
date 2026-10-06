@@ -4,7 +4,7 @@
   "version": "0.11.0",
   "type": "module",
   "dependencies": {
-    "@supabase/supabase-js": "2.117.2",
+    "@thiepn/account-session": "github:thiepn/account#3b3e01faf88f1047ef8c6d09d9c765c7bfcad454&path:/packages/account-session",
     "@thiepn/language-read-model": "workspace:*",
     "@thiepn/language-dashboard": "workspace:*",
     "@thiepn/language-shell": "workspace:*"
