@@ -77,9 +77,9 @@ jobs:
           grep -R -q 'https://account.thiepn.dev/languages/entry' dist/hub/vendor/account-session.js
           grep -R -q 'https://api.thiepn.dev' dist/hub/vendor/account-session.js
           grep -R -q 'hycegznamzjhwinegaai.supabase.co' dist/hub/vendor/account-session.js
-          if grep -R -n -E 'service_role|sb_secret_' dist/hub >/dev/null 2>&1; then
-            echo "Server-only credential marker leaked into production Hub"
-            grep -R -n -E 'service_role|sb_secret_' dist/hub || true
+          if grep -R -n -E 'SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{20,}' apps/hub dist/hub >/dev/null 2>&1; then
+            echo "Server-only credential value leaked into production Hub"
+            grep -R -n -E 'SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{20,}' apps/hub dist/hub || true
             exit 1
           fi
       - name: Add release metadata and fallback
