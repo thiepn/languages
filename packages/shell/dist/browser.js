@@ -2,7 +2,7 @@
 const VERSION="0.10.1",CONTRACT="p10-shell-v1";
 const CATALOG=freeze([
   {appId:"french",languageId:"french",displayName:"French",nativeName:"Français",appRoute:"https://french.thiepn.dev/"},
-  {appId:"japanese",languageId:"japanese",displayName:"Japanese",nativeName:"日本語",appRoute:"https://japanese.thiepn.dev/"}
+  {appId:"japanese",languageId:"japanese",displayName:"Japanese",nativeName:"日本語",appRoute:"https://thiepn.dev/japanese/"}
 ]);
 function deps(){
   if(!global.THIEPN_LANGUAGE_DASHBOARD)throw new Error("THIEPN_LANGUAGE_DASHBOARD_REQUIRED");
