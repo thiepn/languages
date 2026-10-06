@@ -135,16 +135,48 @@ jobs:
       - run: corepack enable
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm verify
-      - name: Verify production session bundle
+      - name: Verify production first-party Account session bundle
         shell: bash
         run: |
           test -f dist/hub/index.html
           test -f dist/hub/auth/callback/index.html
           test -f dist/hub/vendor/account-session.js
-          grep -R -q 'https://languages.thiepn.dev' dist/hub/vendor/account-session.js
-          grep -R -q 'https://account.thiepn.dev/languages/entry' dist/hub/vendor/account-session.js
-          grep -R -q 'https://thiepn-core-gateway.thiepn.workers.dev' dist/hub/vendor/account-session.js
-          grep -R -q 'hycegznamzjhwinegaai.supabase.co' dist/hub/vendor/account-session.js
+          node --input-type=module <<'NODE'
+          import { readFile } from "node:fs/promises";
+
+          const contract = await readFile("apps/hub/src/account-session-contract.ts", "utf8");
+          const bundle = await readFile("dist/hub/vendor/account-session.js", "utf8");
+          const source = await readFile("apps/hub/src/account-session.ts", "utf8");
+          const match = contract.match(/LANGUAGES_OAUTH_CLIENT_ID\s*=\s*"([^"]+)"/);
+          const clientId = match?.[1] ?? "";
+          if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clientId)) {
+            throw new Error("Languages OAuth client ID is not a UUID");
+          }
+          if (clientId === "00000000-0000-4000-8000-000000000000") {
+            throw new Error("Languages OAuth client ID is still the pre-registration placeholder");
+          }
+          for (const marker of [
+            clientId,
+            "https://languages.thiepn.dev",
+            "https://account.thiepn.dev",
+            "https://thiepn-core-gateway.thiepn.workers.dev",
+            "hycegznamzjhwinegaai.supabase.co",
+            "/auth/v1/oauth/authorize",
+            "/sso/probe?client_id=",
+          ]) {
+            if (!bundle.includes(marker)) throw new Error(`Production bundle is missing ${marker}`);
+          }
+          for (const forbidden of [
+            "signInWithOAuth",
+            "/languages/entry",
+            'provider: "google"',
+            "provider:'google'",
+          ]) {
+            if (source.includes(forbidden)) {
+              throw new Error(`Legacy direct-Google Account handoff remains: ${forbidden}`);
+            }
+          }
+          NODE
           if grep -R -n -E 'SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{20,}' apps/hub dist/hub >/dev/null 2>&1; then
             echo "Server-only credential value leaked into production Hub"
             grep -R -n -E 'SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{20,}' apps/hub dist/hub || true
@@ -162,7 +194,7 @@ jobs:
             "version": "0.12.0",
             "commit": "$RELEASE_SHA",
             "canonicalOrigin": "https://languages.thiepn.dev",
-            "accountSessionContract": "p11-account-session-v1"
+            "accountSessionContract": "first-party-sso-v1"
           }
           EOF
           sha256sum             dist/hub/index.html             dist/hub/auth/callback/index.html             dist/hub/vendor/account-session.js             dist/hub/release.json             | sed 's#  dist/hub/#  #' > dist/hub/SHA256SUMS
@@ -214,15 +246,25 @@ jobs:
       - run: corepack enable
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - name: Qualify deployed shell, Account handoff, Core CORS and responsive states
+      - name: Qualify deployed shell, first-party Account OAuth, Core CORS and responsive states
         shell: bash
         run: |
           node --input-type=module <<'NODE'
+          import { readFile } from "node:fs/promises";
           import { chromium, firefox, webkit } from "@playwright/test";
 
           const canonical = "https://languages.thiepn.dev/";
-          const accountEntry = "https://account.thiepn.dev/languages/entry";
+          const accountOrigin = "https://account.thiepn.dev";
+          const issuerOrigin = "https://hycegznamzjhwinegaai.supabase.co";
           const callback = "https://languages.thiepn.dev/auth/callback/";
+          const contract = await readFile("apps/hub/src/account-session-contract.ts", "utf8");
+          const clientId = contract.match(/LANGUAGES_OAUTH_CLIENT_ID\\s*=\\s*"([^"]+)"/)?.[1] ?? "";
+          if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(clientId)) {
+            throw new Error("Languages OAuth client ID is invalid");
+          }
+          if (clientId === "00000000-0000-4000-8000-000000000000") {
+            throw new Error("Languages OAuth client ID is still a placeholder");
+          }
           const engines = [
             ["chromium", chromium],
             ["firefox", firefox],
@@ -255,24 +297,34 @@ jobs:
           const page = await context.newPage();
           await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
 
+          let authorize = null;
+          page.on("request", request => {
+            const candidate = new URL(request.url());
+            if (
+              candidate.origin === issuerOrigin &&
+              candidate.pathname === "/auth/v1/oauth/authorize"
+            ) authorize = candidate;
+          });
+
           await page.getByRole("button",{name:"Continue with THIEPN Account"}).click();
-          await page.waitForURL(url => url.origin === "https://account.thiepn.dev" && url.pathname === "/languages/entry",{timeout:15000});
+          await page.waitForURL(url => url.origin === accountOrigin,{timeout:15000});
 
-          const entryUrl = new URL(page.url());
-          if (entryUrl.origin+entryUrl.pathname !== accountEntry) throw new Error("Unexpected Account entry destination");
-          const request = entryUrl.searchParams.get("request");
-          if (!request) throw new Error("Account entry is missing tokenless authorization request");
-          const authorize = new URL(request);
-          if (authorize.origin !== "https://hycegznamzjhwinegaai.supabase.co" || authorize.pathname !== "/auth/v1/authorize") throw new Error("Wrong Account issuer");
-          if (authorize.searchParams.get("provider") !== "google") throw new Error("Wrong OAuth provider");
-          if (authorize.searchParams.get("code_challenge_method")?.toLowerCase() !== "s256") throw new Error("PKCE is not S256");
+          if (!authorize) throw new Error("Languages did not initiate Account OAuth authorization");
+          if (authorize.searchParams.get("response_type") !== "code") throw new Error("OAuth response_type is not code");
+          if (authorize.searchParams.get("client_id") !== clientId) throw new Error("Wrong Languages OAuth client ID");
+          if (authorize.searchParams.get("redirect_uri") !== callback) throw new Error("Languages callback contract mismatch");
+          if (authorize.searchParams.get("code_challenge_method") !== "S256") throw new Error("PKCE is not S256");
           if (!/^[A-Za-z0-9_-]{43}$/.test(authorize.searchParams.get("code_challenge") ?? "")) throw new Error("Invalid PKCE challenge");
-          if (authorize.searchParams.get("prompt") !== "select_account") throw new Error("Account chooser is not explicit");
-          const redirect = new URL(authorize.searchParams.get("redirect_to") ?? "");
-          if (redirect.href !== callback) throw new Error("Languages callback contract mismatch");
+          if (!/^[A-Za-z0-9_-]{43,128}$/.test(authorize.searchParams.get("state") ?? "")) throw new Error("Invalid OAuth state");
+          const scopes = new Set((authorize.searchParams.get("scope") ?? "").split(" ").filter(Boolean));
+          for (const scope of ["openid","email","profile","offline_access"]) {
+            if (!scopes.has(scope)) throw new Error("Missing OAuth scope: "+scope);
+          }
+          if (authorize.searchParams.has("provider")) throw new Error("Languages still selects an upstream provider directly");
+          if (new URL(page.url()).pathname === "/languages/entry") throw new Error("Languages still uses the legacy tokenless Account entry");
 
-          const accountContinue = page.getByRole("link",{name:"Continue with Google"});
-          if (!await accountContinue.isVisible()) throw new Error("Live Account did not accept Languages tokenless entry");
+          const accountPage = new URL(page.url());
+          if (accountPage.origin !== accountOrigin) throw new Error("Account authorization did not reach the canonical Account origin");
 
           await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
           const core = await page.evaluate(async () => {
@@ -313,5 +365,5 @@ jobs:
           await callbackContext.close();
           await browser.close();
 
-          console.log("Languages P11 live browser qualification passed.");
+          console.log("Languages first-party Account SSO live browser qualification passed.");
           NODE
