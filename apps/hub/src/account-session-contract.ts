@@ -3,11 +3,11 @@ export const ACCOUNT_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_1rZzRPzfLMaAH5pI
 export const LANGUAGES_ORIGIN = "https://languages.thiepn.dev";
 export const LANGUAGES_CALLBACK_PATH = "/auth/callback/";
 export const LANGUAGES_CALLBACK_URL = `${LANGUAGES_ORIGIN}${LANGUAGES_CALLBACK_PATH}`;
-export const LANGUAGES_ACCOUNT_ENTRY_URL = "https://account.thiepn.dev/languages/entry";
 export const LANGUAGES_ACCOUNT_URL = "https://account.thiepn.dev/";
+export const LANGUAGES_ACCOUNT_ORIGIN = "https://account.thiepn.dev";
 export const LANGUAGES_CORE_URL = "https://thiepn-core-gateway.thiepn.workers.dev";
-export const LANGUAGES_AUTH_STORAGE_KEY = "thiepn:languages-auth:v1";
-export const LANGUAGES_LOGIN_STORAGE_KEY = "thiepn:languages-login:v1";
+export const LANGUAGES_SSO_STORAGE_KEY = "thiepn:languages-sso:v1";
+export const LANGUAGES_OAUTH_CLIENT_ID = "00000000-0000-4000-8000-000000000000";
 
 export type LanguagesIdentity =
   | { readonly status: "checking" }
@@ -19,70 +19,30 @@ export type LanguagesIdentity =
       readonly label: string;
     };
 
-export interface PendingLanguagesLogin {
-  readonly started: number;
-  readonly returnTo: "/";
+export type LanguagesSsoProbeResult =
+  | "signed-in"
+  | "disconnected"
+  | "signed-out"
+  | "unavailable";
+
+interface ProbeMessage {
+  type?: unknown;
+  clientId?: unknown;
+  signedIn?: unknown;
+  eligible?: unknown;
 }
 
-export function validAccountId(value: unknown): value is string {
-  return (
-    typeof value === "string" &&
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
-      value,
-    )
-  );
-}
-
-export function readPendingLanguagesLogin(
-  raw: string | null,
-  now = Date.now(),
-): PendingLanguagesLogin | null {
-  try {
-    if (!raw || raw.length > 1024) return null;
-    const value: unknown = JSON.parse(raw);
-    if (!value || typeof value !== "object" || Array.isArray(value)) return null;
-    const row = value as Record<string, unknown>;
-    if (
-      row.returnTo !== "/" ||
-      !Number.isFinite(row.started) ||
-      typeof row.started !== "number" ||
-      now < row.started ||
-      now - row.started > 10 * 60 * 1000
-    ) return null;
-    return { started: row.started, returnTo: "/" };
-  } catch {
-    return null;
-  }
-}
-
-export function readLanguagesCallback(
-  query: URLSearchParams,
-  fragment: string,
-): { readonly code: string } | null {
+export function interpretLanguagesSsoProbeMessage(
+  value: unknown,
+): LanguagesSsoProbeResult | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const row = value as ProbeMessage;
   if (
-    fragment ||
-    [...query.keys()].join(",") !== "code" ||
-    query.getAll("code").length !== 1
+    row.type !== "thiepn:sso-probe:v1" ||
+    row.clientId !== LANGUAGES_OAUTH_CLIENT_ID ||
+    typeof row.signedIn !== "boolean" ||
+    typeof row.eligible !== "boolean"
   ) return null;
-  const code = query.get("code");
-  if (
-    !code ||
-    code.length > 2048 ||
-    /[\s\x00-\x1f\x7f]/.test(code)
-  ) return null;
-  return { code };
-}
-
-export function buildAccountEntryUrl(authorizationUrl: string): string {
-  const authorization = new URL(authorizationUrl);
-  if (
-    authorization.origin !== ACCOUNT_SUPABASE_URL ||
-    authorization.pathname !== "/auth/v1/authorize" ||
-    authorization.username ||
-    authorization.password ||
-    authorization.hash
-  ) throw new Error("INVALID_AUTHORIZATION_URL");
-  const entry = new URL(LANGUAGES_ACCOUNT_ENTRY_URL);
-  entry.searchParams.set("request", authorization.href);
-  return entry.href;
+  if (!row.signedIn) return "signed-out";
+  return row.eligible ? "signed-in" : "disconnected";
 }
