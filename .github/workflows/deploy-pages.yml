@@ -260,8 +260,11 @@ jobs:
 
           const entryUrl = new URL(page.url());
           if (entryUrl.origin+entryUrl.pathname !== accountEntry) throw new Error("Unexpected Account entry destination");
-          const request = entryUrl.searchParams.get("request");
-          if (!request) throw new Error("Account entry is missing tokenless authorization request");
+
+          const accountContinue = page.getByRole("link",{name:"Continue with Google"});
+          if (!await accountContinue.isVisible()) throw new Error("Live Account did not accept Languages tokenless entry");
+          const request = await accountContinue.getAttribute("href");
+          if (!request) throw new Error("Account entry is missing validated authorization request");
           const authorize = new URL(request);
           if (authorize.origin !== "https://hycegznamzjhwinegaai.supabase.co" || authorize.pathname !== "/auth/v1/authorize") throw new Error("Wrong Account issuer");
           if (authorize.searchParams.get("provider") !== "google") throw new Error("Wrong OAuth provider");
@@ -270,9 +273,6 @@ jobs:
           if (authorize.searchParams.get("prompt") !== "select_account") throw new Error("Account chooser is not explicit");
           const redirect = new URL(authorize.searchParams.get("redirect_to") ?? "");
           if (redirect.href !== callback) throw new Error("Languages callback contract mismatch");
-
-          const accountContinue = page.getByRole("link",{name:"Continue with Google"});
-          if (!await accountContinue.isVisible()) throw new Error("Live Account did not accept Languages tokenless entry");
 
           await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
           const core = await page.evaluate(async () => {
@@ -313,5 +313,5 @@ jobs:
           await callbackContext.close();
           await browser.close();
 
-          console.log("Languages P11 live browser qualification passed.");
+          console.log("Languages P12 live browser qualification passed.");
           NODE

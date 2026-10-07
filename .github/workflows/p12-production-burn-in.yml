@@ -1,6 +1,8 @@
 name: P12 Production Burn-In
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
   schedule:
     - cron: "17 */6 * * *"
