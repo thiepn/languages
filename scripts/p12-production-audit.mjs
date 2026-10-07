@@ -117,6 +117,40 @@ for (const endpoint of ["health", "ready", "version"]) {
   evidence.public[`core_${endpoint}`] = { ok: Boolean(result.body) };
 }
 
+for (const producer of [
+  { appId: "french", origin: "https://french.thiepn.dev" },
+  { appId: "japanese", origin: "https://thiepn.dev" },
+]) {
+  const response = await fetch(
+    `${CORE_ORIGIN}/v1/languages/read-models/${producer.appId}`,
+    {
+      method: "OPTIONS",
+      headers: {
+        Origin: producer.origin,
+        "Access-Control-Request-Method": "POST",
+        "Access-Control-Request-Headers": "authorization,content-type",
+      },
+      signal: AbortSignal.timeout(12000),
+    },
+  );
+  invariant(response.status >= 200 && response.status < 300, `${producer.appId} Core CORS preflight returned HTTP ${response.status}`);
+  invariant(
+    response.headers.get("access-control-allow-origin") === producer.origin,
+    `${producer.appId} Core CORS origin mismatch`,
+  );
+  invariant(
+    (response.headers.get("access-control-allow-methods") ?? "")
+      .split(",")
+      .map(value => value.trim().toUpperCase())
+      .includes("POST"),
+    `${producer.appId} Core CORS does not allow POST`,
+  );
+  evidence.public[`producerCors_${producer.appId}`] = {
+    allowOrigin: producer.origin,
+    allowsPost: true,
+  };
+}
+
 const invalid = await json(
   `${CORE_ORIGIN}/v1/languages/dashboard`,
   {

@@ -72,6 +72,8 @@ French remains the owner of learner state and synchronization.
 
 ### Japanese
 
+The current Japanese candidate is deployed at `https://thiepn.dev/japanese/`; the Hub catalog and producer CORS checks must use that real route/origin rather than the unused `japanese.thiepn.dev` hostname.
+
 The Japanese P9 publisher must target:
 
 `https://thiepn-core-gateway.thiepn.workers.dev`
@@ -105,7 +107,8 @@ without a user token and verifies:
 - Account canonical release metadata and real-service mode;
 - Core `/health`, `/ready` and `/version`;
 - Core Languages route rejects an invalid bearer;
-- Core CORS still authorizes exactly `https://languages.thiepn.dev`.
+- Core CORS still authorizes exactly `https://languages.thiepn.dev` for Hub reads;
+- Core CORS authorizes authenticated POST preflights from `https://french.thiepn.dev` and the deployed Japanese origin `https://thiepn.dev` to their read-model publication routes.
 
 This detects production infrastructure regressions after deployment.
 
@@ -173,6 +176,19 @@ Expected steady-state rows:
 - separate Hub enrollment rows controlling only visibility.
 
 Revision may increase as a product republishes. A newer product snapshot may replace an older one; Core must reject conflicting same-timestamp payloads and must not let an older snapshot overwrite a newer one.
+
+## Hub-side stale-action defect found during burn-in
+
+The P12 code audit found that stale projections were already excluded from the top-level Continue hero, but a stale individual language card could still expose its old product-supplied next-action route and label.
+
+The shell patch changes only presentation safety:
+
+- fresh cards may use the product-supplied next action;
+- stale cards show **Open language** and route only to the product root;
+- the stale next-action route/label is never presented as authoritative;
+- the Hub still does not recompute a replacement action.
+
+This is covered by a shell regression test.
 
 ## Defect-only policy
 
