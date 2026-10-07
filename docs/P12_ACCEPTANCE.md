@@ -95,7 +95,7 @@ Japanese already republishes after connection/account activation and after compl
 
 ## Public burn-in automation
 
-`.github/workflows/p12-production-burn-in.yml` runs every six hours and on manual dispatch.
+`.github/workflows/p12-production-burn-in.yml` runs on every `main` push, every six hours, and on manual dispatch.
 
 It executes:
 
@@ -189,6 +189,10 @@ The shell patch changes only presentation safety:
 - the Hub still does not recompute a replacement action.
 
 This is covered by a shell regression test.
+
+## Live qualification URL-cleanup regression
+
+Account intentionally consumes and validates the tokenless authorization request and then removes the query string from the visible `/languages/entry` URL. P12 live qualification therefore validates the rendered **Continue with Google** authorization link rather than expecting the sensitive request query to remain in the address bar after Account has accepted it.
 
 ## Defect-only policy
 
