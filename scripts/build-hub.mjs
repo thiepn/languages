@@ -42,9 +42,9 @@ await viteBuild({
 
 await writeFile(path.join(dist,"hub-build.json"),JSON.stringify({
   product:"thiepn-languages-hub",
-  version:"0.12.0",
+  version:"0.13.0",
   shellContract:"p10-shell-v1",
-  accountSessionContract:"p11-account-session-v1",
+  accountSessionContract:"p13-first-party-oauth-sso-v1",
   canonicalOrigin:"https://languages.thiepn.dev",
   generatedAt:new Date().toISOString()
 },null,2)+"\n");
