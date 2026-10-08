@@ -8,6 +8,6 @@
     "@thiepn/language-read-model": "workspace:*",
     "@thiepn/language-dashboard": "workspace:*",
     "@thiepn/language-shell": "workspace:*",
-    "@thiepn/account-session": "github:thiepn/account#2bc5ac10eada7e18092e2b9f8ceb262e65a6d236&path:/packages/account-session"
+    "@thiepn/account-session": "github:thiepn/account#df029d08a49ef27d3fd5fedf58400572746c0b47&path:/packages/account-session"
   }
 }
