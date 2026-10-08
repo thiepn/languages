@@ -142,7 +142,9 @@ jobs:
           test -f dist/hub/auth/callback/index.html
           test -f dist/hub/vendor/account-session.js
           grep -R -q 'https://languages.thiepn.dev' dist/hub/vendor/account-session.js
-          grep -R -q 'https://account.thiepn.dev/sso/probe' dist/hub/vendor/account-session.js
+          grep -R -q 'https://account.thiepn.dev' dist/hub/vendor/account-session.js
+          grep -R -q '/sso/probe' dist/hub/vendor/account-session.js
+          grep -R -q 'c4522235-beb3-4f48-94fb-e274e92b7c84' dist/hub/vendor/account-session.js
           grep -R -q 'https://thiepn-core-gateway.thiepn.workers.dev' dist/hub/vendor/account-session.js
           grep -R -q 'hycegznamzjhwinegaai.supabase.co' dist/hub/vendor/account-session.js
           if grep -R -n -E 'SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{20,}' apps/hub dist/hub >/dev/null 2>&1; then
