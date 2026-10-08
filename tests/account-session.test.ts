@@ -1,4 +1,5 @@
 import {describe,expect,it} from "vitest";
+import {eligibleLanguagesSsoProbe} from "../apps/hub/src/account-session";
 import {
   ACCOUNT_SUPABASE_URL,
   buildAccountEntryUrl,
@@ -36,5 +37,17 @@ describe("P11 Account session boundary",()=>{
     expect(entry.origin+entry.pathname).toBe(LANGUAGES_ACCOUNT_ENTRY_URL);
     expect(entry.searchParams.get("request")).toBe(authorize.href);
     expect(()=>buildAccountEntryUrl("https://evil.test/auth/v1/authorize")).toThrow("INVALID_AUTHORIZATION_URL");
+  });
+});
+
+describe("P13 canonical first-party SSO",()=>{
+  it("accepts only an authenticated eligible response for the pinned Languages client",()=>{
+    const exact={type:"thiepn:sso-probe:v1",clientId:"c4522235-beb3-4f48-94fb-e274e92b7c84",signedIn:true,eligible:true};
+    expect(eligibleLanguagesSsoProbe(exact)).toBe(true);
+    expect(eligibleLanguagesSsoProbe({...exact,signedIn:false})).toBe(false);
+    expect(eligibleLanguagesSsoProbe({...exact,eligible:false})).toBe(false);
+    expect(eligibleLanguagesSsoProbe({...exact,clientId:"76e41661-f8a9-4181-b8b9-4084f2e2acbf"})).toBeNull();
+    expect(eligibleLanguagesSsoProbe({...exact,type:"attacker-message"})).toBeNull();
+    expect(eligibleLanguagesSsoProbe({clientId:exact.clientId,signedIn:true})).toBeNull();
   });
 });

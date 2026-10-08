@@ -6,7 +6,9 @@ export const LANGUAGES_CALLBACK_URL = `${LANGUAGES_ORIGIN}${LANGUAGES_CALLBACK_P
 export const LANGUAGES_ACCOUNT_ENTRY_URL = "https://account.thiepn.dev/languages/entry";
 export const LANGUAGES_ACCOUNT_URL = "https://account.thiepn.dev/";
 export const LANGUAGES_CORE_URL = "https://thiepn-core-gateway.thiepn.workers.dev";
-export const LANGUAGES_AUTH_STORAGE_KEY = "thiepn:languages-auth:v1";
+export const LANGUAGES_AUTH_STORAGE_KEY = "thiepn:languages-auth:v1"; // Legacy Google bridge; no longer used by the P13 runtime.
+export const LANGUAGES_FIRST_PARTY_CLIENT_ID = "c4522235-beb3-4f48-94fb-e274e92b7c84";
+export const LANGUAGES_SSO_STORAGE_KEY = "thiepn:languages-sso:v1";
 export const LANGUAGES_LOGIN_STORAGE_KEY = "thiepn:languages-login:v1";
 
 export type LanguagesIdentity =

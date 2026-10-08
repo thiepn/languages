@@ -142,7 +142,7 @@ jobs:
           test -f dist/hub/auth/callback/index.html
           test -f dist/hub/vendor/account-session.js
           grep -R -q 'https://languages.thiepn.dev' dist/hub/vendor/account-session.js
-          grep -R -q 'https://account.thiepn.dev/languages/entry' dist/hub/vendor/account-session.js
+          grep -R -q 'https://account.thiepn.dev/sso/probe' dist/hub/vendor/account-session.js
           grep -R -q 'https://thiepn-core-gateway.thiepn.workers.dev' dist/hub/vendor/account-session.js
           grep -R -q 'hycegznamzjhwinegaai.supabase.co' dist/hub/vendor/account-session.js
           if grep -R -n -E 'SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]{20,}' apps/hub dist/hub >/dev/null 2>&1; then
@@ -159,10 +159,10 @@ jobs:
           cat > dist/hub/release.json <<EOF
           {
             "product": "THIEPN Languages",
-            "version": "0.12.0",
+            "version": "0.13.0",
             "commit": "$RELEASE_SHA",
             "canonicalOrigin": "https://languages.thiepn.dev",
-            "accountSessionContract": "p11-account-session-v1"
+            "accountSessionContract": "p13-first-party-oauth-sso-v1"
           }
           EOF
           sha256sum             dist/hub/index.html             dist/hub/auth/callback/index.html             dist/hub/vendor/account-session.js             dist/hub/release.json             | sed 's#  dist/hub/#  #' > dist/hub/SHA256SUMS
@@ -221,7 +221,7 @@ jobs:
           import { chromium, firefox, webkit } from "@playwright/test";
 
           const canonical = "https://languages.thiepn.dev/";
-          const accountEntry = "https://account.thiepn.dev/languages/entry";
+          const authorizationEndpoint = "https://hycegznamzjhwinegaai.supabase.co/auth/v1/oauth/authorize";
           const callback = "https://languages.thiepn.dev/auth/callback/";
           const engines = [
             ["chromium", chromium],
@@ -255,24 +255,22 @@ jobs:
           const page = await context.newPage();
           await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
 
+          const authorizationRequest = page.waitForRequest(request =>
+            request.url().startsWith(authorizationEndpoint),{timeout:20000});
           await page.getByRole("button",{name:"Continue with THIEPN Account"}).click();
-          await page.waitForURL(url => url.origin === "https://account.thiepn.dev" && url.pathname === "/languages/entry",{timeout:15000});
-
-          const entryUrl = new URL(page.url());
-          if (entryUrl.origin+entryUrl.pathname !== accountEntry) throw new Error("Unexpected Account entry destination");
-
-          const accountContinue = page.getByRole("link",{name:"Continue with Google"});
-          if (!await accountContinue.isVisible()) throw new Error("Live Account did not accept Languages tokenless entry");
-          const request = await accountContinue.getAttribute("href");
-          if (!request) throw new Error("Account entry is missing validated authorization request");
-          const authorize = new URL(request);
-          if (authorize.origin !== "https://hycegznamzjhwinegaai.supabase.co" || authorize.pathname !== "/auth/v1/authorize") throw new Error("Wrong Account issuer");
-          if (authorize.searchParams.get("provider") !== "google") throw new Error("Wrong OAuth provider");
-          if (authorize.searchParams.get("code_challenge_method")?.toLowerCase() !== "s256") throw new Error("PKCE is not S256");
+          const authorize = new URL((await authorizationRequest).url());
+          if (authorize.origin+authorize.pathname !== authorizationEndpoint) throw new Error("Wrong canonical Account OAuth issuer");
+          if (authorize.searchParams.get("response_type") !== "code") throw new Error("Authorization Code flow required");
+          if (authorize.searchParams.get("client_id") !== "c4522235-beb3-4f48-94fb-e274e92b7c84") throw new Error("Wrong pinned Languages OAuth client");
+          if (authorize.searchParams.get("code_challenge_method") !== "S256") throw new Error("PKCE is not S256");
           if (!/^[A-Za-z0-9_-]{43}$/.test(authorize.searchParams.get("code_challenge") ?? "")) throw new Error("Invalid PKCE challenge");
-          if (authorize.searchParams.get("prompt") !== "select_account") throw new Error("Account chooser is not explicit");
-          const redirect = new URL(authorize.searchParams.get("redirect_to") ?? "");
-          if (redirect.href !== callback) throw new Error("Languages callback contract mismatch");
+          if (!/^[A-Za-z0-9_-]{43}$/.test(authorize.searchParams.get("state") ?? "")) throw new Error("OAuth state missing");
+          if (authorize.searchParams.has("provider") || authorize.searchParams.has("prompt")) throw new Error("Languages is still invoking Google directly");
+          const redirect = new URL(authorize.searchParams.get("redirect_uri") ?? "");
+          if (redirect.href !== callback) throw new Error("Languages OAuth callback mismatch");
+          await page.waitForURL(url => url.origin === "https://account.thiepn.dev" &&
+            (url.pathname.startsWith("/oauth/") || url.pathname.startsWith("/auth/")),{timeout:25000});
+          if (page.url().includes("/languages/entry")) throw new Error("Legacy Google bridge unexpectedly used");
 
           await page.goto(canonical,{waitUntil:"networkidle",timeout:30000});
           const core = await page.evaluate(async () => {
