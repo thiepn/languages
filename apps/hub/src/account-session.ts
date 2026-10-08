@@ -229,11 +229,14 @@ export function createProductionLanguagesAccountSession(): ProductionLanguagesAc
 
   client.auth.onAuthStateChange(event => {
     if (event === "INITIAL_SESSION" || busy) return;
-    queueMicrotask(() => {
+    // Supabase can still own its auth lock when this callback returns.
+    // A microtask may run before that lock is released; use a macrotask
+    // so getSession/getUser cannot deadlock the auth event dispatcher.
+    globalThis.setTimeout(() => {
       if (!busy && globalThis.location.pathname !== LANGUAGES_CALLBACK_PATH) {
         void verify();
       }
-    });
+    }, 0);
   });
 
   globalThis.addEventListener("pageshow", event => {
