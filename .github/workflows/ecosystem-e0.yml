@@ -1,0 +1,98 @@
+name: Ecosystem E0 focused source inventory
+on:
+  pull_request:
+    paths:
+      - "scripts/ecosystem-inventory.mjs"
+      - "languages/chinese/preflight.ts"
+      - "docs/ECOSYSTEM_E0.md"
+      - ".github/workflows/ecosystem-e0.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check zero-dependency E0 inventory syntax
+        run: node --check scripts/ecosystem-inventory.mjs
+      - name: Execute E0 inventory self-test
+        run: node scripts/ecosystem-inventory.mjs --self-test
+      - name: Execute source preflight without Account dependencies or credentials
+        run: |
+          node --experimental-strip-types --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {inspectChineseEcosystemPreflight} from './languages/chinese/preflight.ts';
+          const baseline=inspectChineseEcosystemPreflight({
+            lessonCount:428,pathwayMissionCount:36,ungradedTransferCount:36,
+            demonstrationQualified:true,historicalIdsPreserved:true
+          });
+          assert.equal(baseline.publishAllowed,false);
+          assert.equal(baseline.officialHskClaim,false);
+          assert.ok(baseline.issues.includes('CHINESE_OWNER_SCOPED_P8_PRODUCER_NOT_VERIFIED'));
+          const invalid=inspectChineseEcosystemPreflight({
+            lessonCount:428,pathwayMissionCount:36,ungradedTransferCount:99,
+            demonstrationQualified:false,historicalIdsPreserved:false
+          });
+          assert.ok(invalid.issues.includes('UNSCORED_TRANSFER_EXCEEDS_SOURCE_MISSIONS'));
+          assert.ok(invalid.issues.includes('UNQUALIFIED_ORIGINAL_DEMO_SOURCE'));
+          assert.ok(invalid.issues.includes('HISTORICAL_LESSON_ID_DRIFT'));
+          console.log('E0 Chinese fail-closed source preflight PASS');
+          JS
+      - name: Inventory absent sibling checkouts honestly without guesses
+        run: |
+          node scripts/ecosystem-inventory.mjs > /tmp/e0-inventory.json
+          node --input-type=module -e "
+            import fs from 'node:fs';
+            import assert from 'node:assert/strict';
+            const data=JSON.parse(fs.readFileSync('/tmp/e0-inventory.json','utf8'));
+            assert.equal(data.readOnly,true);
+            assert.equal(data.languages.length,3);
+            assert.ok(data.languages.every(x=>x.status==='source-derived'||x.status==='unavailable'));
+            assert.equal(data.hub.sharedWrites,false);
+            console.log('E0 source inventory absence/fidelity contract PASS');
+          "
+
+      - name: Checkout Chinese exact development source
+        uses: actions/checkout@v4
+        with:
+          repository: thiepn/chinese
+          ref: 16f6e610f7d5ab977b2858bf4ff53ed445eac657
+          path: source-chinese
+          persist-credentials: false
+      - name: Checkout French exact U47 development source
+        uses: actions/checkout@v4
+        with:
+          repository: thiepn/french
+          ref: 35b6fb5ed0677f301ac4df31977c2cabdcc5e70d
+          path: source-french
+          persist-credentials: false
+      - name: Checkout Japanese exact E12Q development source
+        uses: actions/checkout@v4
+        with:
+          repository: thiepn/japanese
+          ref: 2104b801166eda408cca5cef815b2eb3d497f3d0
+          path: source-japanese
+          persist-credentials: false
+      - name: Derive real capability counts from all three original repositories
+        env:
+          NODE_OPTIONS: --experimental-strip-types
+        run: |
+          mkdir -p artifacts
+          node scripts/ecosystem-inventory.mjs \
+            --chinese="$GITHUB_WORKSPACE/source-chinese" \
+            --french="$GITHUB_WORKSPACE/source-french" \
+            --japanese="$GITHUB_WORKSPACE/source-japanese" \
+            --out="$GITHUB_WORKSPACE/artifacts/e0-source-inventory.json" --strict
+      - name: Retain read-only inventory evidence for owner review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thiepn-ecosystem-e0-source-inventory
+          path: artifacts/e0-source-inventory.json
+          if-no-files-found: warn
+          retention-days: 14
