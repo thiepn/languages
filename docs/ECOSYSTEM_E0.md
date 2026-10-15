@@ -20,3 +20,9 @@ Counts describe **different units of learning**. No course count is converted in
 - French: original 94 full lessons/150 transfers, U7 source-linked listening, authorial A1 repair tasks; optional speech tasks are not graded pronunciation.
 - Japanese: base canonical source plus all three C1 overlays; source-owned E11 later notices are unscored and do not alter FSRS or official proficiency.
 - All apps own their original IDs, learner evidence, source rights, scheduling, and privacy. Existing P7 read-only consumer baseline drift requires deliberate review before any promotion.
+
+## Focused verification and external CI blocker
+
+The separate `.github/workflows/ecosystem-e0.yml` runs Node 24 syntax, self-test, fail-closed Chinese preflight and truthful missing-checkout behavior **without npm/pnpm installation** or credentials. It does **not** claim to execute all three full-source inventories, a full Languages typecheck or Hub build.
+
+The ordinary Languages CI requires the Hub's pinned private `@thiepn/account-session` GitHub dependency and currently fails during `pnpm install` because the job lacks an authorized repository fetch identity (SSH public-key permission denied). Do not rewrite its dependency to another version, introduce personal tokens or claim overall build PASS. The owning Account/infrastructure workflow must authorize its own read-only dependency acquisition separately.
