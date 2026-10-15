@@ -28,9 +28,9 @@ async function chinese(base){
  const transfer=arr(pathways.PATHWAY_MISSIONS).filter(x=>pathways.pathwayIndependentTransfer?.(x));
  return {
   unitKind:"character-centred editorial demonstrations",
-  counts:{characterLessons:count(demo),reviewTaskKinds:6,pathwayMissions:count(pathways.PATHWAY_MISSIONS),
+  counts:{characterLessons:count(demo),pathwayMissions:count(pathways.PATHWAY_MISSIONS),
    independentContextChallenges:transfer.length,p45TransferCases:count(transfers.P45_TRANSFERS),
-   p43WritingJourneys:count(writing.P43_UNITS)},
+   p43WritingJourneys:count(writing.P43_UNITS),p43CanonicalAnchorTasks:count(writing.P43_WRITING_TASKS)},
   contracts:{nativeStudyState:"src/study.mjs",localState:"src/study-storage.mjs",
    reviewAuthority:"uncalibrated original demonstration scheduler",
    writingPrivacy:"P43 in-tab drafts; not Hub-synchronizable",
