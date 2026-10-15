@@ -12,7 +12,7 @@ permissions:
 jobs:
   source-inventory:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -56,3 +56,43 @@ jobs:
             assert.equal(data.hub.sharedWrites,false);
             console.log('E0 source inventory absence/fidelity contract PASS');
           "
+
+      - name: Checkout Chinese exact development source
+        uses: actions/checkout@v4
+        with:
+          repository: thiepn/chinese
+          ref: 16f6e610f7d5ab977b2858bf4ff53ed445eac657
+          path: source-chinese
+          persist-credentials: false
+      - name: Checkout French exact U47 development source
+        uses: actions/checkout@v4
+        with:
+          repository: thiepn/french
+          ref: 35b6fb5ed0677f301ac4df31977c2cabdcc5e70d
+          path: source-french
+          persist-credentials: false
+      - name: Checkout Japanese exact E12Q development source
+        uses: actions/checkout@v4
+        with:
+          repository: thiepn/japanese
+          ref: 2104b801166eda408cca5cef815b2eb3d497f3d0
+          path: source-japanese
+          persist-credentials: false
+      - name: Derive real capability counts from all three original repositories
+        env:
+          NODE_OPTIONS: --experimental-strip-types
+        run: |
+          mkdir -p artifacts
+          node scripts/ecosystem-inventory.mjs \
+            --chinese="$GITHUB_WORKSPACE/source-chinese" \
+            --french="$GITHUB_WORKSPACE/source-french" \
+            --japanese="$GITHUB_WORKSPACE/source-japanese" \
+            --out="$GITHUB_WORKSPACE/artifacts/e0-source-inventory.json" --strict
+      - name: Retain read-only inventory evidence for owner review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thiepn-ecosystem-e0-source-inventory
+          path: artifacts/e0-source-inventory.json
+          if-no-files-found: warn
+          retention-days: 14
