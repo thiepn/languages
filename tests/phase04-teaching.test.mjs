@@ -44,7 +44,7 @@ test("Japanese accepts optional sentence-final 。 but does not confuse は and 
   assert.equal(evaluateExercise(e,"こんばんは").kind,"correct");
   assert.equal(evaluateExercise(e,"こんばんわ").kind,"incorrect");
   assert.equal(evaluateExercise(e,"おやすみなさい").kind,"incorrect");
-  assert.equal(normalizeAnswer(" こんばんは 。","japanese-terminal-punctuation"),"こんばんは ");
+  assert.equal(normalizeAnswer(" こんばんは 。","japanese-terminal-punctuation"),"こんばんは");
 });
 
 test("Mandarin Pinyin requires tone marks while tolerating NFC and whitespace",()=>{
