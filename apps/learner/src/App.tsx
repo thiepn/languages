@@ -1,7 +1,8 @@
-import {useEffect,useMemo,useRef,useState} from "react";
+import {useEffect,useMemo,useReducer,useRef,useState,type RefObject} from "react";
 import type {AnswerResult, LearningFrame} from "./lesson-model";
+import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance} from "./lesson-player";
 import {
-  checkpointId, DEMO_CHECKPOINT_KEY, evaluateExercise, revealExercise, canContinueAfterAnswer,
+  checkpointId, DEMO_CHECKPOINT_KEY,
   framesFor, parseDemoCheckpoint, serializeDemoCheckpoint
 } from "./lesson-model";
 import {DEMO_BUNDLES,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
@@ -32,7 +33,7 @@ function stageName(frame:LearningFrame):string {
   return "Reflection";
 }
 function ExerciseView({
-  frame,draft,result,onDraft,onSubmit,onRetry,onReveal
+  frame,draft,result,onDraft,onSubmit,onRetry,onReveal,headingRef
 }:{
   frame:LearningFrame;
   draft:string;
@@ -41,12 +42,13 @@ function ExerciseView({
   onSubmit:()=>void;
   onRetry:()=>void;
   onReveal:()=>void;
+  headingRef:RefObject<HTMLHeadingElement|null>;
 }){
   const exercise=frame.exercise;
   if(!exercise)return null;
   return <form className="activity" aria-label={stageName(frame)} onSubmit={event=>{event.preventDefault();onSubmit();}}>
     <p className="phase">{stageName(frame)}</p>
-    <h2>{exercise.instruction}</h2>
+    <h2 tabIndex={-1} ref={headingRef}>{exercise.instruction}</h2>
     {exercise.kind==="choice"?
       <fieldset className="choice-list" disabled={result!==undefined}>
         <legend className="sr-only">{exercise.instruction}</legend>
@@ -77,60 +79,68 @@ function ExerciseView({
   </form>;
 }
 
-function TeachingView({frame,languageId}:{frame:LearningFrame;languageId:string}){
+function TeachingView({frame,languageId,headingRef}:{frame:LearningFrame;languageId:string;headingRef:RefObject<HTMLHeadingElement|null>}){
   const step=frame.step;
   if(!step)return null;
   return <section className="activity">
     <p className="phase">{stageName(frame)}</p>
     {step.type==="encounter"?<>
-      <h2>Read these expressions</h2>
+      <h2 tabIndex={-1} ref={headingRef}>Read these expressions</h2>
       <div className="example-list">{step.examples.map((example,i)=><article className="example" key={i}>
         <p className="target" lang={languageId}>{example.targetText}</p>
         {example.reading&&<p className="reading" lang="zh-Latn-pinyin">{example.reading}</p>}
         <p className="translation">{example.meaning}</p>
       </article>)}</div>
     </>:step.type==="explain"?<>
-      <h2>{step.heading??"Understand the pattern"}</h2>
+      <h2 tabIndex={-1} ref={headingRef}>{step.heading??"Understand the pattern"}</h2>
       <p className="explanation">{step.explanation}</p>
     </>:step.type==="reflect"?<>
-      <h2>{step.heading??"Reflection"}</h2>
+      <h2 tabIndex={-1} ref={headingRef}>{step.heading??"Reflection"}</h2>
       <p className="explanation">{step.feedback}</p>
     </>:null}
   </section>;
 }
 
 export function App(){
-  const [selected,setSelected]=useState<LanguageChoice>(readSelected);
+  const [player,dispatch]=useReducer(reduceLessonPlayer,undefined,()=>{
+    const source=DEMO_BUNDLES[readSelected()];
+    return createLessonPlayerState(source,readPositions()[checkpointId(source)]??0);
+  });
+  const selected=player.bundle.lesson.languageId as LanguageChoice;
   const [destination,setDestination]=useState<Destination>("home");
   const [lessonOpen,setLessonOpen]=useState(false);
   const [positions,setPositions]=useState<Record<string,number>>(readPositions);
-  const [drafts,setDrafts]=useState<Record<string,string>>({});
-  const [results,setResults]=useState<Record<string,AnswerResult>>({});
   const titleRef=useRef<HTMLHeadingElement>(null);
-  const bundle=DEMO_BUNDLES[selected];
+  const activityHeadingRef=useRef<HTMLHeadingElement>(null);
+  const bundle=player.bundle;
   const frames=useMemo(()=>framesFor(bundle),[bundle]);
-  const key=checkpointId(bundle);
-  const index=positions[key]??0;
-  const complete=index===frames.length;
+  const index=player.index;
+  const complete=isLessonComplete(player);
   const frame=frames[index];
-  const answerKey=frame?key+":"+frame.id:"";
-  const currentResult=results[answerKey];
-  const currentDraft=drafts[answerKey]??"";
-  const canAdvance=!!frame&&(frame.type==="teaching"||canContinueAfterAnswer(currentResult));
+  const currentResult=activeAttempt(player).outcome;
+  const currentDraft=activeAttempt(player).draft;
+  const canAdvance=mayAdvance(player);
 
   useEffect(()=>{
     try{window.sessionStorage.setItem(DEMO_LANGUAGE_KEY,selected);}catch{/* Optional tab-only language choice. */}
   },[selected]);
   useEffect(()=>{
+    setPositions(old=>{
+      if(old[player.key]===player.index||(old[player.key]===undefined&&player.index===0))return old;
+      return {...old,[player.key]:player.index};
+    });
+  },[player.key,player.index]);
+  useEffect(()=>{
     try{window.sessionStorage.setItem(DEMO_CHECKPOINT_KEY,serializeDemoCheckpoint(positions,ALL_BUNDLES));}
     catch{/* The preview still works in memory if browser tab storage is unavailable. */}
   },[positions]);
   useEffect(()=>{
-    if(lessonOpen)titleRef.current?.focus();
+    if(lessonOpen)(activityHeadingRef.current??titleRef.current)?.focus();
   },[lessonOpen,index,selected]);
 
   function selectLanguage(id:LanguageChoice){
-    setSelected(id);
+    const next=DEMO_BUNDLES[id];
+    dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
     setLessonOpen(false);
     setDestination("course");
   }
@@ -142,33 +152,14 @@ export function App(){
     setDestination("course");
     setLessonOpen(true);
   }
-  function move(next:number){
-    setPositions(old=>({...old,[key]:Math.max(0,Math.min(frames.length,next))}));
-  }
   function restart(){
-    setPositions(old=>({...old,[key]:0}));
-    setDrafts(old=>Object.fromEntries(Object.entries(old).filter(([id])=>!id.startsWith(key+":"))));
-    setResults(old=>Object.fromEntries(Object.entries(old).filter(([id])=>!id.startsWith(key+":"))));
+    dispatch({type:"reset"});
     startLesson();
-  }
-  function submit(){
-    if(!frame?.exercise||!currentDraft.trim()||currentResult!==undefined)return;
-    setResults(old=>({...old,[answerKey]:evaluateExercise(frame.exercise!,currentDraft)}));
-  }
-  function retry(){
-    setResults(old=>{const next={...old};delete next[answerKey];return next;});
-    setDrafts(old=>{const next={...old};delete next[answerKey];return next;});
-  }
-  function reveal(){
-    if(!frame?.exercise||currentResult?.kind!=="incorrect")return;
-    setResults(old=>({...old,[answerKey]:revealExercise(frame.exercise!)}));
   }
   function clearPreview(){
     setPositions({});
-    setDrafts({});
-    setResults({});
+    dispatch({type:"load",bundle:DEMO_BUNDLES.fr,restoredIndex:0});
     setLessonOpen(false);
-    setSelected("fr");
     try{window.sessionStorage.removeItem(DEMO_LANGUAGE_KEY);window.sessionStorage.removeItem(DEMO_CHECKPOINT_KEY);}catch{/* No storage access. */}
   }
 
@@ -205,19 +196,19 @@ export function App(){
               <progress id="lesson-progress" value={index} max={frames.length}/>
             </div>
             {complete?<section className="completion" aria-live="polite">
-              <h2>Preview complete</h2>
+              <h2 ref={activityHeadingRef} tabIndex={-1}>Preview complete</h2>
               <p>You reached the end of this internal lesson fixture. No learning grade or review progress was recorded.</p>
               <div className="completion-actions">
                 <button type="button" className="primary-action" onClick={restart}>Repeat lesson</button>
                 <button type="button" className="secondary-action" onClick={()=>setLessonOpen(false)}>Back to Course</button>
               </div>
-            </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected}/>:frame?
-              <ExerciseView frame={frame} draft={currentDraft} result={currentResult}
-                onDraft={value=>setDrafts(old=>({...old,[answerKey]:value}))} onSubmit={submit} onRetry={retry} onReveal={reveal}/>:null}
+            </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
+              <ExerciseView frame={frame} draft={currentDraft} result={currentResult} headingRef={activityHeadingRef}
+                onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})}/>:null}
           </div>
           {!complete&&<div className="lesson-actions" aria-label="Lesson controls">
-            <button className="secondary-action" type="button" disabled={index===0} onClick={()=>move(index-1)}>Previous</button>
-            <button className="primary-action" type="button" disabled={!canAdvance} onClick={()=>move(index+1)}>
+            <button className="secondary-action" type="button" disabled={index===0} onClick={()=>dispatch({type:"previous"})}>Previous</button>
+            <button className="primary-action" type="button" disabled={!canAdvance} onClick={()=>dispatch({type:"next"})}>
               {index===frames.length-1?"Finish preview":"Continue"}
             </button>
           </div>}
