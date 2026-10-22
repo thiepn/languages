@@ -63,6 +63,15 @@ export function isLessonComplete(state:LessonPlayerState):boolean {
   return state.index===framesFor(state.bundle).length;
 }
 
+/** A switch or reset destroys in-memory answers; protect only unsent authored writing. */
+export function hasUnsubmittedWriting(state:LessonPlayerState):boolean {
+  return framesFor(state.bundle).some(frame=>{
+    if(frame.exercise?.kind!=="free-production")return false;
+    const attempt=state.attempts[frame.id];
+    return !!attempt?.draft.trim()&&attempt.outcome===undefined;
+  });
+}
+
 function updateAttempt(state:LessonPlayerState,frame:LearningFrame,attempt:FrameAttempt):LessonPlayerState {
   return {...state,attempts:{...state.attempts,[frame.id]:attempt}};
 }
