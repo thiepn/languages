@@ -7,6 +7,7 @@ import { validateLessonBundleV1 } from "../packages/content-schema/src/lesson-v1
 const fixturePath=fileURLToPath(new URL("../contracts/fixtures/phase02-source-lessons.json", import.meta.url));
 const source=JSON.parse(readFileSync(fixturePath,"utf8"));
 const bundleFor=id=>structuredClone(source.bundles.find(b=>b.lesson.languageId===id));
+const guidedStep=b=>b.lesson.steps.find(step=>step.type==="guided");
 const invalid=(bundle,code)=>{
  const errors=validateLessonBundleV1(bundle);
  assert.ok(errors.some(e=>e.code===code),JSON.stringify({expected:code,errors}));
@@ -43,9 +44,9 @@ test("rejects foreign-language plugins, targets and normalizers",()=>{
  const c=bundleFor("ja");c.plugin.answerNormalizations=["literal"];invalid(c,"unsupported-normalizer");
 });
 test("rejects broken step/exercise linkage, repetition and orphan activities",()=>{
- const a=bundleFor("fr");a.lesson.steps[2].exerciseIds.push("missing");invalid(a,"missing-exercise");
- const b=bundleFor("fr");b.lesson.steps[2].exerciseIds.push("fr-a1-01-choice");invalid(b,"duplicate-exercise-use");
- const c=bundleFor("ja");c.lesson.steps[3].exerciseIds=[];invalid(c,"empty-practice");
+ const a=bundleFor("fr");guidedStep(a).exerciseIds.push("missing");invalid(a,"missing-exercise");
+ const b=bundleFor("fr");guidedStep(b).exerciseIds.push("fr-a1-01-choice");invalid(b,"duplicate-exercise-use");
+ const c=bundleFor("ja");guidedStep(c).exerciseIds=[];invalid(c,"empty-practice");
  const d=bundleFor("zh");d.exercises.push({...d.exercises[0],id:"unlinked"});invalid(d,"orphan-exercise");
  const e=bundleFor("ja");e.lesson.steps[1].type="independent";invalid(e,"step-order");
 });
