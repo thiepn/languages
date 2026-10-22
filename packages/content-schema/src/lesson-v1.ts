@@ -265,7 +265,7 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
       !unique(ex.acceptedAnswers)||ex.acceptedAnswers.some((a:string)=>!hasText(a))||
       ev?.classification==="ungraded-production")add("answer-key",path,"Invalid deterministic grading definition");
    if((ex.kind==="choice"||ex.kind==="reading")&&(!Array.isArray(ex.options)||ex.options.length<2||
-      !unique(ex.options)||ex.options.some(o=>!hasText(o))||
+      !unique(ex.options)||ex.options.some((o:string)=>!hasText(o))||
       !ex.acceptedAnswers.every((a:string)=>ex.options.includes(a))||ex.normalization!=="literal"))
       add("choice-options",path,"Ambiguous or missing choice key");
    if(ex.kind==="reading"&&(!hasText(ex.passage)||!hasText(ex.question)||
@@ -278,12 +278,12 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
       add("cloze-contract",path,"Cloze requires meaningful framing before/after its blank and declared capability");
    if(ex.kind==="ordering"){
      const n=ex.tokens?.length??0;
-     if(!Array.isArray(ex.tokens)||n<2||n>8||ex.tokens.some(t=>!hasText(t))||
+     if(!Array.isArray(ex.tokens)||n<2||n>8||ex.tokens.some((t:string)=>!hasText(t))||
        !unique(ex.tokens)||ex.normalization!=="literal"||
        !plugin.capabilities.includes("ordering")||
-       !ex.acceptedAnswers.every(answer=>{
+       !ex.acceptedAnswers.every((answer:string)=>{
          const ids=answer.split(",");
-         return ids.length===n&&ids.every(t=>/^(0|[1-9][0-9]*)$/.test(t)&&Number(t)<n)&&unique(ids);
+         return ids.length===n&&ids.every((t:string)=>/^(0|[1-9][0-9]*)$/.test(t)&&Number(t)<n)&&unique(ids);
        }))
        add("ordering-contract",path,"Ordering requires unique source tokens and complete, unambiguous authored index permutations");
    }
