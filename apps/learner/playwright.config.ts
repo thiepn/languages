@@ -7,7 +7,10 @@ export default defineConfig({
   use:{baseURL:"http://127.0.0.1:5179",trace:"retain-on-failure"},
   projects:[
     {name:"desktop-chromium",use:{...devices["Desktop Chrome"]}},
-    {name:"mobile-chromium",use:{...devices["Pixel 7"]}}
+    {name:"desktop-firefox",use:{...devices["Desktop Firefox"]}},
+    {name:"desktop-webkit",use:{...devices["Desktop Safari"]}},
+    {name:"mobile-chromium",use:{...devices["Pixel 7"]}},
+    {name:"mobile-webkit",use:{...devices["iPhone 13"]}}
   ],
   webServer:{
     command:"npm run dev",
