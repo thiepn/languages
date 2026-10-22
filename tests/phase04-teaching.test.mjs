@@ -17,10 +17,10 @@ test("all three extended beginner lessons preserve source provenance and the tea
   for(const bundle of Object.values(byLang)){
     assert.deepEqual(validateLessonBundleV1(bundle),[]);
     const frames=framesFor(bundle);
-    assert.equal(frames.length,19);
+    assert.equal(frames.length,20);
     assert.deepEqual(frames.map(f=>f.stage),
-      ["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","guided","independent","independent","independent","independent","independent","independent","independent","reflect"]);
-    assert.equal(frames.filter(f=>f.exercise?.purpose==="independent").length,7);
+      ["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","guided","independent","independent","independent","independent","independent","independent","independent","independent","reflect");
+    assert.equal(frames.filter(f=>f.exercise?.purpose==="independent").length,8);
     assert.equal(frames.at(-1).step.type,"reflect");
     assert.ok(bundle.lesson.contentVersion.includes("-p04"));
     assert.equal(bundle.lesson.publication,"internal-fixture");
