@@ -3,7 +3,7 @@ import type {AnswerResult, LearningFrame} from "./lesson-model";
 import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance} from "./lesson-player";
 import {
   checkpointId, DEMO_CHECKPOINT_KEY,
-  framesFor, parseDemoCheckpoint, serializeDemoCheckpoint
+  framesFor, parseOrderingDraft, parseDemoCheckpoint, serializeDemoCheckpoint
 } from "./lesson-model";
 import {DEMO_BUNDLES,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
 
@@ -46,10 +46,19 @@ function ExerciseView({
 }){
   const exercise=frame.exercise;
   if(!exercise)return null;
+  const isChoice=exercise.kind==="choice"||exercise.kind==="reading";
+  const order=exercise.kind==="ordering"?parseOrderingDraft(draft,exercise.tokens.length):[];
+  const canCheck=exercise.kind==="ordering"?order.length===exercise.tokens.length:!!draft.trim();
   return <form className="activity" aria-label={stageName(frame)} onSubmit={event=>{event.preventDefault();onSubmit();}}>
     <p className="phase">{stageName(frame)}</p>
     <h2 tabIndex={-1} ref={headingRef}>{exercise.instruction}</h2>
-    {exercise.kind==="choice"?
+    {exercise.kind==="reading"&&<div className="reading-passage">
+      <p className="passage-text" lang={exercise.languageId}>{exercise.passage}</p>
+      {exercise.reading&&<p className="reading" lang="zh-Latn-pinyin">{exercise.reading}</p>}
+      <p className="reading-question">{exercise.question}</p>
+    </div>}
+    {exercise.kind==="cloze"&&<p className="cloze-prompt" lang={exercise.languageId}>{exercise.before}<span aria-label="missing word">_____</span>{exercise.after}</p>}
+    {isChoice?
       <fieldset className="choice-list" disabled={result!==undefined}>
         <legend className="sr-only">{exercise.instruction}</legend>
         {exercise.options.map((option,i)=><label key={option} className={"choice"+(draft===option?" selected":"")}>
@@ -57,10 +66,24 @@ function ExerciseView({
           <span className="choice-num" aria-hidden="true">{String(i+1).padStart(2,"0")}</span>
           <span>{option}</span>
         </label>)}
-      </fieldset>:
+      </fieldset>:exercise.kind==="ordering"?
+      <div className="order-activity" aria-label="Arrange the parts in order">
+        <p className="order-label">Selected order</p>
+        <ol className="chosen-tokens" aria-live="polite">
+          {order.map(i=><li key={i} lang={exercise.languageId}>{exercise.tokens[i]}</li>)}
+        </ol>
+        <fieldset disabled={result!==undefined} className="order-options">
+          <legend>Choose the next part</legend>
+          {exercise.tokens.map((token,i)=><button key={i} type="button" className="order-option"
+            disabled={order.includes(i)} onClick={()=>onDraft([...order,i].join(","))}
+            aria-label={"Add "+token} lang={exercise.languageId}>{token}</button>)}
+          <button type="button" className="secondary-action" disabled={!order.length}
+            onClick={()=>onDraft(order.slice(0,-1).join(","))}>Undo last</button>
+        </fieldset>
+      </div>:
       <label className="answer-field">
-        <span>{exercise.kind==="typed"?"Your answer":"Your response"}</span>
-        {exercise.kind==="typed"?
+        <span>{exercise.kind==="free-production"?"Your response":"Your answer"}</span>
+        {exercise.kind!=="free-production"?
           <input value={draft} onChange={event=>onDraft(event.target.value)}
             disabled={result!==undefined} autoComplete="off" spellCheck={false} lang={exercise.languageId} />:
           <textarea value={draft} onChange={event=>onDraft(event.target.value)}
@@ -75,7 +98,7 @@ function ExerciseView({
       {exercise.kind==="free-production"?"This response is not automatically graded.":"Practice feedback only — no review grade is recorded."}
     </p>}
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
-    {result===undefined&&<button className="check-button" type="submit" disabled={!draft.trim()}>Check answer</button>}
+    {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>Check answer</button>}
   </form>;
 }
 
