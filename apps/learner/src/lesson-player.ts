@@ -29,6 +29,7 @@ export type LessonPlayerAction =
   | {readonly type:"draft";readonly value:string}
   | {readonly type:"submit"}
   | {readonly type:"retry"}
+  | {readonly type:"revise"}
   | {readonly type:"reveal"}
   | {readonly type:"next"}
   | {readonly type:"previous"}
@@ -87,6 +88,10 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
       outcome:evaluateExercise(exercise,attempt.draft),
       submissions:attempt.submissions+1
     });
+  }
+  if(action.type==="revise"){
+    if(exercise.kind!=="free-production"||attempt.outcome?.kind!=="ungraded")return state;
+    return updateAttempt(state,frame,{draft:attempt.draft,submissions:attempt.submissions});
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
