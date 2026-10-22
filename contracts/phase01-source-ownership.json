@@ -505,7 +505,8 @@
     "Treat source snapshot SHAs as observations from 2026-10-22, not claims of current deployment or continuous source drift validation.",
     "Keep Hub projections read-only and distinct from learner event and enrollment write authorities.",
     "Never equate an accepted prompt structure or speech transcript with human-validated pronunciation/production.",
-    "Source-restricted lessons and private learner assets cannot be copied into public packages without verified redistribution permission."
+    "Source-restricted lessons and private learner assets cannot be copied into public packages without verified redistribution permission.",
+    "Every future learner migration requires an explicitly approved, idempotent and reversible import with loss and conflict reporting; no silent cross-origin transfer."
   ],
   "phase02Handoff": {
     "requiredInputs": [
