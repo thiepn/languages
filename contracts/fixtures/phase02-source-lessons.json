@@ -112,7 +112,8 @@
           "latin-orthography",
           "morphology",
           "cloze",
-          "ordering"
+          "ordering",
+          "contextual-reading"
         ],
         "answerNormalizations": [
           "literal",
