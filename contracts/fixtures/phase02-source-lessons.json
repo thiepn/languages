@@ -1689,7 +1689,7 @@
           "kind": "typed",
           "languageId": "ja",
           "purpose": "independent",
-          "instruction": "You enter a shop in the afternoon. Type the Japanese daytime greeting, including punctuation.",
+          "instruction": "You enter a shop in the afternoon. Type the original Japanese daytime greeting.",
           "primaryTarget": {
             "languageId": "ja",
             "kind": "curriculum_unit",
