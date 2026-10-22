@@ -94,7 +94,8 @@ test("independent tasks reuse reducer and tab checkpoint cannot store grades or 
   state=reduceLessonPlayer(state,{type:"draft",value:activeFrame(state).exercise.acceptedAnswers[0]});
   state=reduceLessonPlayer(state,{type:"submit"});
   state=reduceLessonPlayer(state,{type:"next"});
-  assert.equal(activeFrame(state).stage,"reflect");
+  assert.equal(activeFrame(state).stage,"independent");
+  assert.equal(activeFrame(state).exercise.id,l+"-p08-situated-cloze");
   const output=serializeDemoCheckpoint({[checkpointId(owned(l))]:state.index},Object.values(byLang));
   assert.ok(!/acceptedAnswers|correct|account|grade|responseText/.test(output));
   const restored=parseDemoCheckpoint(output,Object.values(byLang));
