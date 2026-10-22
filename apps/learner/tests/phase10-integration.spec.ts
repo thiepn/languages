@@ -1,5 +1,6 @@
 import {test,expect,type Page} from "@playwright/test";
 import raw from "../../../contracts/fixtures/phase02-source-lessons.json" with {type:"json"};
+import {completePhase13Independent} from "./phase13-acceptance-helper";
 
 const languageNames={fr:"French",ja:"Japanese",zh:"Chinese"} as const;
 type Language=keyof typeof languageNames;
@@ -20,10 +21,10 @@ for(const language of ["fr","ja","zh"] as const){
     await page.goto("/");
     if(language!=="fr")await page.getByRole("combobox",{name:"Study language"}).selectOption(language);
     await page.getByRole("button",{name:language==="fr"?"Start French lesson":"Start lesson"}).click();
-    await expect(page.getByText("Activity 1 of 20")).toBeVisible();
+    await expect(page.getByText("Activity 1 of 22")).toBeVisible();
     await expect(page.locator("#lesson-progress")).toHaveJSProperty("value",0);
     await restore(page,language,18);
-    await expect(page.getByText("Activity 19 of 20")).toBeVisible();
+    await expect(page.getByText("Activity 19 of 22")).toBeVisible();
     await expect(page.locator("#lesson-progress")).toHaveJSProperty("value",18);
     const response=page.getByRole("textbox",{name:"Your response"});
     await response.fill(language==="fr"?"Bonsoir, madame. Je m’appelle Inès. Au revoir.":
@@ -34,9 +35,10 @@ for(const language of ["fr","ja","zh"] as const){
     await page.getByRole("button",{name:"Review writing"}).click();
     await expect(page.getByText("Ungraded practice")).toBeVisible();
     await page.getByRole("button",{name:"Continue",exact:true}).click();
-    await expect(page.getByText("Activity 20 of 20")).toBeVisible();
+    await expect(page.getByText("Activity 20 of 22")).toBeVisible();
+    await completePhase13Independent(page,language);
     await page.getByRole("button",{name:"Finish preview"}).click();
-    await expect(page.getByText("20 of 20 activities reached")).toBeVisible();
+    await expect(page.getByText("22 of 22 activities reached")).toBeVisible();
     await expect(page.getByText("No learning grade or review progress was recorded.",{exact:false})).toBeVisible();
     const stored=await page.evaluate(()=>sessionStorage.getItem("thiepn-languages-phase03-preview-v1"));
     expect(stored).not.toContain("Ungraded practice");
@@ -53,7 +55,7 @@ test("versioned recovery rejects malformed and stale progress without granting c
     JSON.stringify({version:1,positions:{[id+"@unpublished-other-version"]:20,"not-a-source-id":20}})),lesson.id);
   await page.reload();
   await page.getByRole("button",{name:"Start French lesson"}).click();
-  await expect(page.getByText("Activity 1 of 20")).toBeVisible();
+  await expect(page.getByText("Activity 1 of 22")).toBeVisible();
   await expect(page.getByRole("heading",{name:"Read these expressions"})).toBeFocused();
   await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeEnabled();
 });
