@@ -1,7 +1,7 @@
 import {useEffect,useMemo,useRef,useState} from "react";
 import type {AnswerResult, LearningFrame} from "./lesson-model";
 import {
-  checkpointId, DEMO_CHECKPOINT_KEY, evaluateExercise,
+  checkpointId, DEMO_CHECKPOINT_KEY, evaluateExercise, revealExercise, canContinueAfterAnswer,
   framesFor, parseDemoCheckpoint, serializeDemoCheckpoint
 } from "./lesson-model";
 import {DEMO_BUNDLES,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
@@ -25,17 +25,19 @@ function stageName(frame:LearningFrame):string {
   return "Reflection";
 }
 function ExerciseView({
-  frame,draft,result,onDraft,onSubmit
+  frame,draft,result,onDraft,onSubmit,onRetry,onReveal
 }:{
   frame:LearningFrame;
   draft:string;
   result:AnswerResult|undefined;
   onDraft:(value:string)=>void;
   onSubmit:()=>void;
+  onRetry:()=>void;
+  onReveal:()=>void;
 }){
   const exercise=frame.exercise;
   if(!exercise)return null;
-  return <section className="activity" aria-label={stageName(frame)}>
+  return <form className="activity" aria-label={stageName(frame)} onSubmit={event=>{event.preventDefault();onSubmit();}}>
     <p className="phase">{stageName(frame)}</p>
     <h2>{exercise.instruction}</h2>
     {exercise.kind==="choice"?
@@ -56,15 +58,16 @@ function ExerciseView({
             disabled={result!==undefined} rows={4} lang={exercise.languageId}/>}
       </label>}
     {result!==undefined?<div className={"feedback "+result.kind} role="status" aria-live="polite">
-      <strong>{result.kind==="correct"?"Answer accepted":result.kind==="incorrect"?"Check your answer":"Ungraded practice"}</strong>
+      <strong>{result.kind==="correct"?"Answer accepted":result.kind==="incorrect"?"Not quite — try again":result.kind==="revealed"?"Answer revealed — not credited":"Ungraded practice"}</strong>
       <p>{result.explanation}</p>
-      {result.kind==="incorrect" && <p>Expected: <span lang={exercise.languageId}>{result.expected.join(" / ")}</span></p>}
+      {result.kind==="revealed" && <p>Expected: <span lang={exercise.languageId}>{result.expected.join(" / ")}</span></p>}
       {result.kind==="ungraded" && <ul>{result.rubric.map(item=><li key={item}>{item}</li>)}</ul>}
     </div>:<p className="scoring-note">
       {exercise.kind==="free-production"?"This response is not automatically graded.":"Practice feedback only — no review grade is recorded."}
     </p>}
-    {result===undefined&&<button className="check-button" type="button" disabled={!draft.trim()} onClick={onSubmit}>Check answer</button>}
-  </section>;
+    {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
+    {result===undefined&&<button className="check-button" type="submit" disabled={!draft.trim()}>Check answer</button>}
+  </form>;
 }
 
 function TeachingView({frame,languageId}:{frame:LearningFrame;languageId:string}){
@@ -80,10 +83,10 @@ function TeachingView({frame,languageId}:{frame:LearningFrame;languageId:string}
         <p className="translation">{example.meaning}</p>
       </article>)}</div>
     </>:step.type==="explain"?<>
-      <h2>Understand the pattern</h2>
+      <h2>{step.heading??"Understand the pattern"}</h2>
       <p className="explanation">{step.explanation}</p>
     </>:step.type==="reflect"?<>
-      <h2>Reflection</h2>
+      <h2>{step.heading??"Reflection"}</h2>
       <p className="explanation">{step.feedback}</p>
     </>:null}
   </section>;
@@ -106,7 +109,7 @@ export function App(){
   const answerKey=frame?key+":"+frame.id:"";
   const currentResult=results[answerKey];
   const currentDraft=drafts[answerKey]??"";
-  const canAdvance=!!frame&&(frame.type==="teaching"||currentResult!==undefined);
+  const canAdvance=!!frame&&(frame.type==="teaching"||canContinueAfterAnswer(currentResult));
 
   useEffect(()=>{
     try{window.sessionStorage.setItem(DEMO_CHECKPOINT_KEY,serializeDemoCheckpoint(positions,ALL_BUNDLES));}
@@ -141,6 +144,14 @@ export function App(){
   function submit(){
     if(!frame?.exercise||!currentDraft.trim()||currentResult!==undefined)return;
     setResults(old=>({...old,[answerKey]:evaluateExercise(frame.exercise!,currentDraft)}));
+  }
+  function retry(){
+    setResults(old=>{const next={...old};delete next[answerKey];return next;});
+    setDrafts(old=>{const next={...old};delete next[answerKey];return next;});
+  }
+  function reveal(){
+    if(!frame?.exercise||currentResult?.kind!=="incorrect")return;
+    setResults(old=>({...old,[answerKey]:revealExercise(frame.exercise!)}));
   }
   function clearPreview(){
     setPositions({});
@@ -179,7 +190,7 @@ export function App(){
               <p className="eyebrow">{bundle.lesson.level??"Introductory"} · {languageLabel(selected)}</p>
               <h1 ref={titleRef} tabIndex={-1}>{bundle.lesson.title}</h1>
               <p className="lesson-objective">{bundle.lesson.objective.statement}</p>
-              <label className="progress-label" htmlFor="lesson-progress">Lesson preview: {Math.min(index+1,frames.length)} / {frames.length} activities</label>
+              <label className="progress-label" htmlFor="lesson-progress">Lesson preview: {complete?frames.length:Math.min(index+1,frames.length)} / {frames.length} activities</label>
               <progress id="lesson-progress" value={index} max={frames.length}/>
             </div>
             {complete?<section className="completion" aria-live="polite">
@@ -191,7 +202,7 @@ export function App(){
               </div>
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected}/>:frame?
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult}
-                onDraft={value=>setDrafts(old=>({...old,[answerKey]:value}))} onSubmit={submit}/>:null}
+                onDraft={value=>setDrafts(old=>({...old,[answerKey]:value}))} onSubmit={submit} onRetry={retry} onReveal={reveal}/>:null}
           </div>
           {!complete&&<div className="lesson-actions" aria-label="Lesson controls">
             <button className="secondary-action" type="button" disabled={index===0} onClick={()=>move(index-1)}>Previous</button>
