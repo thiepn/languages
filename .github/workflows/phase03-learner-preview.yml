@@ -1,4 +1,4 @@
-name: Phases 03-05 learner preview
+name: Phases 03-06 learner preview
 
 on:
   pull_request:
@@ -7,6 +7,7 @@ on:
       - "tests/phase03-learner-model.test.mjs"
       - "tests/phase04-teaching.test.mjs"
       - "tests/phase05-player-state.test.mjs"
+      - "tests/phase06-exercises.test.mjs"
       - "contracts/fixtures/phase02-source-lessons.json"
       - "packages/content-schema/src/lesson-v1.ts"
       - ".github/workflows/phase03-learner-preview.yml"
@@ -30,7 +31,7 @@ jobs:
         with:
           node-version: "24"
       - name: Shared lesson model tests without dependencies
-        run: node --experimental-strip-types --test tests/phase03-learner-model.test.mjs tests/phase04-teaching.test.mjs tests/phase05-player-state.test.mjs tests/phase02-lesson-contract.test.mjs
+        run: node --experimental-strip-types --test tests/phase03-learner-model.test.mjs tests/phase04-teaching.test.mjs tests/phase05-player-state.test.mjs tests/phase06-exercises.test.mjs tests/phase02-lesson-contract.test.mjs
       - name: Install only public preview dependencies, not the Hub's private Account package
         working-directory: apps/learner
         run: npm install --ignore-scripts --no-audit --no-fund --no-package-lock
