@@ -20,7 +20,7 @@ describe("visual lexicon local packaging",()=>{
     const name="visual-"+String(i).padStart(3,"0")+".svg";
     const content=Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240"><title>'+name+'</title></svg>');
     writeFileSync(join(assets,name),content);
-    const blobSha=createHash("sha1").update("blob "+content.length+"\\0").update(content).digest("hex");
+    const blobSha=createHash("sha1").update("blob "+content.length+String.fromCharCode(0)).update(content).digest("hex");
     return {id:"fixture."+i,asset:name,origin:{blobSha}};
    });
    const japanese=concepts.map((c,i)=>({languageId:"japanese",lexemeId:"lex-"+i,conceptId:c.id}));
