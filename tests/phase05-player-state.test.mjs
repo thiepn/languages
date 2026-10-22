@@ -21,7 +21,7 @@ test("one typed reducer owns all three complete source lesson journeys",()=>{
   for(const language of ["fr","ja","zh"]){
     let state=createLessonPlayerState(byLang[language]);
     assert.equal(state.index,0);
-    for(let i=0;i<10;i++){
+    for(let i=0;i<13;i++){
       const frame=activeFrame(state);
       assert.ok(frame);
       if(frame.exercise){
@@ -133,7 +133,7 @@ test("version changes reject stale checkpoints, and completed recovery makes no 
   assert.deepEqual(restored,{});
   let state=createLessonPlayerState(updated,restored[checkpointId(updated)]);
   assert.equal(state.index,0);
-  state=createLessonPlayerState(previous,10);
+  state=createLessonPlayerState(previous,13);
   assert.equal(isLessonComplete(state),true);
   assert.deepEqual(state.attempts,{});
   assert.equal(mayAdvance(state),false);
@@ -152,7 +152,7 @@ test("blank, overlength, invalid-transition and boundary actions are inert",()=>
 });
 
 test("ungraded independent production remains ungraded even when submitted repeatedly",()=>{
-  let state=createLessonPlayerState(byLang.zh,8);
+  let state=createLessonPlayerState(byLang.zh,11);
   assert.equal(activeFrame(state).exercise.kind,"free-production");
   state=reduceLessonPlayer(state,{type:"draft",value:"你好，你们！"});
   state=reduceLessonPlayer(state,{type:"submit"});
