@@ -57,10 +57,22 @@ export function evaluateExercise(exercise: ExerciseV1, rawAnswer: string): Answe
     : {kind:"incorrect", explanation:exercise.explanation};
 }
 
-/** Explicit reveal is distinct from a correct attempt and never produces learner evidence. */
+/** A comma-separated list of original token indices is the only ordering draft representation. */
+export function parseOrderingDraft(value:string,tokenCount:number):number[] {
+  if(!value)return [];
+  const parts=value.split(",");
+  if(parts.length>tokenCount||parts.some(p=>! /^(0|[1-9][0-9]*)$/.test(p)))return [];
+  const indices=parts.map(Number);
+  return indices.every(i=>i<tokenCount)&&new Set(indices).size===indices.length?indices:[];
+}
+
+/** Readable reveal, not opaque zero-based index IDs. */
 export function revealExercise(exercise: ExerciseV1):AnswerResult {
   if(exercise.kind==="free-production")return evaluateExercise(exercise,"");
-  return {kind:"revealed",explanation:exercise.explanation,expected:exercise.acceptedAnswers};
+  const expected=exercise.kind==="ordering"
+    ?exercise.acceptedAnswers.map(key=>key.split(",").map(i=>exercise.tokens[Number(i)]).join(" "))
+    :exercise.acceptedAnswers;
+  return {kind:"revealed",explanation:exercise.explanation,expected};
 }
 
 export function canContinueAfterAnswer(result:AnswerResult|undefined):boolean {
