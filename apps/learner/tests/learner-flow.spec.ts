@@ -1,5 +1,5 @@
 import {test,expect,type Page} from "@playwright/test";
-import raw from "../../../contracts/fixtures/phase02-source-lessons.json";
+import raw from "../../../contracts/fixtures/phase02-source-lessons.json" with {type:"json"};
 import {framesFor} from "../src/lesson-model";
 import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
 
