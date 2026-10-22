@@ -2,15 +2,15 @@
   "schema": "thiepn.languages.phase02.source-lesson-fixtures",
   "schemaVersion": 1,
   "purpose": "internal-contract-testing-only",
-  "status": "phase12-internal-source-comparison-and-contextual-remediation-candidates",
-  "sourceBoundary": "Phase 12 contextual source comparisons and wrong-answer diagnoses use exact pinned original THIEPN encounter expressions and meanings. Unapproved, internal-only, no new accepted forms, rights authorization, grades, audio or official proficiency claim.",
+  "status": "phase13-source-pinned-role-daypart-pronoun-transfer-internal",
+  "sourceBoundary": "Phase 13 adds two independently answerable contextual transfers per language from pinned French role/name examples, Japanese time-of-day shop context, and original Mandarin Pinyin plus tea/apple sentences. All authored tasks remain internal, editorialReview pending and redistribution unverified; no new persistent grade or native history authority.",
   "bundles": [
     {
       "lesson": {
         "schemaVersion": 1,
         "id": "fr:a1-01:shared-pilot",
         "languageId": "fr",
-        "contentVersion": "unified-u1-original-v1-p04-p06-p07-p08-p09-p12",
+        "contentVersion": "unified-u1-original-v1-p04-p06-p07-p08-p09-p12-p13",
         "title": "First French words and sounds",
         "level": "A1",
         "objective": {
@@ -54,6 +54,14 @@
               {
                 "targetText": "Au revoir, à demain.",
                 "meaning": "Goodbye, see you tomorrow."
+              },
+              {
+                "targetText": "Je m’appelle Inès.",
+                "meaning": "My name is Inès."
+              },
+              {
+                "targetText": "Je suis étudiant.",
+                "meaning": "I am a student."
               }
             ]
           },
@@ -69,7 +77,7 @@
             "id": "fr-p04-teach-contrast",
             "type": "explain",
             "heading": "Choose by context",
-            "explanation": "Choose a French greeting for the relationship and time. Bonjour suits an unfamiliar teacher during the day. Bonsoir is an evening greeting; salut is informal, and au revoir closes a conversation. Je m’appelle introduces your name, whereas moi, c’est is more conversational. Written accents and apostrophes matter: a different spelling must not be silently treated as the same grammatical form.",
+            "explanation": "Choose a French greeting for the relationship and time. Bonjour suits an unfamiliar teacher during the day. Bonsoir is an evening greeting; salut is informal, and au revoir closes a conversation. Je m’appelle introduces your name, whereas moi, c’est is more conversational. Written accents and apostrophes matter: a different spelling must not be silently treated as the same grammatical form. The original lesson contrasts Je m’appelle Inès. (a name) with Je suis étudiant. (a role). In the second sentence, suis is a form of être meaning 'am'; it does not replace m’appelle in a name introduction. These are independent original examples, not one speaker's combined introduction.",
             "conceptIds": []
           },
           {
@@ -97,7 +105,9 @@
               "fr-p08-situated-cloze",
               "fr-p08-situated-ordering",
               "fr-p08-situated-reading",
-              "fr-p09-context-composition"
+              "fr-p09-context-composition",
+              "fr-p13-independent-etre",
+              "fr-p13-identity-role-reading"
             ]
           },
           {
@@ -786,6 +796,102 @@
             },
             "cue": "Keep the friend's informal greeting distinct from a polite first meeting in the evening."
           }
+        },
+        {
+          "id": "fr-p13-independent-etre",
+          "kind": "cloze",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Fill the original occupation example using the correct form of être: Je ___ étudiant.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "grading": "exact",
+          "explanation": "Je suis étudiant. describes a role using être. Je m’appelle Inès. introduces a name; these are different constructions.",
+          "acceptedAnswers": [
+            "suis"
+          ],
+          "normalization": "literal",
+          "sourceAid": {
+            "targetText": "Je suis étudiant.",
+            "meaning": "I am a student.",
+            "cue": "Je suis étudiant. describes a role using être. Je m’appelle Inès. introduces a name; these are different constructions."
+          },
+          "before": "Je ",
+          "after": " étudiant."
+        },
+        {
+          "id": "fr-p13-identity-role-reading",
+          "kind": "reading",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Read two original French examples. Which one describes a role rather than introducing a name?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "grading": "exact",
+          "explanation": "Je suis étudiant. uses suis from être to describe an occupation, whereas Je m’appelle Inès. supplies a name.",
+          "acceptedAnswers": [
+            "Je suis étudiant."
+          ],
+          "normalization": "literal",
+          "sourceAid": {
+            "targetText": "Je suis étudiant.",
+            "meaning": "I am a student.",
+            "cue": "A name introduction uses m’appelle; an occupation description uses suis."
+          },
+          "passage": "Je m’appelle Inès.\nJe suis étudiant.",
+          "question": "Which expression uses être to describe an occupation?",
+          "options": [
+            "Je suis étudiant.",
+            "Je m’appelle Inès.",
+            "Bonsoir, monsieur."
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "Je m’appelle Inès.",
+              "meaning": "My name is Inès."
+            },
+            "second": {
+              "targetText": "Je suis étudiant.",
+              "meaning": "I am a student."
+            },
+            "cue": "A name introduction uses m’appelle; an occupation description uses suis."
+          },
+          "misconceptions": [
+            {
+              "answer": "Je m’appelle Inès.",
+              "feedback": "Je m’appelle introduces a name, not an occupation; look for the original sentence with suis."
+            },
+            {
+              "answer": "Bonsoir, monsieur.",
+              "feedback": "Bonsoir greets someone in the evening. It does not describe the speaker’s occupation."
+            }
+          ]
         }
       ]
     },
@@ -794,7 +900,7 @@
         "schemaVersion": 1,
         "id": "ja:cf-a1-01-01:shared-pilot",
         "languageId": "ja",
-        "contentVersion": "course-first-c7-original-v1-p04-p06-p07-p08-p09-p12",
+        "contentVersion": "course-first-c7-original-v1-p04-p06-p07-p08-p09-p12-p13",
         "title": "Greetings at different times",
         "level": "A1",
         "objective": {
@@ -855,7 +961,7 @@
             "id": "ja-p04-teach-contrast",
             "type": "explain",
             "heading": "Choose by context",
-            "explanation": "Choose Japanese expressions by the action, not simply whether it is dark outside. こんばんは greets someone in the evening. おやすみなさい is said before going to sleep, not when arriving at an evening event. おはようございます is a polite morning greeting. こんにちは is a daytime greeting. The syllabic writing here does not establish the quality of a spoken pronunciation.",
+            "explanation": "Choose Japanese expressions by the action, not simply whether it is dark outside. こんばんは greets someone in the evening. おやすみなさい is said before going to sleep, not when arriving at an evening event. おはようございます is a polite morning greeting. こんにちは is a daytime greeting. The syllabic writing here does not establish the quality of a spoken pronunciation. The original course gives こんにちは for daytime encounters, including entering a shop in the afternoon. おはようございます is polite in the morning, こんばんは is for meeting someone after sunset, and おやすみなさい belongs to bedtime. Match the situation, not simply whether it is dark.",
             "conceptIds": []
           },
           {
@@ -883,7 +989,9 @@
               "ja-p08-situated-cloze",
               "ja-p08-situated-ordering",
               "ja-p08-situated-reading",
-              "ja-p09-context-composition"
+              "ja-p09-context-composition",
+              "ja-p13-shop-afternoon",
+              "ja-p13-social-timeline"
             ]
           },
           {
@@ -1575,6 +1683,99 @@
             },
             "cue": "Distinguish an evening meeting from going to bed instead of treating both as night greetings."
           }
+        },
+        {
+          "id": "ja-p13-shop-afternoon",
+          "kind": "typed",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "You enter a shop in the afternoon. Type the Japanese daytime greeting, including punctuation.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "grading": "exact",
+          "explanation": "The source course uses こんにちは。 for an afternoon shop entry. こんばんは。 is for the evening, not daytime.",
+          "acceptedAnswers": [
+            "こんにちは。"
+          ],
+          "normalization": "japanese-terminal-punctuation",
+          "sourceAid": {
+            "targetText": "昼：こんにちは。",
+            "meaning": "Daytime: Hello.",
+            "cue": "An afternoon shop encounter takes the daytime expression, not the evening greeting."
+          },
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "夜：こんばんは。",
+              "meaning": "Evening: Good evening."
+            },
+            "cue": "An afternoon shop encounter takes the daytime expression, not the evening greeting."
+          }
+        },
+        {
+          "id": "ja-p13-social-timeline",
+          "kind": "ordering",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Arrange the original daypart expressions: entering a shop in the afternoon, meeting a neighbor after sunset, then preparing for sleep.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "grading": "exact",
+          "explanation": "昼：こんにちは。 is daytime; 夜：こんばんは。 is an evening meeting; 寝る前：おやすみなさい。 marks bedtime.",
+          "acceptedAnswers": [
+            "1,2,0"
+          ],
+          "normalization": "literal",
+          "sourceAid": {
+            "targetText": "寝る前：おやすみなさい。",
+            "meaning": "Before bed: Good night.",
+            "cue": "An evening meeting is not identical to saying goodnight before sleeping."
+          },
+          "tokens": [
+            "寝る前：おやすみなさい。",
+            "昼：こんにちは。",
+            "夜：こんばんは。"
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "夜：こんばんは。",
+              "meaning": "Evening: Good evening."
+            },
+            "second": {
+              "targetText": "寝る前：おやすみなさい。",
+              "meaning": "Before bed: Good night."
+            },
+            "cue": "An evening meeting is not identical to saying goodnight before sleeping."
+          }
         }
       ]
     },
@@ -1583,7 +1784,7 @@
         "schemaVersion": 1,
         "id": "zh:ni-hao:shared-pilot",
         "languageId": "zh",
-        "contentVersion": "original-character-demo-v1-p04-p06-p07-p08-p09-p12",
+        "contentVersion": "original-character-demo-v1-p04-p06-p07-p08-p09-p12-p13",
         "title": "你好: characters in a greeting",
         "level": "beginner-original",
         "objective": {
@@ -1660,7 +1861,7 @@
             "id": "zh-p04-teach-contrast",
             "type": "explain",
             "heading": "Choose by context",
-            "explanation": "A Chinese character can appear in several words with different functions. 你 refers to one person; 你们 is plural. 你好 is a greeting and is not translated by adding the two character glosses. 好吃 means that food tastes good, not a way of saying hello. Pinyin carries tone marks: nǐ is third tone and hǎo is third tone in citation form. This text-only preview does not measure connected-speech tone sandhi or spoken accuracy.",
+            "explanation": "A Chinese character can appear in several words with different functions. 你 refers to one person; 你们 is plural. 你好 is a greeting and is not translated by adding the two character glosses. 好吃 means that food tastes good, not a way of saying hello. Pinyin carries tone marks: nǐ is third tone and hǎo is third tone in citation form. This text-only preview does not measure connected-speech tone sandhi or spoken accuracy. The pinned Mandarin character entries show 你 (nǐ) for singular 'you', 你们 (nǐmen) for plural 'you', and 你好 (nǐ hǎo) as a complete greeting. In the source sentences, 你喜欢喝茶吗？ asks a question and 这个苹果很好吃。 describes food. Written tone marks do not measure spoken tone sandhi.",
             "conceptIds": []
           },
           {
@@ -1688,7 +1889,9 @@
               "zh-p08-situated-cloze",
               "zh-p08-situated-ordering",
               "zh-p08-situated-reading",
-              "zh-p09-context-composition"
+              "zh-p09-context-composition",
+              "zh-p13-plural-pinyin",
+              "zh-p13-question-statement"
             ]
           },
           {
@@ -2380,6 +2583,111 @@
             },
             "cue": "The question about tea and the statement about the apple have different functions."
           }
+        },
+        {
+          "id": "zh-p13-plural-pinyin",
+          "kind": "typed",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Write the original tone-marked Pinyin for 你们 ('you', plural), not Hanzi.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "grading": "exact",
+          "explanation": "The original 你 entry lists 你们 as nǐmen. The greeting 你好 is nǐ hǎo, and the plural pronoun has 们 rather than 好.",
+          "acceptedAnswers": [
+            "nǐmen"
+          ],
+          "normalization": "pinyin-tone-marked",
+          "sourceAid": {
+            "targetText": "你们",
+            "meaning": "you (plural)",
+            "cue": "The greeting 你好 and plural 你们 share 你, but their second characters and meanings differ."
+          },
+          "sourceComparison": {
+            "first": {
+              "targetText": "你好",
+              "meaning": "hello"
+            },
+            "second": {
+              "targetText": "你们",
+              "meaning": "you (plural)"
+            },
+            "cue": "The greeting 你好 and plural 你们 share 你, but their second characters and meanings differ."
+          }
+        },
+        {
+          "id": "zh-p13-question-statement",
+          "kind": "reading",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Read the original tea question and apple sentence. Which interpretation correctly describes what both sentences do?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "grading": "exact",
+          "explanation": "吗 marks the question about liking tea; 好吃 describes the apple's taste in a statement. A written interpretation does not grade pronunciation.",
+          "acceptedAnswers": [
+            "First a question about liking tea; then a statement that an apple tastes good."
+          ],
+          "normalization": "literal",
+          "sourceAid": {
+            "targetText": "你喜欢喝茶吗？",
+            "meaning": "Do you like drinking tea?",
+            "cue": "The first asks a question ending in 吗; the second describes an apple's taste."
+          },
+          "passage": "你喜欢喝茶吗？\n这个苹果很好吃。",
+          "question": "Which option distinguishes the original question from the statement?",
+          "options": [
+            "First a question about liking tea; then a statement that an apple tastes good.",
+            "First a greeting; then a question about an apple.",
+            "First a plural pronoun; then a farewell."
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "你喜欢喝茶吗？",
+              "meaning": "Do you like drinking tea?"
+            },
+            "second": {
+              "targetText": "这个苹果很好吃。",
+              "meaning": "This apple is delicious."
+            },
+            "cue": "The first asks a question ending in 吗; the second describes an apple's taste."
+          },
+          "misconceptions": [
+            {
+              "answer": "First a greeting; then a question about an apple.",
+              "feedback": "The first expression asks about liking tea with 吗; the second describes the apple, rather than asking about it."
+            },
+            {
+              "answer": "First a plural pronoun; then a farewell.",
+              "feedback": "Neither expression is a farewell: one asks about tea and the other describes an apple."
+            }
+          ]
         }
       ]
     }
