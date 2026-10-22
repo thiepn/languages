@@ -1,0 +1,48 @@
+name: Phase 03 learner preview
+
+on:
+  pull_request:
+    paths:
+      - "apps/learner/**"
+      - "tests/phase03-learner-model.test.mjs"
+      - "contracts/fixtures/phase02-source-lessons.json"
+      - "packages/content-schema/src/lesson-v1.ts"
+      - ".github/workflows/phase03-learner-preview.yml"
+  push:
+    paths:
+      - "apps/learner/**"
+      - "tests/phase03-learner-model.test.mjs"
+      - ".github/workflows/phase03-learner-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  isolated-learner-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Shared lesson model tests without dependencies
+        run: node --experimental-strip-types --test tests/phase03-learner-model.test.mjs tests/phase02-lesson-contract.test.mjs
+      - name: Install only public preview dependencies, not the Hub's private Account package
+        working-directory: apps/learner
+        run: npm install --ignore-scripts --no-audit --no-fund --no-package-lock
+      - name: Typecheck and build isolated learner preview
+        working-directory: apps/learner
+        run: npm run build
+      - name: Install test browser
+        working-directory: apps/learner
+        run: npx playwright install --with-deps chromium
+      - name: Chromium desktop and mobile learning journey
+        working-directory: apps/learner
+        run: npm run test:e2e
+      - name: Assert candidate did not overwrite Hub output
+        run: |
+          test -f dist/learner-preview/index.html
+          test ! -d dist/hub
+          test ! -e dist/learner-preview/release.json
