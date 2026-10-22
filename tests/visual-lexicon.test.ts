@@ -1,7 +1,8 @@
 import {describe,it,expect} from "vitest";
 import {readFileSync} from "node:fs";
 import {createHash} from "node:crypto";
-import {VISUAL_CONCEPTS,JAPANESE_VISUAL_BINDINGS,CHINESE_VISUAL_BINDINGS,visualForConcept,visualForLexeme,visualAssetPath,validateVisualBindings} from "../packages/visual-lexicon/src/index.js";
+import {VISUAL_CONCEPTS,JAPANESE_VISUAL_BINDINGS,CHINESE_VISUAL_BINDINGS,FRENCH_VISUAL_BINDINGS,visualForConcept,visualForLexeme,visualAssetPath,validateVisualBindings} from "../packages/visual-lexicon/src/index.js";
+import {localVocabularyImage} from "../packages/visual-lexicon/src/consumer.js";
 
 describe("cross-language first-party visual lexicon",()=>{
  it("includes 103 unique source-preserving SVGs with validated provenance",()=>{
@@ -28,7 +29,8 @@ describe("cross-language first-party visual lexicon",()=>{
  it("retains all Japanese lexemes and twelve attested Chinese original canonical keys",()=>{
   expect(JAPANESE_VISUAL_BINDINGS).toHaveLength(103);
   expect(CHINESE_VISUAL_BINDINGS).toHaveLength(12);
-  const all=[...JAPANESE_VISUAL_BINDINGS,...CHINESE_VISUAL_BINDINGS];
+  expect(FRENCH_VISUAL_BINDINGS).toHaveLength(6);
+  const all=[...JAPANESE_VISUAL_BINDINGS,...CHINESE_VISUAL_BINDINGS,...FRENCH_VISUAL_BINDINGS];
   expect(validateVisualBindings(all)).toEqual([]);
   expect(new Set(JAPANESE_VISUAL_BINDINGS.map(x=>x.lexemeId)).size).toBe(103);
   expect(visualForLexeme("japanese","lex-ringo")?.id).toBe("food.apple");
@@ -56,10 +58,36 @@ describe("cross-language first-party visual lexicon",()=>{
   expect(visualForLexeme("french",a.lexemeId,[a,{...a,conceptId:"food.bread",senseId:"b"}])).toBeNull();
   expect(visualForLexeme("french",a.lexemeId,[a,{...a,conceptId:"food.bread",senseId:"b"}],"b")?.id).toBe("food.bread");
  });
+ it("maps six verified French original U28 lexeme IDs without using generic translations",()=>{
+  const base="fru1:original@unified-u1-original-v1:session:u6-";
+  expect(visualForLexeme("french",base+"a1-02#vocab-08")?.id).toBe("person.student-with-book");
+  expect(visualForLexeme("french",base+"a1-02#vocab-09")?.id).toBe("person.student-with-book");
+  expect(visualForLexeme("french",base+"a1-02#vocab-10")?.id).toBe("person.teacher-at-board");
+  expect(visualForLexeme("french",base+"a1-03#vocab-01")?.id).toBe("object.book");
+  expect(visualForLexeme("french",base+"a1-03#vocab-04")?.id).toBe("place.school");
+  expect(visualForLexeme("french",base+"a1-03#vocab-05")?.id).toBe("object.handled-bag");
+  expect(visualForLexeme("french","livre")).toBeNull();
+ });
+ it("exposes opt-in lazy local image attributes, never a picture during independent recall",()=>{
+  const reference=localVocabularyImage({languageId:"japanese",lexemeId:"lex-ringo",usage:"reference"});
+  expect(reference).toEqual({src:"/visual-lexicon/assets/apple.svg",alt:"Illustration of a red apple",
+    conceptId:"food.apple",width:320,height:240,loading:"lazy",decoding:"async"});
+  expect(localVocabularyImage({languageId:"chinese",lexemeId:"书|shu",usage:"introduction",assetBase:"./visual-lexicon"})?.src)
+    .toBe("./visual-lexicon/assets/book.svg");
+  expect(localVocabularyImage({languageId:"french",lexemeId:"fru1:original@unified-u1-original-v1:session:u6-a1-03#vocab-01",usage:"guided-practice"})?.conceptId)
+    .toBe("object.book");
+  expect(localVocabularyImage({languageId:"japanese",lexemeId:"lex-ringo",usage:"independent-recall"})).toBeNull();
+  expect(localVocabularyImage({languageId:"chinese",lexemeId:"苹果|pingguo",usage:"reference"})).toBeNull();
+  for(const base of ["https://remote.example","//remote","../up","/a/../b","/a?q=x","javascript:x","/double//slash"])
+    expect(localVocabularyImage({languageId:"japanese",lexemeId:"lex-ringo",usage:"reference",assetBase:base})).toBeNull();
+ });
  it("declares standalone compiled JavaScript and local offline assets in the package",()=>{
   const manifest=JSON.parse(readFileSync(new URL("../packages/visual-lexicon/package.json",import.meta.url),"utf8"));
   expect(manifest.exports["."].import).toBe("./dist/index.js");
   expect(manifest.files).toContain("assets/**");
+  expect(manifest.files).toContain("scripts/**");
+  expect(manifest.exports["./consumer"].import).toBe("./dist/consumer.js");
+  expect(manifest.exports["./french-bindings"].import).toBe("./dist/french.js");
   expect(manifest.scripts.build).toContain("write-manifest.mjs");
   expect(manifest.scripts["copy:assets"]).toContain("copy-assets.mjs");
  });
