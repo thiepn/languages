@@ -95,6 +95,13 @@ export interface ExerciseSourceAidV1 {
   readonly meaning: string;
   readonly cue: string;
 }
+/** Two original encountered expressions used to compare different contexts.
+ * This is optional teaching context, never an accepted answer or grading rule. */
+export interface ExerciseSourceComparisonV1 {
+  readonly first: Pick<LessonExampleV1,"targetText"|"meaning">;
+  readonly second: Pick<LessonExampleV1,"targetText"|"meaning">;
+  readonly cue: string;
+}
 export interface ExerciseBaseV1 extends ProvenancedContent {
   readonly id: string;
   readonly languageId: string;
@@ -106,6 +113,7 @@ export interface ExerciseBaseV1 extends ProvenancedContent {
   readonly explanation: string;
   readonly misconceptions?: readonly ExerciseMisconceptionV1[];
   readonly sourceAid?: ExerciseSourceAidV1;
+  readonly sourceComparison?: ExerciseSourceComparisonV1;
 }
 
 export interface ChoiceExerciseV1 extends ExerciseBaseV1 {
@@ -269,6 +277,17 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
   if(!hasText(ex.instruction)||!hasText(ex.explanation)||!Array.isArray(ex.sourceIds)||
       !ex.sourceIds.length||!ex.sourceIds.every((id:string)=>sourceIds.has(id)))
       add("exercise-provenance",path,"Missing instructions, feedback or source provenance");
+  if(ex.sourceComparison!==undefined){
+   const compare=ex.sourceComparison;
+   const encounter=(lesson.steps||[]).flatMap(step=>step.type==="encounter"?step.examples:[]);
+   const isSource=(example:Pick<LessonExampleV1,"targetText"|"meaning">)=>(
+     !!example&&hasText(example.targetText)&&hasText(example.meaning)&&
+     encounter.some(original=>original.targetText===example.targetText&&original.meaning===example.meaning)
+   );
+   if(!compare||!hasText(compare.cue)||!isSource(compare.first)||!isSource(compare.second)||
+      compare.first.targetText===compare.second.targetText)
+      add("source-comparison",path,"A comparison must cite two distinct original encounter examples with unchanged text and meanings");
+  }
   if(ex.sourceAid!==undefined){
    const aid=ex.sourceAid;
    const encounter=(lesson.steps||[]).flatMap(step=>step.type==="encounter"?step.examples:[]);
