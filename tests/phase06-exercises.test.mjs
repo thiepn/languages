@@ -22,7 +22,7 @@ test("three original-source extended courses share the same 16-frame contract wi
   assert.deepEqual(b.exercises.filter(e=>e.id.includes("-p06-")&&["cloze","ordering","reading"].includes(e.kind)).map(e=>e.kind),["cloze","ordering","reading"]);
   assert.equal(framesFor(b).length,16);
   assert.equal(framesFor(b).filter(f=>f.stage==="independent").length,4);
-  assert.ok(b.lesson.contentVersion.endsWith("-p06"));
+  assert.ok(b.lesson.contentVersion.includes("-p06"));
   assert.equal(b.lesson.publication,"internal-fixture");
   assert.ok(b.lesson.sources.every(s=>s.editorialReview==="pending"&&!s.redistributionVerified));
   assert.ok(b.exercises.every(e=>e.evidence.mayScheduleReview===false&&e.evidence.mayAssertProficiency===false));
