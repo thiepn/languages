@@ -50,6 +50,10 @@ jobs:
         run: npm run build
       - name: Chromium Firefox WebKit desktop and mobile learning journey
         working-directory: apps/learner
+        # GitHub maps /github/home to pwuser while the Playwright container runs as root.
+        # Firefox requires HOME to be owned by the actual browser-launch user.
+        env:
+          HOME: /root
         run: npm run test:e2e
       - name: Assert candidate did not overwrite Hub output
         run: |
