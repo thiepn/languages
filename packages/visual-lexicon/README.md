@@ -4,5 +4,5 @@
 
 ```sh
 pnpm --filter @thiepn/visual-lexicon build
-pnpm --filter @thiepn/visual-lexicon copy:assets -- ./my-app/public/visual-lexicon
+node packages/visual-lexicon/scripts/copy-assets.mjs ./my-app/public/visual-lexicon
 ```

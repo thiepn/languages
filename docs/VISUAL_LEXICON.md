@@ -20,7 +20,7 @@ The `packages/visual-lexicon` workspace package compiles to importable JavaScrip
 
 ```sh
 pnpm --filter @thiepn/visual-lexicon build
-pnpm --filter @thiepn/visual-lexicon copy:assets -- /absolute/path/to/app/public/visual-lexicon
+node packages/visual-lexicon/scripts/copy-assets.mjs /absolute/path/to/app/public/visual-lexicon
 ```
 
 The copy command checks the **original Git SHA** of each source SVG before copying, then copies 103 local files plus a machine-readable `visual-catalog.json` with all approved bindings. It uses no network, accounts or databases. Consumers can use the compiled package API or load the locally bundled JSON and SVGs from their own origin, including installed offline PWAs when app caching/precache permits.

@@ -4,7 +4,7 @@ import {copyFile,mkdir,readFile,writeFile} from "node:fs/promises";
 import {resolve,join} from "node:path";
 import {fileURLToPath} from "node:url";
 import {VISUAL_CONCEPTS} from "../dist/catalog.js";
-const dest=process.argv[2];
+const dest=process.argv[2]==="--"?process.argv[3]:process.argv[2];
 if(!dest||dest.startsWith("-"))throw Error("Usage: node scripts/copy-assets.mjs <app-static-directory>/visual-lexicon");
 const target=resolve(dest);
 const images=await Promise.all(VISUAL_CONCEPTS.map(async image=>{
