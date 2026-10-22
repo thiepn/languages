@@ -75,6 +75,6 @@ test("coverage is authored metadata rather than a grade, response or review hist
  for(const bundle of data.bundles){
   const report=JSON.stringify(sourceCoverage(bundle));
   assert.ok(!/"(answer|attempts|submissions|grades|score|progress|userId)":/i.test(report));
-  assert.ok(!/"(?:studyEvents|fsrs|proficiency|cefr|hsk|jlpt)"\\s*:/i.test(report));
+  assert.ok(!/"(?:studyEvents|fsrs|proficiency|cefr|hsk|jlpt)"\s*:/i.test(report));
  }
 });
