@@ -20,6 +20,46 @@ jobs:
       - run: pnpm verify
       - run: pnpm package:consumer
 
+  visual-lexicon:
+    name: Visual Lexicon · real package consumer
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft && github.head_ref == 'feature/shared-visual-lexicon-v1'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      # pnpm 11 resolves direct dependencies of every workspace package even
+      # with --filter. Hub depends on a separate private Account repository.
+      # Keep exact original source and tests, but isolate their public toolchain.
+      - name: Stage unchanged package and tests outside private monorepo workspace
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_root="$PWD"
+          test_root="$RUNNER_TEMP/visual-lexicon-source"
+          mkdir -p "$test_root/packages" "$test_root/tests"
+          cp package.json tsconfig.json vitest.config.ts "$test_root/"
+          cp -R packages/visual-lexicon "$test_root/packages/"
+          cp tests/visual-lexicon*.test.ts "$test_root/tests/"
+          printf 'packages:\n  - "packages/*"\n' > "$test_root/pnpm-workspace.yaml"
+          diff -qr "$source_root/packages/visual-lexicon" "$test_root/packages/visual-lexicon"
+          for file in "$test_root"/tests/*.test.ts; do cmp "$source_root/tests/$(basename "$file")" "$file"; done
+          echo "VISUAL_TEST_ROOT=$test_root" >> "$GITHUB_ENV"
+      - name: Install pinned public toolchain with pnpm 11
+        run: cd "$VISUAL_TEST_ROOT" && pnpm install --no-frozen-lockfile
+      - name: Confirm exact original compiler and runner versions
+        run: cd "$VISUAL_TEST_ROOT" && node --version && pnpm --version && pnpm exec tsc --version && pnpm exec vitest --version
+      - name: Typecheck original source and Vitest tests with TypeScript 7
+        run: cd "$VISUAL_TEST_ROOT" && pnpm typecheck
+      - name: Compile original TypeScript 7 package and actual JSON manifest
+        run: cd "$VISUAL_TEST_ROOT" && pnpm build:visuals
+      - name: Run all original Visual Lexicon Vitest and packed consumer acceptance
+        run: cd "$VISUAL_TEST_ROOT" && pnpm test
+
   package-consumer:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: verify

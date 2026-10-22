@@ -14,7 +14,7 @@ Shared language-learning platform for THIEPN language products.
 - packages/orchestrator — next-best-activity ranking, bounded calibration and adaptive blocks
 - packages/proficiency — assessment gates, coverage-aware internal promotion, milestones and scoped framework mappings
 - packages/content-validation — structural, provenance, licensing, coverage and editorial release certification
-- packages/adapter-sdk — migration inventory/readiness contracts and legacy compatibility utilities
+- packages/visual-lexicon — optional local first-party vocabulary images, concept mapping and consumer asset export\n- packages/adapter-sdk — migration inventory/readiness contracts and legacy compatibility utilities
 - packages/consumer-contract — zero-dependency P7 cross-repo compatibility and read-only authority contract
 - packages/read-model — P8 privacy-minimal language progress projections and Hub aggregation plane
 - packages/dashboard — P9 authenticated persistence/dashboard client contract

@@ -11,10 +11,11 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "build:hub": "node scripts/build-hub.mjs",
-    "verify": "pnpm typecheck && pnpm test && pnpm build:hub",
+    "verify": "pnpm typecheck && pnpm build:visuals && pnpm test && pnpm build:hub",
     "package:consumer": "mkdir -p artifacts && pnpm pack --pack-destination artifacts",
     "compat:consumers": "node scripts/check-consumer-compatibility.mjs",
-    "p12:audit": "node scripts/p12-production-audit.mjs"
+    "p12:audit": "node scripts/p12-production-audit.mjs",
+    "build:visuals": "pnpm --filter @thiepn/visual-lexicon build"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
