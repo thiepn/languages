@@ -89,6 +89,12 @@ export interface ExerciseMisconceptionV1 {
   readonly answer: string;
   readonly feedback: string;
 }
+/** Optional authored reference, displayed only during correction. It is not an answer key. */
+export interface ExerciseSourceAidV1 {
+  readonly targetText: string;
+  readonly meaning: string;
+  readonly cue: string;
+}
 export interface ExerciseBaseV1 extends ProvenancedContent {
   readonly id: string;
   readonly languageId: string;
@@ -99,6 +105,7 @@ export interface ExerciseBaseV1 extends ProvenancedContent {
   readonly evidence: ExerciseEvidenceV1;
   readonly explanation: string;
   readonly misconceptions?: readonly ExerciseMisconceptionV1[];
+  readonly sourceAid?: ExerciseSourceAidV1;
 }
 
 export interface ChoiceExerciseV1 extends ExerciseBaseV1 {
@@ -262,6 +269,13 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
   if(!hasText(ex.instruction)||!hasText(ex.explanation)||!Array.isArray(ex.sourceIds)||
       !ex.sourceIds.length||!ex.sourceIds.every((id:string)=>sourceIds.has(id)))
       add("exercise-provenance",path,"Missing instructions, feedback or source provenance");
+  if(ex.sourceAid!==undefined){
+   const aid=ex.sourceAid;
+   const encounter=(lesson.steps||[]).flatMap(step=>step.type==="encounter"?step.examples:[]);
+   if(!hasText(aid.targetText)||!hasText(aid.meaning)||!hasText(aid.cue)||
+      !encounter.some(example=>example.targetText===aid.targetText&&example.meaning===aid.meaning))
+      add("source-aid",path,"Correction aid must match a pinned encounter example and include an actionable cue");
+  }
   if(ex.misconceptions!==undefined){
    if(!Array.isArray(ex.misconceptions)||ex.misconceptions.length>6||
       ex.misconceptions.some((m:ExerciseMisconceptionV1)=>!hasText(m.answer)||!hasText(m.feedback))||
