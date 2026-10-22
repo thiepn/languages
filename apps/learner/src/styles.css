@@ -125,3 +125,11 @@ progress::-moz-progress-bar{background:#dadadd}
   .lesson-actions button{min-width:0!important}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+/* Incorrect practice offers a deliberate retry or uncredited reveal, not automatic progression. */
+.retry-actions{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:20px 0}
+.retry-actions .text-button{min-height:44px;text-decoration:underline;text-underline-offset:4px}
+.feedback.revealed{border-color:#b4bbca}
+.feedback.incorrect{border-color:#d7ac7d}
+.activity form,.activity fieldset{min-width:0}
+@media(max-width:380px){.retry-actions{gap:10px}.retry-actions button{min-width:0}}
