@@ -2,15 +2,15 @@
   "schema": "thiepn.languages.phase02.source-lesson-fixtures",
   "schemaVersion": 1,
   "purpose": "internal-contract-testing-only",
-  "status": "phase06-internal-source-linked-exercise-candidates-not-linguistically-certified",
-  "sourceBoundary": "Phase 06 cloze, ordering and contextual reading adapt pinned original THIEPN expressions. All remain internal, pending independent linguistic and rights review; no public release, recorded audio or mastery credit.",
+  "status": "phase07-source-linked-internal-practice-and-remediation-candidates",
+  "sourceBoundary": "Phase 07 adapts unchanged pinned original THIEPN expressions and examples. All new contexts, misconception feedback and independent exercises remain unapproved internal candidates; no newly accepted linguistic variants, no voice/audio, no public redistribution or proficiency credit.",
   "bundles": [
     {
       "lesson": {
         "schemaVersion": 1,
         "id": "fr:a1-01:shared-pilot",
         "languageId": "fr",
-        "contentVersion": "unified-u1-original-v1-p04-p06",
+        "contentVersion": "unified-u1-original-v1-p04-p06-p07",
         "title": "First French words and sounds",
         "level": "A1",
         "objective": {
@@ -82,7 +82,8 @@
               "fr-p04-apostrophe",
               "fr-p06-cloze",
               "fr-p06-ordering",
-              "fr-p06-reading"
+              "fr-p06-reading",
+              "fr-p07-context-reading"
             ]
           },
           {
@@ -90,7 +91,9 @@
             "type": "independent",
             "exerciseIds": [
               "fr-p04-transfer",
-              "fr-a1-01-writing"
+              "fr-a1-01-writing",
+              "fr-p07-transfer-cloze",
+              "fr-p07-transfer-reading"
             ]
           },
           {
@@ -157,7 +160,13 @@
           ],
           "normalization": "literal",
           "grading": "exact",
-          "explanation": "Bonjour is an appropriate formal daytime greeting."
+          "explanation": "Bonjour is an appropriate formal daytime greeting.",
+          "misconceptions": [
+            {
+              "answer": "Salut, madame.",
+              "feedback": "Salut is familiar. A first formal encounter with an unfamiliar teacher calls for Bonjour, madame."
+            }
+          ]
         },
         {
           "id": "fr-a1-01-fill",
@@ -247,7 +256,13 @@
           ],
           "normalization": "literal",
           "grading": "exact",
-          "explanation": "An evening arrival needs bonsoir; madame maintains polite distance. Salut is too familiar here and au revoir is for leaving."
+          "explanation": "An evening arrival needs bonsoir; madame maintains polite distance. Salut is too familiar here and au revoir is for leaving.",
+          "misconceptions": [
+            {
+              "answer": "Au revoir, madame.",
+              "feedback": "Au revoir means goodbye. For an evening arrival use Bonsoir, madame."
+            }
+          ]
         },
         {
           "id": "fr-p04-transfer",
@@ -401,6 +416,112 @@
           "acceptedAnswers": [
             "Moi, c’est Malik."
           ],
+          "normalization": "literal",
+          "misconceptions": [
+            {
+              "answer": "Au revoir, Malik.",
+              "feedback": "Au revoir closes the exchange; the question asks how Malik introduces his name."
+            }
+          ]
+        },
+        {
+          "id": "fr-p07-context-reading",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Read the exchange and identify the informal self-introduction.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "grading": "exact",
+          "explanation": "Moi, c’est Malik. introduces Malik informally; Au revoir, à demain. is a farewell, not a name.",
+          "passage": "Inès : Bonjour ! Je m’appelle Inès.\nMalik : Salut, Inès. Moi, c’est Malik.\nInès : Au revoir, à demain.",
+          "question": "Which line introduces a person's name informally?",
+          "options": [
+            "Moi, c’est Malik.",
+            "Au revoir, à demain.",
+            "Bonjour !"
+          ],
+          "acceptedAnswers": [
+            "Moi, c’est Malik."
+          ],
+          "normalization": "literal"
+        },
+        {
+          "id": "fr-p07-transfer-cloze",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Complete the parting expression you could say when meeting again tomorrow.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "grading": "exact",
+          "explanation": "The source expression is Au revoir, à demain. The accented preposition à is part of the farewell and is not interchangeable with a.",
+          "before": "Au revoir, ",
+          "after": " demain.",
+          "acceptedAnswers": [
+            "à"
+          ],
+          "normalization": "unicode-nfc"
+        },
+        {
+          "id": "fr-p07-transfer-reading",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Read the exchange and select the farewell that implies meeting tomorrow.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "grading": "exact",
+          "explanation": "Au revoir closes the conversation and à demain means see you tomorrow; Salut, Inès. is an opening.",
+          "passage": "Inès : Bonjour ! Je m’appelle Inès.\nMalik : Salut, Inès. Moi, c’est Malik.\nInès : Au revoir, à demain.",
+          "question": "Which line tells the other person you will see them tomorrow?",
+          "options": [
+            "Au revoir, à demain.",
+            "Salut, Inès.",
+            "Je m’appelle Inès."
+          ],
+          "acceptedAnswers": [
+            "Au revoir, à demain."
+          ],
           "normalization": "literal"
         }
       ]
@@ -410,7 +531,7 @@
         "schemaVersion": 1,
         "id": "ja:cf-a1-01-01:shared-pilot",
         "languageId": "ja",
-        "contentVersion": "course-first-c7-original-v1-p04-p06",
+        "contentVersion": "course-first-c7-original-v1-p04-p06-p07",
         "title": "Greetings at different times",
         "level": "A1",
         "objective": {
@@ -484,7 +605,8 @@
               "ja-p04-evening-arrival",
               "ja-p06-cloze",
               "ja-p06-ordering",
-              "ja-p06-reading"
+              "ja-p06-reading",
+              "ja-p07-context-reading"
             ]
           },
           {
@@ -492,7 +614,9 @@
             "type": "independent",
             "exerciseIds": [
               "ja-p04-transfer",
-              "ja-a1-writing"
+              "ja-a1-writing",
+              "ja-p07-transfer-cloze",
+              "ja-p07-transfer-reading"
             ]
           },
           {
@@ -560,7 +684,13 @@
           ],
           "normalization": "literal",
           "grading": "exact",
-          "explanation": "A polite morning greeting fits a morning meeting."
+          "explanation": "A polite morning greeting fits a morning meeting.",
+          "misconceptions": [
+            {
+              "answer": "こんばんは。",
+              "feedback": "こんばんは is used in the evening, not when greeting an instructor at 8 a.m."
+            }
+          ]
         },
         {
           "id": "ja-a1-typed",
@@ -650,7 +780,13 @@
           ],
           "normalization": "literal",
           "grading": "exact",
-          "explanation": "おやすみなさい is a bedtime expression. こんばんは is used when greeting someone in the evening."
+          "explanation": "おやすみなさい is a bedtime expression. こんばんは is used when greeting someone in the evening.",
+          "misconceptions": [
+            {
+              "answer": "こんばんは。",
+              "feedback": "こんばんは greets someone in the evening; おやすみなさい is used before sleep."
+            }
+          ]
         },
         {
           "id": "ja-p04-transfer",
@@ -678,7 +814,13 @@
           ],
           "normalization": "japanese-terminal-punctuation",
           "grading": "exact",
-          "explanation": "こんばんは is an evening arrival greeting. This deterministic comparison checks script, not speaking ability."
+          "explanation": "こんばんは is an evening arrival greeting. This deterministic comparison checks script, not speaking ability.",
+          "misconceptions": [
+            {
+              "answer": "おやすみなさい。",
+              "feedback": "おやすみなさい marks bedtime. Use こんばんは when arriving at an evening event."
+            }
+          ]
         },
         {
           "id": "ja-p04-evening-arrival",
@@ -806,6 +948,106 @@
             "おやすみなさい。"
           ],
           "normalization": "literal"
+        },
+        {
+          "id": "ja-p07-context-reading",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Read the daypart examples and identify the daytime greeting.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "grading": "exact",
+          "explanation": "昼 is daytime and is paired with こんにちは。 Bedtime おやすみなさい。 is not a daytime greeting.",
+          "passage": "朝：おはようございます。\n昼：こんにちは。\n夜：こんばんは。\n寝る前：おやすみなさい。",
+          "question": "Which expression is given for greeting someone during the day?",
+          "options": [
+            "こんにちは。",
+            "おやすみなさい。",
+            "こんばんは。"
+          ],
+          "acceptedAnswers": [
+            "こんにちは。"
+          ],
+          "normalization": "literal"
+        },
+        {
+          "id": "ja-p07-transfer-cloze",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Complete the source expression for saying good night before bed.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "grading": "exact",
+          "explanation": "寝る前 means before sleeping. おやすみなさい is a bedtime expression, not an evening greeting on arrival.",
+          "before": "寝る前：",
+          "after": "。",
+          "acceptedAnswers": [
+            "おやすみなさい"
+          ],
+          "normalization": "japanese-terminal-punctuation"
+        },
+        {
+          "id": "ja-p07-transfer-reading",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Read the time-of-day expressions and choose what to say when arriving after sunset.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "grading": "exact",
+          "explanation": "夜：こんばんは。 marks an evening arrival. 寝る前：おやすみなさい。 applies before sleep.",
+          "passage": "朝：おはようございます。\n昼：こんにちは。\n夜：こんばんは。\n寝る前：おやすみなさい。",
+          "question": "A visitor arrives in the evening rather than going to bed. Which greeting fits?",
+          "options": [
+            "こんばんは。",
+            "おやすみなさい。",
+            "おはようございます。"
+          ],
+          "acceptedAnswers": [
+            "こんばんは。"
+          ],
+          "normalization": "literal"
         }
       ]
     },
@@ -814,7 +1056,7 @@
         "schemaVersion": 1,
         "id": "zh:ni-hao:shared-pilot",
         "languageId": "zh",
-        "contentVersion": "original-character-demo-v1-p04-p06",
+        "contentVersion": "original-character-demo-v1-p04-p06-p07",
         "title": "你好: characters in a greeting",
         "level": "beginner-original",
         "objective": {
@@ -904,7 +1146,8 @@
               "zh-p04-pinyin",
               "zh-p06-cloze",
               "zh-p06-ordering",
-              "zh-p06-reading"
+              "zh-p06-reading",
+              "zh-p07-context-reading"
             ]
           },
           {
@@ -912,7 +1155,9 @@
             "type": "independent",
             "exerciseIds": [
               "zh-p04-transfer",
-              "zh-ni-hao-production"
+              "zh-ni-hao-production",
+              "zh-p07-transfer-cloze",
+              "zh-p07-transfer-reading"
             ]
           },
           {
@@ -979,7 +1224,13 @@
           ],
           "normalization": "literal",
           "grading": "exact",
-          "explanation": "你好 is a greeting; 好吃 means tasty, and 你们 addresses more than one person."
+          "explanation": "你好 is a greeting; 好吃 means tasty, and 你们 addresses more than one person.",
+          "misconceptions": [
+            {
+              "answer": "好吃",
+              "feedback": "好吃 means tasty. When greeting a person, the expression is 你好."
+            }
+          ]
         },
         {
           "id": "zh-ni-hao-typed",
@@ -1070,7 +1321,13 @@
           ],
           "normalization": "literal",
           "grading": "exact",
-          "explanation": "好吃 describes food that tastes good. 你好 is a greeting; 你们 addresses several people."
+          "explanation": "好吃 describes food that tastes good. 你好 is a greeting; 你们 addresses several people.",
+          "misconceptions": [
+            {
+              "answer": "你好",
+              "feedback": "你好 is a greeting, not an adjective meaning delicious. Food can be 好吃."
+            }
+          ]
         },
         {
           "id": "zh-p04-transfer",
@@ -1126,7 +1383,13 @@
           ],
           "normalization": "pinyin-tone-marked",
           "grading": "exact",
-          "explanation": "The source gives the lexical reading nǐ hǎo. Its written tone marks are compared, but connected-speech tone sandhi and pronunciation are not evaluated."
+          "explanation": "The source gives the lexical reading nǐ hǎo. Its written tone marks are compared, but connected-speech tone sandhi and pronunciation are not evaluated.",
+          "misconceptions": [
+            {
+              "answer": "ni hao",
+              "feedback": "Tone marks in the written lexical reading nǐ hǎo are required here; this is not a spoken-tone assessment."
+            }
+          ]
         },
         {
           "id": "zh-p06-cloze",
@@ -1223,6 +1486,106 @@
           ],
           "acceptedAnswers": [
             "好吃"
+          ],
+          "normalization": "literal"
+        },
+        {
+          "id": "zh-p07-context-reading",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Read the pronoun and greeting examples and identify plural 'you'.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "grading": "exact",
+          "explanation": "你们 adds 们 to make plural 'you'; 你好 is a greeting and 好吃 concerns taste.",
+          "passage": "你喜欢喝茶吗？\n你好 (nǐ hǎo): hello\n你们 (nǐmen): you (plural)",
+          "question": "Which expression in the examples refers to more than one 'you'?",
+          "options": [
+            "你们",
+            "你好",
+            "好吃"
+          ],
+          "acceptedAnswers": [
+            "你们"
+          ],
+          "normalization": "literal"
+        },
+        {
+          "id": "zh-p07-transfer-cloze",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Fill the first character of the original sentence asking one person whether they like tea.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "orthography",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "grading": "exact",
+          "explanation": "你 is the singular second-person pronoun in 你喜欢喝茶吗？; 你们 would address multiple people.",
+          "before": "你",
+          "after": "喜欢喝茶吗？",
+          "acceptedAnswers": [
+            "你"
+          ],
+          "normalization": "unicode-nfc"
+        },
+        {
+          "id": "zh-p07-transfer-reading",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Read the original expressions and choose the word used to greet someone.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "grading": "exact",
+          "explanation": "你好 is a greeting; 你们 means plural 'you', and 好吃 describes enjoyable taste.",
+          "passage": "你喜欢喝茶吗？\n你好 (nǐ hǎo) — hello\n你们 (nǐmen) — you (plural)\n这个苹果很好吃。",
+          "question": "Which source expression is a greeting rather than a pronoun or description of taste?",
+          "options": [
+            "你好",
+            "你们",
+            "好吃"
+          ],
+          "acceptedAnswers": [
+            "你好"
           ],
           "normalization": "literal"
         }
