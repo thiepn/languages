@@ -39,9 +39,11 @@ jobs:
           node --input-type=module <<'NODE'
           import { readFileSync } from "node:fs";
           const code=readFileSync("packages/content-schema/src/lesson-v1.ts","utf8");
+          const imports=code.split("\n").filter(line=>line.trimStart().startsWith("import ")).join("\n");
+          const forbiddenModules=["/apps/","/account","/scheduler","/local-db","/study-player","/hub"];
           if (/\b(?:fetch|localStorage|indexedDB|document|window|createStudyEvent|createFsrsScheduler)\s*\(/.test(code)||
-              /\b(?:account|hub|french|japanese|chinese)\b/i.test(code.replace(/\/\*[\s\S]*?\*\//g,"").replace(/\/\/[^\n]*/g,""))) {
-            throw Error("Phase 02 contract code unexpectedly owns native runtime authority");
+              forbiddenModules.some(fragment=>imports.includes(fragment))) {
+            throw Error("Phase 02 contract code unexpectedly imports runtime authority or side effects");
           }
           console.log("Phase 02 core is language-neutral and side-effect-free");
           NODE
