@@ -1,5 +1,6 @@
 import {test,expect,type Page} from "@playwright/test";
 import raw from "../../../contracts/fixtures/phase02-source-lessons.json" with {type:"json"};
+import {completePhase13Independent} from "./phase13-acceptance-helper";
 
 const bundles=Object.fromEntries(raw.bundles.map(b=>[b.lesson.languageId,b]));
 const labels={fr:"French",ja:"Japanese",zh:"Chinese"} as const;
@@ -47,11 +48,12 @@ for(const lang of ["fr","ja","zh"] as const){
   await page.getByRole("button",{name:"Review writing"}).click();
   await expect(page.getByText("Ungraded practice")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await completePhase13Independent(page,lang);
   await expect(page.getByRole("heading",{name:"What to remember"})).toBeFocused();
-  await page.getByRole("button",{name:"Previous"}).click();
+  for(let i=0;i<3;i++)await page.getByRole("button",{name:"Previous"}).click();
   await expect(textbox).toHaveValue(updated);
   await expect(page.getByText("Ungraded practice")).toBeVisible();
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  for(let i=0;i<3;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
   await page.getByRole("button",{name:"Finish preview"}).click();
   await expect(page.getByRole("heading",{name:"Preview complete"})).toBeVisible();
   await expect(page.getByText("No learning grade or review progress was recorded.",{exact:false})).toBeVisible();
