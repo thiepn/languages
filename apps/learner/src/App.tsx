@@ -6,7 +6,7 @@ import {
   checkpointId, DEMO_CHECKPOINT_KEY,
   framesFor, parseOrderingDraft, parseDemoCheckpoint, serializeDemoCheckpoint
 } from "./lesson-model";
-import {DEMO_BUNDLES,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
+import {DEMO_BUNDLES,DEMO_SOURCE_COVERAGE,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
 
 type Destination = "home" | "course" | "review" | "profile";
 const NAV: readonly {id:Destination;label:string}[] = [
@@ -247,6 +247,11 @@ export function App(){
     setDestination("course");
     setLessonOpen(true);
   }
+  function openSourcePractice(frameIndex:number){
+    if(!confirmWritingDiscard())return;
+    dispatch({type:"load",bundle,restoredIndex:frameIndex});
+    startLesson();
+  }
   function restart(){
     if(!confirmWritingDiscard())return;
     dispatch({type:"reset"});
@@ -339,6 +344,22 @@ export function App(){
             <span>Teaching · guided practice · independent writing</span>
             <span>{bundle.lesson.level??"Original beginner material"}</span>
           </div>
+          <section className="source-practice" aria-label="Original source practice">
+            <h2 className="section-title">Practice by original source</h2>
+            {DEMO_SOURCE_COVERAGE[selected].map(entry=><div className="source-practice-group" key={entry.source.id}>
+              <div className="source-practice-heading">
+                <h3>{entry.source.originalEntityId}</h3>
+                <span>{entry.independent.length} independent activities</span>
+              </div>
+              <p className="source-practice-status">Editorial review pending</p>
+              <ul>{entry.independent.map(activity=><li key={activity.id}>
+                <button type="button" onClick={()=>openSourcePractice(activity.frameIndex)}>
+                  <span className="source-practice-link">Practice: {activity.instruction}</span>
+                  {activity.kind==="free-production"&&<span className="source-practice-kind">Ungraded writing</span>}
+                </button>
+              </li>)}</ul>
+            </div>)}
+          </section>
           <p className="notice">This course is an internal preview. Content review and redistribution approval are pending; no grades or history are synced.</p>
         </section>:destination==="review"?<section className="page small-page">
           <h1>Review</h1>
