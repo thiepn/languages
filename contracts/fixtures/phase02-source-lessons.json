@@ -2641,7 +2641,8 @@
           },
           "skillDimension": "comprehension",
           "sourceIds": [
-            "zh-ni-demo"
+            "zh-ni-demo",
+            "zh-hao-demo"
           ],
           "evidence": {
             "classification": "formative-recognition",
