@@ -163,3 +163,14 @@ export interface LanguageContentPackage<TLexemeData = unknown, TGrammarData = un
   readonly curriculumUnits: readonly CurriculumUnit[];
   readonly audioAssets: readonly AudioAsset[];
 }
+
+/** Shared Phase 02 teaching contracts. Native apps remain authoritative until migration. */
+export { validateLessonBundleV1 } from "./lesson-v1.js";
+export type {
+  LessonV1, LessonSourceV1, LessonObjectiveV1, LessonExampleV1,
+  LessonStageV1, LessonStepV1, EncounterStepV1, ExplainStepV1,
+  ExerciseStepV1, ReflectStepV1, ExerciseV1, ExerciseBaseV1,
+  ChoiceExerciseV1, TypedExerciseV1, ProductionExerciseV1,
+  ExerciseEvidenceV1, LessonPublicationV1, LanguagePluginV1,
+  LessonBundleV1, LessonContractIssueV1, AnswerNormalizationV1
+} from "./lesson-v1.js";
