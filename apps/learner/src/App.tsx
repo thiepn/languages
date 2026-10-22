@@ -46,7 +46,6 @@ function ExerciseView({
 }){
   const exercise=frame.exercise;
   if(!exercise)return null;
-  const isChoice=exercise.kind==="choice"||exercise.kind==="reading";
   const order=exercise.kind==="ordering"?parseOrderingDraft(draft,exercise.tokens.length):[];
   const canCheck=exercise.kind==="ordering"?order.length===exercise.tokens.length:!!draft.trim();
   return <form className="activity" aria-label={stageName(frame)} onSubmit={event=>{event.preventDefault();onSubmit();}}>
@@ -58,7 +57,7 @@ function ExerciseView({
       <p className="reading-question">{exercise.question}</p>
     </div>}
     {exercise.kind==="cloze"&&<p className="cloze-prompt" lang={exercise.languageId}>{exercise.before}<span aria-label="missing word">_____</span>{exercise.after}</p>}
-    {isChoice?
+    {(exercise.kind==="choice"||exercise.kind==="reading")?
       <fieldset className="choice-list" disabled={result!==undefined}>
         <legend className="sr-only">{exercise.instruction}</legend>
         {exercise.options.map((option,i)=><label key={option} className={"choice"+(draft===option?" selected":"")}>
