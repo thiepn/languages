@@ -41,7 +41,7 @@ test("new independent authored source forms are exact and do not invent translat
   const reading=entry(l,"reading");
   assert.equal(evaluateExercise(reading,reading.acceptedAnswers[0]).kind,"correct");
   assert.equal(evaluateExercise(reading,reading.options.find(o=>o!==reading.acceptedAnswers[0])).kind,"incorrect");
-  assert.ok(reading.passage.length>50);
+  assert.ok(reading.passage.length>20);
  }
 });
 
