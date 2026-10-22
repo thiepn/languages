@@ -1490,9 +1490,9 @@
             }
           ],
           "sourceAid": {
-            "targetText": "这个苹果很好吃。",
-            "meaning": "This apple is delicious.",
-            "cue": "Read the question about tea and contrast it with the source statement about the apple."
+            "targetText": "你喜欢喝茶吗？",
+            "meaning": "Do you like drinking tea?",
+            "cue": "Compare the full question about tea with the source description of an apple; choose by meaning and written function."
           }
         },
         {
@@ -1876,9 +1876,9 @@
           "grading": "exact",
           "explanation": "The original source says 你喜欢喝茶吗？. 茶 means tea; 好吃 describes food taste and is not a beverage.",
           "sourceAid": {
-            "targetText": "这个苹果很好吃。",
-            "meaning": "This apple is delicious.",
-            "cue": "Read the question about tea and contrast it with the source statement about the apple."
+            "targetText": "你喜欢喝茶吗？",
+            "meaning": "Do you like drinking tea?",
+            "cue": "Compare the full question about tea with the source description of an apple; choose by meaning and written function."
           },
           "before": "你喜欢喝",
           "after": "吗？",
@@ -1911,9 +1911,9 @@
           "grading": "exact",
           "explanation": "你喜欢喝茶吗？ follows person, preference, drink, object and question particle. The written order is checked, not speaking.",
           "sourceAid": {
-            "targetText": "这个苹果很好吃。",
-            "meaning": "This apple is delicious.",
-            "cue": "Read the question about tea and contrast it with the source statement about the apple."
+            "targetText": "你喜欢喝茶吗？",
+            "meaning": "Do you like drinking tea?",
+            "cue": "Compare the full question about tea with the source description of an apple; choose by meaning and written function."
           },
           "tokens": [
             "茶",
@@ -1951,9 +1951,9 @@
           "grading": "exact",
           "explanation": "你喜欢喝茶吗？ asks whether the listener likes tea. 这个苹果很好吃。 describes how food tastes.",
           "sourceAid": {
-            "targetText": "这个苹果很好吃。",
-            "meaning": "This apple is delicious.",
-            "cue": "Read the question about tea and contrast it with the source statement about the apple."
+            "targetText": "你喜欢喝茶吗？",
+            "meaning": "Do you like drinking tea?",
+            "cue": "Compare the full question about tea with the source description of an apple; choose by meaning and written function."
           },
           "passage": "你好 — hello (nǐ hǎo)\n你们 — you plural (nǐmen)\n你喜欢喝茶吗？ — Do you like drinking tea?\n这个苹果很好吃。 — This apple is delicious.",
           "question": "Which complete source sentence asks someone whether they like tea?",
