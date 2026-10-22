@@ -22,7 +22,7 @@ for(const lang of ["fr","ja","zh"]){
   await start(page,lang);
   const bundle=lessons[lang]!;
   const frames=framesFor(bundle);
-  expect(frames).toHaveLength(10);
+  expect(frames).toHaveLength(13);
   for(const [index,frame] of frames.entries()){
    if(frame.type==="teaching"){
     if(frame.step?.type==="encounter")await expect(page.locator(".example-list .example").first()).toBeVisible();
@@ -31,12 +31,17 @@ for(const lang of ["fr","ja","zh"]){
    }else{
     const ex=frame.exercise!;
     await expect(page.getByRole("heading",{name:ex.instruction})).toBeVisible();
-    if(ex.kind==="choice"){
+    if(ex.kind==="choice"||ex.kind==="reading"){
       const position=ex.options.indexOf(ex.acceptedAnswers[0]!);
       expect(position).toBeGreaterThanOrEqual(0);
       await page.getByRole("radio").nth(position).check();
-    }else if(ex.kind==="typed")await page.getByRole("textbox",{name:"Your answer"}).fill(ex.acceptedAnswers[0]!);
-    else await page.getByRole("textbox",{name:"Your response"}).fill(
+    }else if(ex.kind==="ordering"){
+      for(const tokenIndex of ex.acceptedAnswers[0]!.split(",").map(Number)){
+        await page.getByRole("button",{name:"Add "+ex.tokens[tokenIndex]!}).click();
+      }
+    }else if(ex.kind==="typed"||ex.kind==="cloze"){
+      await page.getByRole("textbox",{name:"Your answer"}).fill(ex.acceptedAnswers[0]!);
+    }else await page.getByRole("textbox",{name:"Your response"}).fill(
       lang==="fr"?"Bonsoir, madame. Je m’appelle Léa. Au revoir.":
       lang==="ja"?"おはようございます。こんにちは。こんばんは。おやすみなさい。":
       "你好！这个苹果很好吃。");
