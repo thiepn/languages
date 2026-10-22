@@ -52,9 +52,10 @@ export function evaluateExercise(exercise: ExerciseV1, rawAnswer: string): Answe
   }
   const answer = normalizeAnswer(rawAnswer, exercise.normalization);
   const correct = exercise.acceptedAnswers.some(expected => normalizeAnswer(expected, exercise.normalization) === answer);
-  return correct
-    ? {kind:"correct", explanation:exercise.explanation}
-    : {kind:"incorrect", explanation:exercise.explanation};
+  if(correct)return {kind:"correct",explanation:exercise.explanation};
+  const correction=exercise.misconceptions?.find(item=>
+    normalizeAnswer(item.answer,exercise.normalization)===answer);
+  return {kind:"incorrect",explanation:correction?.feedback??exercise.explanation};
 }
 
 /** A comma-separated list of original token indices is the only ordering draft representation. */
