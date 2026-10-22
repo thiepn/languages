@@ -41,7 +41,7 @@ export function normalizeAnswer(value: string, policy: AnswerNormalizationV1): s
   if (policy === "unicode-nfc") return value.normalize("NFC");
   if (policy === "trim-whitespace") return value.trim().replace(/\s+/gu, " ");
   if (policy === "french-apostrophe") return value.normalize("NFC").trim().replace(/\s+/gu," ").replace(/[\u2018\u2019]/gu,"'");
-  if (policy === "japanese-terminal-punctuation") return value.normalize("NFC").trim().replace(/。$/u,"");
+  if (policy === "japanese-terminal-punctuation") return value.normalize("NFC").trim().replace(/\s*。$/u,"");
   if (policy === "pinyin-tone-marked") return value.normalize("NFC").trim().replace(/\s+/gu," ");
   return value;
 }
