@@ -118,3 +118,31 @@ test("source references must be pinned or contract validation rejects the writin
    assert.ok(validateLessonBundleV1(bundle).some(issue=>issue.code==="source-aid"));
  }
 });
+
+test("mistake-specific retry keeps typed/cloze text editable and resets discrete selections",()=>{
+ for(const lang of langs){
+   const bundle=selected(lang);
+   const typed=bundle.exercises.find(ex=>ex.kind==="typed");
+   const typedIndex=framesFor(bundle).findIndex(frame=>frame.exercise?.id===typed.id);
+   let state=createLessonPlayerState(bundle,typedIndex);
+   const invalid="an original incorrect draft";
+   state=reduceLessonPlayer(state,{type:"draft",value:invalid});
+   state=reduceLessonPlayer(state,{type:"submit"});
+   assert.equal(activeAttempt(state).outcome.kind,"incorrect");
+   state=reduceLessonPlayer(state,{type:"retry"});
+   assert.equal(activeAttempt(state).outcome,undefined);
+   assert.equal(activeAttempt(state).draft,invalid);
+   assert.equal(mayAdvance(state),false);
+   state=reduceLessonPlayer(state,{type:"draft",value:typed.acceptedAnswers[0]});
+   state=reduceLessonPlayer(state,{type:"submit"});
+   assert.equal(activeAttempt(state).outcome.kind,"correct");
+   const choice=bundle.exercises.find(ex=>ex.kind==="choice");
+   const choiceIndex=framesFor(bundle).findIndex(frame=>frame.exercise?.id===choice.id);
+   let discrete=createLessonPlayerState(bundle,choiceIndex);
+   const wrong=choice.options.find(option=>!choice.acceptedAnswers.includes(option));
+   discrete=reduceLessonPlayer(discrete,{type:"draft",value:wrong});
+   discrete=reduceLessonPlayer(discrete,{type:"submit"});
+   discrete=reduceLessonPlayer(discrete,{type:"retry"});
+   assert.equal(activeAttempt(discrete).draft,"");
+ }
+});
