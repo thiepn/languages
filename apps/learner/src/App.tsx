@@ -1,6 +1,6 @@
 import {useEffect,useMemo,useReducer,useRef,useState,type RefObject} from "react";
 import type {AnswerResult, LearningFrame} from "./lesson-model";
-import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance} from "./lesson-player";
+import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance,hasUnsubmittedWriting} from "./lesson-player";
 import {
   checkpointId, DEMO_CHECKPOINT_KEY,
   framesFor, parseOrderingDraft, parseDemoCheckpoint, serializeDemoCheckpoint
@@ -208,7 +208,12 @@ export function App(){
     if(lessonOpen)(activityHeadingRef.current??titleRef.current)?.focus();
   },[lessonOpen,index,selected]);
 
+  function confirmWritingDiscard():boolean {
+    return !hasUnsubmittedWriting(player) ||
+      window.confirm("Discard unsent writing? It is only held in this page and cannot be recovered after this action.");
+  }
   function selectLanguage(id:LanguageChoice){
+    if(id===selected||!confirmWritingDiscard())return;
     const next=DEMO_BUNDLES[id];
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
     setLessonOpen(false);
@@ -223,10 +228,12 @@ export function App(){
     setLessonOpen(true);
   }
   function restart(){
+    if(!confirmWritingDiscard())return;
     dispatch({type:"reset"});
     startLesson();
   }
   function clearPreview(){
+    if(!confirmWritingDiscard())return;
     setPositions({});
     dispatch({type:"load",bundle:DEMO_BUNDLES.fr,restoredIndex:0});
     setLessonOpen(false);
