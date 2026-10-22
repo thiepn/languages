@@ -78,7 +78,8 @@
             "exerciseIds": [
               "fr-a1-01-choice",
               "fr-a1-01-fill",
-              "fr-p04-context-choice"
+              "fr-p04-context-choice",
+              "fr-p04-apostrophe"
             ]
           },
           {
@@ -111,7 +112,8 @@
         "answerNormalizations": [
           "literal",
           "unicode-nfc",
-          "trim-whitespace"
+          "trim-whitespace",
+          "french-apostrophe"
         ],
         "recordedAudio": "none",
         "speechSynthesis": "device-optional",
@@ -268,6 +270,34 @@
           "normalization": "trim-whitespace",
           "grading": "exact",
           "explanation": "Bonsoir is the evening greeting; madame makes the address polite. An exact form check does not evaluate speech."
+        },
+        {
+          "id": "fr-p04-apostrophe",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Write ‘My name is Inès’ in French, starting with Je and keeping the apostrophe.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "acceptedAnswers": [
+            "Je m’appelle Inès."
+          ],
+          "normalization": "french-apostrophe",
+          "grading": "exact",
+          "explanation": "Je m’appelle introduces a name. Straight and curly apostrophes are equivalent typographic forms; missing the reflexive pronoun is not."
         }
       ]
     },
@@ -346,7 +376,8 @@
             "exerciseIds": [
               "ja-a1-choice",
               "ja-a1-typed",
-              "ja-p04-context-choice"
+              "ja-p04-context-choice",
+              "ja-p04-evening-arrival"
             ]
           },
           {
@@ -381,7 +412,8 @@
         "answerNormalizations": [
           "literal",
           "unicode-nfc",
-          "trim-whitespace"
+          "trim-whitespace",
+          "japanese-terminal-punctuation"
         ],
         "recordedAudio": "none",
         "speechSynthesis": "device-optional",
@@ -535,9 +567,37 @@
           "acceptedAnswers": [
             "こんばんは。"
           ],
-          "normalization": "unicode-nfc",
+          "normalization": "japanese-terminal-punctuation",
           "grading": "exact",
           "explanation": "こんばんは is an evening arrival greeting. This deterministic comparison checks script, not speaking ability."
+        },
+        {
+          "id": "ja-p04-evening-arrival",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Write the greeting for meeting a neighbor in the evening.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "acceptedAnswers": [
+            "こんばんは。"
+          ],
+          "normalization": "japanese-terminal-punctuation",
+          "grading": "exact",
+          "explanation": "こんばんは greets someone arriving in the evening; おやすみなさい is for bedtime."
         }
       ]
     },
@@ -632,7 +692,8 @@
             "exerciseIds": [
               "zh-ni-hao-choice",
               "zh-ni-hao-typed",
-              "zh-p04-context-choice"
+              "zh-p04-context-choice",
+              "zh-p04-pinyin"
             ]
           },
           {
@@ -666,7 +727,8 @@
         ],
         "answerNormalizations": [
           "literal",
-          "unicode-nfc"
+          "unicode-nfc",
+          "pinyin-tone-marked"
         ],
         "recordedAudio": "none",
         "speechSynthesis": "device-optional",
@@ -824,6 +886,34 @@
           "normalization": "unicode-nfc",
           "grading": "exact",
           "explanation": "你们 means ‘you (plural)’. The Chinese character source explicitly contrasts it with singular 你."
+        },
+        {
+          "id": "zh-p04-pinyin",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Write the tone-marked Hanyu Pinyin for 你好 (not the Hanzi).",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "orthography",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "acceptedAnswers": [
+            "nǐ hǎo"
+          ],
+          "normalization": "pinyin-tone-marked",
+          "grading": "exact",
+          "explanation": "The source gives the lexical reading nǐ hǎo. Its written tone marks are compared, but connected-speech tone sandhi and pronunciation are not evaluated."
         }
       ]
     }
