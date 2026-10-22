@@ -646,8 +646,8 @@
           "normalization": "literal",
           "misconceptions": [
             {
-              "answer": "Je m’appelle Inès.",
-              "feedback": "That introduces Inès by name. The question asks for the farewell that promises another meeting tomorrow."
+              "answer": "Moi, c’est Malik.",
+              "feedback": "Moi, c’est Malik. introduces the speaker by name. The requested expression is a farewell indicating a meeting tomorrow."
             }
           ]
         }
