@@ -145,7 +145,7 @@ function ExerciseView({
     </p>}
     {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>}
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
-    {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>Check answer</button>}
+    {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>{exercise.kind==="free-production"?"Review writing":"Check answer"}</button>}
   </form>;
 }
 
@@ -262,7 +262,7 @@ export function App(){
               <p className="eyebrow">{bundle.lesson.level??"Introductory"} · {languageLabel(selected)}</p>
               <h1 ref={titleRef} tabIndex={-1}>{bundle.lesson.title}</h1>
               <p className="lesson-objective">{bundle.lesson.objective.statement}</p>
-              <label className="progress-label" htmlFor="lesson-progress">Lesson preview: {complete?frames.length:Math.min(index+1,frames.length)} / {frames.length} activities</label>
+              <label className="progress-label" htmlFor="lesson-progress">{complete?`${frames.length} of ${frames.length} activities reached`:`Activity ${index+1} of ${frames.length}`}</label>
               <progress id="lesson-progress" value={index} max={frames.length}/>
             </div>
             {complete?<section className="completion" aria-live="polite">
