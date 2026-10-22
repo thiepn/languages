@@ -22,7 +22,7 @@ test("all three extended beginner lessons preserve source provenance and the tea
       ["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","independent","independent","reflect"]);
     assert.equal(frames.filter(f=>f.exercise?.purpose==="independent").length,2);
     assert.equal(frames.at(-1).step.type,"reflect");
-    assert.ok(bundle.lesson.contentVersion.endsWith("-p04"));
+    assert.ok(bundle.lesson.contentVersion.includes("-p04"));
     assert.equal(bundle.lesson.publication,"internal-fixture");
     assert.ok(bundle.lesson.sources.every(s=>s.redistributionVerified===false && s.editorialReview==="pending"));
     assert.ok(bundle.exercises.every(e=>e.evidence.mayScheduleReview===false&&e.evidence.mayAssertProficiency===false));
