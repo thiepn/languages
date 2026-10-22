@@ -45,7 +45,7 @@ for(const lang of ["fr","ja","zh"]){
       lang==="fr"?"Bonsoir, madame. Je m’appelle Léa. Au revoir.":
       lang==="ja"?"おはようございます。こんにちは。こんばんは。おやすみなさい。":
       "你好！这个苹果很好吃。");
-    await page.getByRole("button",{name:"Check answer"}).click();
+    await page.getByRole("button",{name:ex.kind==="free-production"?"Review writing":"Check answer"}).click();
     await expect(page.getByText(ex.kind==="free-production"?"Ungraded practice":"Answer accepted")).toBeVisible();
    }
    await page.getByRole("button",{name:index===frames.length-1?"Finish preview":"Continue",exact:true}).click();
