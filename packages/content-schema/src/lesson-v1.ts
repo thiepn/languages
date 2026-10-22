@@ -199,7 +199,7 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
   if(step.type==="guided"||step.type==="independent"){
    if(step.type==="guided")guidedCount++;else independentCount++;
    if(!Array.isArray(step.exerciseIds)||!step.exerciseIds.length)add("empty-practice",path,"Exercise step has no linked activities");
-   for(const id of step.exerciseIds){
+   for(const id of Array.isArray(step.exerciseIds)?step.exerciseIds:[]){
     const ex=exerciseById.get(id);
     if(!ex)add("missing-exercise",path,"Missing linked exercise "+id);
     else if(used.has(id))add("duplicate-exercise-use",path,"Exercise reused in the same lesson "+id);
@@ -231,14 +231,14 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
   if(ex.kind==="choice"||ex.kind==="typed"){
    if(ex.grading!=="exact"||!Array.isArray(ex.acceptedAnswers)||!ex.acceptedAnswers.length||
       !unique(ex.acceptedAnswers)||ex.acceptedAnswers.some(a=>!hasText(a))||
-      ex.evidence.classification==="ungraded-production")add("answer-key",path,"Invalid deterministic grading definition");
+      ev?.classification==="ungraded-production")add("answer-key",path,"Invalid deterministic grading definition");
    if(ex.kind==="choice"&&(!Array.isArray(ex.options)||ex.options.length<2||
       !unique(ex.options)||!ex.acceptedAnswers.every(a=>ex.options.includes(a))||ex.normalization!=="literal"))
       add("choice-options",path,"Ambiguous or missing choice key");
    if(ex.kind==="typed"&&!plugin.answerNormalizations.includes(ex.normalization))
       add("unsupported-normalizer",path,"Language plugin does not declare normalization "+ex.normalization);
   }else if(ex.kind==="free-production"){
-   if(ex.grading!=="ungraded"||ex.evidence.classification!=="ungraded-production"||
+   if(ex.grading!=="ungraded"||ev?.classification!=="ungraded-production"||
        !Array.isArray(ex.rubric)||!ex.rubric.length||ex.rubric.some(x=>!hasText(x)))
      add("production-grading",path,"Free production must remain ungraded with a useful rubric");
   }else add("exercise-kind",path,"Unknown exercise kind");
