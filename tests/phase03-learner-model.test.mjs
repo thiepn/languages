@@ -14,7 +14,7 @@ test("all three original language packs become twenty frames through one rendere
   for(const bundle of bundles){
     const frames=framesFor(bundle);
     assert.equal(frames.length,20);
-    assert.deepEqual(frames.map(f=>f.stage),["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","guided","independent","independent","independent","independent","independent","independent","independent","independent","reflect");
+    assert.deepEqual(frames.map(f=>f.stage),["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","guided","independent","independent","independent","independent","independent","independent","independent","independent","reflect"]);
     assert.equal(new Set(frames.map(f=>f.id)).size,frames.length);
     assert.equal(frames[12].exercise.kind,"free-production");
   }
