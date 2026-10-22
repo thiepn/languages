@@ -264,18 +264,18 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
       add("exercise-provenance",path,"Missing instructions, feedback or source provenance");
   if(ex.misconceptions!==undefined){
    if(!Array.isArray(ex.misconceptions)||ex.misconceptions.length>6||
-      ex.misconceptions.some(m=>!hasText(m.answer)||!hasText(m.feedback))||
-      !unique(ex.misconceptions.map(m=>m.answer)))
+      ex.misconceptions.some((m:ExerciseMisconceptionV1)=>!hasText(m.answer)||!hasText(m.feedback))||
+      !unique(ex.misconceptions.map((m:ExerciseMisconceptionV1)=>m.answer)))
       add("misconception-contract",path,"Misconceptions need unique, authored incorrect forms and substantive feedback");
    else if(ex.kind==="free-production"||
-      ex.misconceptions.some(m=>{
+      ex.misconceptions.some((m:ExerciseMisconceptionV1)=>{
        const policy=ex.normalization;
        const norm=(v:string)=>policy==="french-apostrophe"?v.normalize("NFC").trim().replace(/\s+/gu," ").replace(/[\u2018\u2019]/gu,"'"):
          policy==="trim-whitespace"?v.trim().replace(/\s+/gu," "):
          policy==="japanese-terminal-punctuation"?v.normalize("NFC").trim().replace(/\s*。$/u,""):
          policy==="pinyin-tone-marked"?v.normalize("NFC").trim().replace(/\s+/gu," "):
          policy==="unicode-nfc"?v.normalize("NFC"):v;
-       return ex.acceptedAnswers.some(answer=>norm(answer)===norm(m.answer));
+       return ex.acceptedAnswers.some((answer:string)=>norm(answer)===norm(m.answer));
       }))
       add("misconception-collision",path,"Targeted wrong-answer guidance must not match accepted forms");
   }
