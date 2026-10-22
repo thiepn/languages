@@ -2,15 +2,15 @@
   "schema": "thiepn.languages.phase02.source-lesson-fixtures",
   "schemaVersion": 1,
   "purpose": "internal-contract-testing-only",
-  "status": "phase08-contextual-independent-transfer-and-source-repair-candidates",
-  "sourceBoundary": "New Phase 08 exercises and source aids are original adaptations of existing pinned THIEPN examples; internal only pending independent rights and linguistic review. No new accepted-answer variants, audio, official level claims or native history writes.",
+  "status": "phase09-internal-independent-expression-and-revision-candidates",
+  "sourceBoundary": "Phase 09 writing prompts and source-linked aids are original adaptations of pinned THIEPN examples; internal only pending independent linguistic and rights review. Written expression remains ungraded with no new answer variants, audio, official level claims or native progress writes.",
   "bundles": [
     {
       "lesson": {
         "schemaVersion": 1,
         "id": "fr:a1-01:shared-pilot",
         "languageId": "fr",
-        "contentVersion": "unified-u1-original-v1-p04-p06-p07-p08",
+        "contentVersion": "unified-u1-original-v1-p04-p06-p07-p08-p09",
         "title": "First French words and sounds",
         "level": "A1",
         "objective": {
@@ -96,7 +96,8 @@
               "fr-p07-transfer-reading",
               "fr-p08-situated-cloze",
               "fr-p08-situated-ordering",
-              "fr-p08-situated-reading"
+              "fr-p08-situated-reading",
+              "fr-p09-context-composition"
             ]
           },
           {
@@ -231,7 +232,12 @@
             "Introduce a name with je m’appelle and the apostrophe.",
             "Finish with au revoir or à bientôt, not a second arrival greeting."
           ],
-          "explanation": "This task is ungraded. Compare your response against the provided lesson's three writing criteria."
+          "explanation": "This task is ungraded. Compare your response against the provided lesson's three writing criteria.",
+          "sourceAid": {
+            "targetText": "Bonjour ! Je m’appelle Inès.",
+            "meaning": "Hello! My name is Inès.",
+            "cue": "Use the original name introduction as a structural anchor. Write your own name and closing lines rather than copying this sample."
+          }
         },
         {
           "id": "fr-p04-context-choice",
@@ -650,6 +656,41 @@
               "feedback": "Moi, c’est Malik. introduces the speaker by name. The requested expression is a farewell indicating a meeting tomorrow."
             }
           ]
+        },
+        {
+          "id": "fr-p09-context-composition",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Write two short mini-dialogues for different situations, in French. First, introduce yourself politely to an unfamiliar person during the day. Second, meet an unfamiliar person in the evening and close the meeting with a farewell. Include the greeting, a name introduction, and the departure; keep the daytime and evening greetings distinct.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "rubric": [
+            "Use Bonjour during the daytime and Bonsoir when arriving in the evening.",
+            "Introduce yourself with Je m’appelle and the apostrophe.",
+            "Use a farewell such as Au revoir or Au revoir, à demain only when leaving.",
+            "Keep the formal first meeting distinct from informal Salut or Moi, c’est."
+          ],
+          "explanation": "Ungraded writing: compare each exchange with the source greeting, name introduction and departure examples. Revise before moving on if the register or timing does not fit.",
+          "sourceAid": {
+            "targetText": "Bonsoir, monsieur.",
+            "meaning": "Good evening, sir.",
+            "cue": "Compare the evening greeting with the daytime Bonjour and keep the farewell for the exit."
+          }
         }
       ]
     },
@@ -658,7 +699,7 @@
         "schemaVersion": 1,
         "id": "ja:cf-a1-01-01:shared-pilot",
         "languageId": "ja",
-        "contentVersion": "course-first-c7-original-v1-p04-p06-p07-p08",
+        "contentVersion": "course-first-c7-original-v1-p04-p06-p07-p08-p09",
         "title": "Greetings at different times",
         "level": "A1",
         "objective": {
@@ -746,7 +787,8 @@
               "ja-p07-transfer-reading",
               "ja-p08-situated-cloze",
               "ja-p08-situated-ordering",
-              "ja-p08-situated-reading"
+              "ja-p08-situated-reading",
+              "ja-p09-context-composition"
             ]
           },
           {
@@ -882,7 +924,12 @@
             "Use こんにちは for daytime and こんばんは for an evening arrival.",
             "Reserve おやすみなさい for bedtime rather than treating it as an evening greeting."
           ],
-          "explanation": "Independent writing is not automatically graded or treated as evidence of speaking proficiency."
+          "explanation": "Independent writing is not automatically graded or treated as evidence of speaking proficiency.",
+          "sourceAid": {
+            "targetText": "朝：おはようございます。",
+            "meaning": "Morning: Good morning (polite).",
+            "cue": "Start with the polite original morning example, then use a distinct expression for each later situation."
+          }
         },
         {
           "id": "ja-p04-context-choice",
@@ -1303,6 +1350,41 @@
               "feedback": "こんばんは is the greeting when meeting someone in the evening, not before sleeping."
             }
           ]
+        },
+        {
+          "id": "ja-p09-context-composition",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Compose a short written four-part day diary in Japanese: say what you would say when greeting a teacher in the morning, meeting a friend in the daytime, arriving to meet someone in the evening, and saying good night before sleeping. Label each situation and use an appropriate source expression, rather than using one expression for every situation.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "rubric": [
+            "Pair a polite morning greeting to the teacher with おはようございます。",
+            "Use こんにちは。 during the day and こんばんは。 when meeting someone in the evening.",
+            "Use おやすみなさい。 only before sleeping, not for an evening arrival.",
+            "Keep the situations legible and distinguish time of day from the act of going to bed."
+          ],
+          "explanation": "Ungraded written transfer: compare your four contexts against the source daypart expressions. Correct any mismatch between an arrival and bedtime before finishing.",
+          "sourceAid": {
+            "targetText": "寝る前：おやすみなさい。",
+            "meaning": "Before bed: Good night.",
+            "cue": "The source says 寝る前 (before sleep), which is different from 夜 (evening)."
+          }
         }
       ]
     },
@@ -1311,7 +1393,7 @@
         "schemaVersion": 1,
         "id": "zh:ni-hao:shared-pilot",
         "languageId": "zh",
-        "contentVersion": "original-character-demo-v1-p04-p06-p07-p08",
+        "contentVersion": "original-character-demo-v1-p04-p06-p07-p08-p09",
         "title": "你好: characters in a greeting",
         "level": "beginner-original",
         "objective": {
@@ -1415,7 +1497,8 @@
               "zh-p07-transfer-reading",
               "zh-p08-situated-cloze",
               "zh-p08-situated-ordering",
-              "zh-p08-situated-reading"
+              "zh-p08-situated-reading",
+              "zh-p09-context-composition"
             ]
           },
           {
@@ -1551,7 +1634,12 @@
             "Explain that 你们 is plural ‘you’ and not a greeting.",
             "Recognize Pinyin tone marks without claiming this text task tests actual spoken tones."
           ],
-          "explanation": "Free production requires external linguistic feedback and is not scored by the lesson fixture."
+          "explanation": "Free production requires external linguistic feedback and is not scored by the lesson fixture.",
+          "sourceAid": {
+            "targetText": "你好",
+            "meaning": "hello",
+            "cue": "The original greeting 你好 is addressed to a person. Contrast it with 好吃 when describing food."
+          }
         },
         {
           "id": "zh-p04-context-choice",
@@ -1972,6 +2060,41 @@
               "feedback": "This sentence describes an apple as tasty. The requested source sentence is a question about drinking tea."
             }
           ]
+        },
+        {
+          "id": "zh-p09-context-composition",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Write a brief two-person scene in Chinese characters in which one speaker greets another with 你好, asks the source question 你喜欢喝茶吗？, and comments that an apple is tasty using 好吃. Afterwards add a short English explanation distinguishing the greeting, question and taste expression. Do not make a speaking-proficiency claim.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-hao-demo"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "zh-hao-demo"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "rubric": [
+            "Use 你好 to greet a person, not to describe the apple.",
+            "Use 你喜欢喝茶吗？ as a question about liking tea.",
+            "Use 好吃 when describing tasty food; keep the apple statement distinct from the tea question.",
+            "In English distinguish what each expression does, without asserting your spoken tones were measured."
+          ],
+          "explanation": "Ungraded writing: compare your written scene to the original source tea question and apple example. Check the meaning and roles of 你好, 好吃 and 吗; this does not score spoken tones.",
+          "sourceAid": {
+            "targetText": "你喜欢喝茶吗？",
+            "meaning": "Do you like drinking tea?",
+            "cue": "The final 吗 marks the source tea question, which is distinct from describing an apple as tasty."
+          }
         }
       ]
     }
