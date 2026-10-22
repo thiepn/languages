@@ -1,4 +1,5 @@
 import raw from "../../../contracts/fixtures/phase02-source-lessons.json";
+import nextRaw from "../../../contracts/fixtures/phase15-source-lessons.json";
 import {admitInternalPilot,sourceCoverage,type SourceCoverage} from "./source-coverage";
 import {
   validateLessonBundleV1,
@@ -14,20 +15,27 @@ export const LANGUAGES = [
 
 export type LanguageChoice = typeof LANGUAGES[number]["id"];
 
-const bundles = raw.bundles as unknown as LessonBundleV1[];
+const originalBundles = raw.bundles as unknown as LessonBundleV1[];
+const newBundles = nextRaw.bundles as unknown as LessonBundleV1[];
+const bundles = [...originalBundles,...newBundles];
 if (raw.purpose !== "internal-contract-testing-only" ||
-    bundles.length !== LANGUAGES.length ||
+    nextRaw.purpose !== "internal-contract-testing-only" ||
+    originalBundles.length !== LANGUAGES.length ||
+    newBundles.length !== LANGUAGES.length ||
+    bundles.length !== LANGUAGES.length*2 ||
+    new Set(bundles.map(bundle=>bundle.lesson.id)).size !== bundles.length ||
     bundles.some(bundle =>
       bundle.lesson.publication !== "internal-fixture" ||
       bundle.lesson.sources.some(source => source.redistributionVerified || source.editorialReview !== "pending") ||
       !admitInternalPilot(bundle).length
     ) ||
-    LANGUAGES.some(language => bundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1)) {
-  throw new Error("The Phase 03 preview requires exactly three valid, unpublished source fixtures.");
+    LANGUAGES.some(language => originalBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
+      newBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1)) {
+  throw new Error("The internal learner requires exactly three original and three admitted next-lesson fixtures.");
 }
 
 export const DEMO_BUNDLES: Readonly<Record<LanguageChoice, LessonBundleV1>> =
-  Object.freeze(Object.fromEntries(bundles.map(bundle => [bundle.lesson.languageId, bundle])) as Record<LanguageChoice, LessonBundleV1>);
+  Object.freeze(Object.fromEntries(originalBundles.map(bundle => [bundle.lesson.languageId, bundle])) as Record<LanguageChoice, LessonBundleV1>);
 
 export function languageLabel(id: LanguageChoice): string {
   return LANGUAGES.find(language => language.id === id)?.label ?? id;
@@ -35,6 +43,14 @@ export function languageLabel(id: LanguageChoice): string {
 
 /** Authoring coverage is never learner progress or a review/scheduling count. */
 export const DEMO_SOURCE_COVERAGE:Readonly<Record<LanguageChoice,readonly SourceCoverage[]>> =
-  Object.freeze(Object.fromEntries(bundles.map(bundle=>[
+  Object.freeze(Object.fromEntries(originalBundles.map(bundle=>[
     bundle.lesson.languageId,sourceCoverage(bundle)
   ])) as Record<LanguageChoice,readonly SourceCoverage[]>);
+
+/** Read-only authoring catalog. Original pilot remains first for every language. */
+export const COURSE_BUNDLES:Readonly<Record<LanguageChoice,readonly LessonBundleV1[]>> =
+  Object.freeze(Object.fromEntries(LANGUAGES.map(language=>[
+    language.id,Object.freeze(bundles.filter(bundle=>bundle.lesson.languageId===language.id))
+  ])) as Record<LanguageChoice,readonly LessonBundleV1[]>);
+export const SOURCE_COVERAGE_BY_LESSON:Readonly<Record<string,readonly SourceCoverage[]>> =
+  Object.freeze(Object.fromEntries(bundles.map(bundle=>[bundle.lesson.id,sourceCoverage(bundle)])));

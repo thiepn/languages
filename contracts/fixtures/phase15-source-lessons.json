@@ -1,0 +1,1426 @@
+{
+  "schema": "thiepn.languages.phase02.source-lesson-fixtures",
+  "schemaVersion": 1,
+  "purpose": "internal-contract-testing-only",
+  "status": "phase13-source-pinned-role-daypart-pronoun-transfer-internal",
+  "sourceBoundary": "Phase 13 adds two independently answerable contextual transfers per language from pinned French role/name examples, Japanese time-of-day shop context, and original Mandarin Pinyin plus tea/apple sentences. All authored tasks remain internal, editorialReview pending and redistribution unverified; no new persistent grade or native history authority.",
+  "bundles": [
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "fr:a1-02:shared-pilot",
+        "languageId": "fr",
+        "contentVersion": "u6-a1-02-original-v1-p15",
+        "title": "Who are you? Using être",
+        "level": "A1",
+        "objective": {
+          "statement": "Distinguish identity, occupation, location and agreement with present-tense être.",
+          "skillDimension": "comprehension"
+        },
+        "prerequisiteLessonIds": [
+          "fr:a1-01:shared-pilot"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "fr-a1-02-original"
+        ],
+        "sources": [
+          {
+            "id": "fr-a1-02-original",
+            "repository": "thiepn/french",
+            "revision": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+            "path": "app/src/core/unified/u6-a1-01-04.ts",
+            "originalEntityId": "a1-02",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "fr-p15-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "Nous sommes à Lyon.",
+                "meaning": "We are in Lyon."
+              },
+              {
+                "targetText": "Elles sont étudiantes.",
+                "meaning": "They are students."
+              },
+              {
+                "targetText": "Je suis professeur.",
+                "meaning": "I am a teacher."
+              },
+              {
+                "targetText": "Il est à Paris.",
+                "meaning": "He is in Paris."
+              },
+              {
+                "targetText": "Tu es étudiante ?",
+                "meaning": "Are you a student?"
+              },
+              {
+                "targetText": "Oui, je suis étudiante à Paris.",
+                "meaning": "Yes, I am a student in Paris."
+              },
+              {
+                "targetText": "Elle est française.",
+                "meaning": "She is French."
+              }
+            ]
+          },
+          {
+            "id": "fr-p15-explain-forms",
+            "type": "explain",
+            "heading": "Conjugate être",
+            "explanation": "Être is irregular: je suis, tu es, il/elle/on est, nous sommes, vous êtes, ils/elles sont. The first-person form remains je suis, without elision. The original dialogue contrasts tu es étudiante ? with je suis étudiante.",
+            "conceptIds": [
+              "etre"
+            ]
+          },
+          {
+            "id": "fr-p15-explain-use",
+            "type": "explain",
+            "heading": "Describe a role or place",
+            "explanation": "Être identifies occupations and locations. Je suis professeur uses no indefinite article in the original example; Nous sommes à Lyon locates a group. Adjectives normally agree with the person described: Elle est française, not Elle est français. These are authored written contrasts, not a spoken-proficiency test.",
+            "conceptIds": []
+          },
+          {
+            "id": "fr-p15-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "fr-p15-suis-guided",
+              "fr-p15-vous-guided",
+              "fr-p15-nous-guided",
+              "fr-p15-aya-guided",
+              "fr-p15-agreement-guided"
+            ]
+          },
+          {
+            "id": "fr-p15-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "fr-p15-role-independent",
+              "fr-p15-place-independent",
+              "fr-p15-people-independent",
+              "fr-p15-ordre-independent",
+              "fr-p15-writing-independent"
+            ]
+          },
+          {
+            "id": "fr-p15-reflection",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "Use the subject-specific present form of être. A role (je suis professeur) and a location (nous sommes à Lyon) have different meanings. Gender agreement matters in elle est française. No graded proficiency or review history is created."
+          }
+        ]
+      },
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "french",
+        "languageId": "fr",
+        "writingSystems": [
+          "Latn"
+        ],
+        "capabilities": [
+          "latin-orthography",
+          "morphology",
+          "cloze",
+          "ordering",
+          "contextual-reading"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace",
+          "french-apostrophe"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      },
+      "exercises": [
+        {
+          "id": "fr-p15-suis-guided",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Complete the original first-person example: Je ___ professeur.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "normalization": "french-apostrophe",
+          "grading": "exact",
+          "explanation": "Use je suis, not je est, for the first-person form of être.",
+          "before": "Je ",
+          "after": " professeur.",
+          "acceptedAnswers": [
+            "suis"
+          ]
+        },
+        {
+          "id": "fr-p15-vous-guided",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Which present-tense form agrees with vous in the original source question?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "Vous takes êtes; nous takes sommes and tu takes es.",
+          "options": [
+            "sommes",
+            "êtes",
+            "es"
+          ],
+          "acceptedAnswers": [
+            "êtes"
+          ],
+          "misconceptions": [
+            {
+              "answer": "sommes",
+              "feedback": "Sommes belongs to nous, not vous."
+            },
+            {
+              "answer": "es",
+              "feedback": "Es belongs to tu, not vous."
+            }
+          ]
+        },
+        {
+          "id": "fr-p15-nous-guided",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Type the correct present-tense form of être after nous.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "normalization": "french-apostrophe",
+          "grading": "exact",
+          "explanation": "Nous sommes is the original first-person plural form.",
+          "acceptedAnswers": [
+            "sommes"
+          ]
+        },
+        {
+          "id": "fr-p15-aya-guided",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Read the original reply and identify the place where Aya is a student.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The original reply states à Paris.",
+          "passage": "Oui, je suis étudiante à Paris.",
+          "question": "Which city does the source sentence name?",
+          "options": [
+            "Lyon",
+            "Paris",
+            "Marseille"
+          ],
+          "acceptedAnswers": [
+            "Paris"
+          ]
+        },
+        {
+          "id": "fr-p15-agreement-guided",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Choose the source sentence with correct feminine nationality agreement.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The source contrasts elle est française with the incorrect masculine form.",
+          "options": [
+            "Elle est français.",
+            "Elle est française.",
+            "Elle êtes française."
+          ],
+          "acceptedAnswers": [
+            "Elle est française."
+          ],
+          "misconceptions": [
+            {
+              "answer": "Elle est français.",
+              "feedback": "With elle, the source uses the feminine adjective française."
+            },
+            {
+              "answer": "Elle êtes française.",
+              "feedback": "Êtes belongs to vous; elle uses est."
+            }
+          ]
+        },
+        {
+          "id": "fr-p15-role-independent",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Write the complete original French sentence stating that the speaker is a teacher.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "normalization": "french-apostrophe",
+          "grading": "exact",
+          "explanation": "Je suis professeur. uses être with a profession and no indefinite article.",
+          "acceptedAnswers": [
+            "Je suis professeur."
+          ],
+          "sourceAid": {
+            "targetText": "Je suis professeur.",
+            "meaning": "I am a teacher.",
+            "cue": "After je use suis and omit an indefinite article before professeur."
+          }
+        },
+        {
+          "id": "fr-p15-place-independent",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Complete the group location using the source form of être.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "normalization": "french-apostrophe",
+          "grading": "exact",
+          "explanation": "Nous sommes à Lyon identifies where a group is.",
+          "before": "Nous ",
+          "after": " à Lyon.",
+          "acceptedAnswers": [
+            "sommes"
+          ],
+          "misconceptions": [
+            {
+              "answer": "êtes",
+              "feedback": "Êtes goes with vous; the original group subject is nous."
+            }
+          ]
+        },
+        {
+          "id": "fr-p15-people-independent",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Contrast the original sentences. Which says that several women are students?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "Elles and étudiantes are plural; sont is the plural third-person form.",
+          "passage": "Elles sont étudiantes. / Je suis professeur.",
+          "question": "Which expression is plural and describes students?",
+          "options": [
+            "Elles sont étudiantes.",
+            "Je suis professeur.",
+            "Il est à Paris."
+          ],
+          "acceptedAnswers": [
+            "Elles sont étudiantes."
+          ]
+        },
+        {
+          "id": "fr-p15-ordre-independent",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Reconstruct the original statement locating a group in Lyon.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "ordering",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The source sentence orders subject nous, verb sommes, then the location à Lyon.",
+          "tokens": [
+            "à Lyon.",
+            "sommes",
+            "Nous"
+          ],
+          "acceptedAnswers": [
+            "2,1,0"
+          ]
+        },
+        {
+          "id": "fr-p15-writing-independent",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Write two original French sentences: identify your role, then locate a group in a city. Use two different subjects and forms of être.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-02-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "explanation": "Writing remains ungraded. Compare subject–verb agreement, role/article usage and location.",
+          "rubric": [
+            "Use je suis for your role, not je est.",
+            "Use nous sommes or ils/elles sont for a group.",
+            "Add a place with à; do not invent automatic agreement credit."
+          ],
+          "sourceAid": {
+            "targetText": "Nous sommes à Lyon.",
+            "meaning": "We are in Lyon.",
+            "cue": "Apply the same subject–verb–place structure with a place of your choice."
+          }
+        }
+      ]
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "ja:cf-a1-01-02:shared-pilot",
+        "languageId": "ja",
+        "contentVersion": "course-first-c1-a1-01-02-original-v1-p15",
+        "title": "Everyday politeness",
+        "level": "A1",
+        "objective": {
+          "statement": "Respond appropriately when thanking someone, apologizing or asking for attention.",
+          "skillDimension": "spoken_interaction"
+        },
+        "prerequisiteLessonIds": [
+          "ja:cf-a1-01-01:shared-pilot"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "ja-cf-a1-01-02-original"
+        ],
+        "sources": [
+          {
+            "id": "ja-cf-a1-01-02-original",
+            "repository": "thiepn/japanese",
+            "revision": "1e3667ebdcb0cd50491c126b948c11f47414decb",
+            "path": "apps/web/src/study/courseFirstA1.ts",
+            "originalEntityId": "cf-a1-01-02",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "ja-p15-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "ありがとうございます。",
+                "meaning": "Thank you (polite)."
+              },
+              {
+                "targetText": "どういたしまして。",
+                "meaning": "You're welcome."
+              },
+              {
+                "targetText": "すみません。",
+                "meaning": "Excuse me / Sorry."
+              },
+              {
+                "targetText": "はい、どうぞ。",
+                "meaning": "Yes, here you go."
+              }
+            ]
+          },
+          {
+            "id": "ja-p15-explain-forms",
+            "type": "explain",
+            "heading": "Thanks and the response",
+            "explanation": "ありがとうございます expresses polite thanks. どういたしまして is one possible acknowledgment of thanks; it should not be treated as an obligatory answer to every apology. はい、どうぞ can accompany handing something to another person.",
+            "conceptIds": []
+          },
+          {
+            "id": "ja-p15-explain-use",
+            "type": "explain",
+            "heading": "Apology versus attention",
+            "explanation": "すみません can express a light apology or politely draw someone's attention. Select it for getting a staff member's attention rather than answering thanks. The original lesson notes that いいえ is not always the natural reply to an apology. Written practice cannot assess politeness in actual speech.",
+            "conceptIds": []
+          },
+          {
+            "id": "ja-p15-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "ja-p15-thanks-guided",
+              "ja-p15-attention-guided",
+              "ja-p15-write-guided",
+              "ja-p15-reply-guided",
+              "ja-p15-hand-guided"
+            ]
+          },
+          {
+            "id": "ja-p15-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "ja-p15-attention-independent",
+              "ja-p15-reply-independent",
+              "ja-p15-intent-independent",
+              "ja-p15-sequence-independent",
+              "ja-p15-writing-independent"
+            ]
+          },
+          {
+            "id": "ja-p15-reflection",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "ありがとうございます thanks someone; どういたしまして can acknowledge thanks; すみません can draw attention or apologize. Choose by social function, not by a word-for-word English equivalent."
+          }
+        ]
+      },
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "japanese",
+        "languageId": "ja",
+        "writingSystems": [
+          "Jpan"
+        ],
+        "capabilities": [
+          "kana",
+          "kanji",
+          "furigana",
+          "contextual-reading",
+          "cloze",
+          "ordering"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace",
+          "japanese-terminal-punctuation"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      },
+      "exercises": [
+        {
+          "id": "ja-p15-thanks-guided",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Someone hands you an item you requested. Which original polite expression thanks them?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The original lesson selects ありがとうございます for thanking someone who helped.",
+          "options": [
+            "ありがとうございます。",
+            "こんばんは。",
+            "おやすみなさい。"
+          ],
+          "acceptedAnswers": [
+            "ありがとうございます。"
+          ]
+        },
+        {
+          "id": "ja-p15-attention-guided",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Which original expression politely gets a staff member's attention?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "すみません can attract attention without necessarily meaning a serious apology.",
+          "options": [
+            "すみません。",
+            "いただきます。",
+            "おはようございます。"
+          ],
+          "acceptedAnswers": [
+            "すみません。"
+          ]
+        },
+        {
+          "id": "ja-p15-write-guided",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Type the original polite Japanese expression for thank you.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "normalization": "japanese-terminal-punctuation",
+          "grading": "exact",
+          "explanation": "ありがとうございます is a polite expression of thanks.",
+          "acceptedAnswers": [
+            "ありがとうございます。"
+          ]
+        },
+        {
+          "id": "ja-p15-reply-guided",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Read the original expression of thanks and select a suitable response.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "どういたしまして is one possible acknowledgment of thanks.",
+          "passage": "ありがとうございます。",
+          "question": "Which reply acknowledges the thanks?",
+          "options": [
+            "どういたしまして。",
+            "すみません。",
+            "こんばんは。"
+          ],
+          "acceptedAnswers": [
+            "どういたしまして。"
+          ]
+        },
+        {
+          "id": "ja-p15-hand-guided",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Complete the original expression when handing something to someone.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "normalization": "japanese-terminal-punctuation",
+          "grading": "exact",
+          "explanation": "The original example はい、どうぞ。 accompanies handing something over.",
+          "before": "はい、",
+          "after": "。",
+          "acceptedAnswers": [
+            "どうぞ"
+          ]
+        },
+        {
+          "id": "ja-p15-attention-independent",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "You need assistance in a shop. Write the source expression to get someone's attention.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "normalization": "japanese-terminal-punctuation",
+          "grading": "exact",
+          "explanation": "すみません is appropriate for getting a staff member's attention.",
+          "acceptedAnswers": [
+            "すみません。"
+          ],
+          "misconceptions": [
+            {
+              "answer": "ありがとうございます。",
+              "feedback": "That thanks a person; すみません is the attention-getting expression here."
+            }
+          ]
+        },
+        {
+          "id": "ja-p15-reply-independent",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Someone says ありがとうございます. Which response follows the original social function?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "どういたしまして responds to thanks, rather than requesting attention.",
+          "options": [
+            "どういたしまして。",
+            "すみません。",
+            "はい、どうぞ。"
+          ],
+          "acceptedAnswers": [
+            "どういたしまして。"
+          ]
+        },
+        {
+          "id": "ja-p15-intent-independent",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Read these original expressions in sequence. Which one can request attention or express a light apology?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The original notes distinguish the two uses of すみません.",
+          "passage": "ありがとうございます。 / すみません。 / どういたしまして。",
+          "question": "Select the expression with both functions.",
+          "options": [
+            "ありがとうございます。",
+            "すみません。",
+            "どういたしまして。"
+          ],
+          "acceptedAnswers": [
+            "すみません。"
+          ]
+        },
+        {
+          "id": "ja-p15-sequence-independent",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Arrange the two original expressions as polite thanks followed by acknowledgment.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "ordering",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "ありがとうございます comes before a possible reply どういたしまして.",
+          "tokens": [
+            "どういたしまして。",
+            "ありがとうございます。"
+          ],
+          "acceptedAnswers": [
+            "1,0"
+          ]
+        },
+        {
+          "id": "ja-p15-writing-independent",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Write a three-line Japanese interaction: get a staff member's attention, thank them after receiving help, and give their appropriate acknowledgment.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-02-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "explanation": "This authored interaction is ungraded; a written exercise does not prove natural spoken fluency.",
+          "rubric": [
+            "Use すみません to draw the staff member's attention.",
+            "Use ありがとうございます to thank the helper.",
+            "Use どういたしまして as one possible response, without claiming it is mandatory in every interaction."
+          ],
+          "sourceAid": {
+            "targetText": "ありがとうございます。",
+            "meaning": "Thank you (polite).",
+            "cue": "Use the original thanks as the second line and a suitable response afterward."
+          }
+        }
+      ]
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "zh:wo:shared-pilot",
+        "languageId": "zh",
+        "contentVersion": "original-character-wo-v1-p15",
+        "title": "我: first-person expressions",
+        "level": "beginner-original",
+        "objective": {
+          "statement": "Distinguish 我, 我们 and 我的; identify an original sentence of personal identity.",
+          "skillDimension": "meaning_recognition"
+        },
+        "prerequisiteLessonIds": [
+          "zh:ni-hao:shared-pilot"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "zh-wo-demo"
+        ],
+        "sources": [
+          {
+            "id": "zh-wo-demo",
+            "repository": "thiepn/chinese",
+            "revision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+            "path": "src/demo-lessons.mjs",
+            "originalEntityId": "我",
+            "rights": "review-required",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "zh-p15-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "我",
+                "meaning": "I; me",
+                "reading": "wǒ"
+              },
+              {
+                "targetText": "我们",
+                "meaning": "we; us",
+                "reading": "wǒmen"
+              },
+              {
+                "targetText": "我的",
+                "meaning": "my; mine",
+                "reading": "wǒ de"
+              },
+              {
+                "targetText": "我是学生。",
+                "meaning": "I am a student.",
+                "reading": "Wǒ shì xuésheng."
+              }
+            ]
+          },
+          {
+            "id": "zh-p15-explain-forms",
+            "type": "explain",
+            "heading": "Pronoun and plural",
+            "explanation": "The original Mandarin demonstration gives 我 (wǒ) for I/me and 我们 (wǒmen) for we/us. Adding 们 changes the reference from first-person singular to first-person plural; these meanings are not interchangeable. This is an original editorial demonstration, not official HSK content.",
+            "conceptIds": []
+          },
+          {
+            "id": "zh-p15-explain-use",
+            "type": "explain",
+            "heading": "Possession and an identity sentence",
+            "explanation": "我的 (wǒ de) means my/mine, whereas 我是学生。 (Wǒ shì xuésheng.) means I am a student. The source sentence uses 是 between the subject 我 and the identity noun 学生. Written tone-marked Pinyin is a reading reference; this app does not evaluate spoken pronunciation or tone sandhi.",
+            "conceptIds": []
+          },
+          {
+            "id": "zh-p15-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "zh-p15-pronoun-guided",
+              "zh-p15-write-guided",
+              "zh-p15-plural-guided",
+              "zh-p15-pinyin-guided",
+              "zh-p15-identity-guided"
+            ]
+          },
+          {
+            "id": "zh-p15-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "zh-p15-plural-independent",
+              "zh-p15-ownership-independent",
+              "zh-p15-identity-independent",
+              "zh-p15-reading-independent",
+              "zh-p15-writing-independent"
+            ]
+          },
+          {
+            "id": "zh-p15-reflection",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "我 means I/me, 我们 means we/us, and 我的 expresses my/mine. 我是学生。 uses 是 for an identity statement. These source examples do not establish official HSK membership or oral proficiency."
+          }
+        ]
+      },
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "mandarin-simplified",
+        "languageId": "zh",
+        "writingSystems": [
+          "Hans"
+        ],
+        "capabilities": [
+          "hanzi",
+          "pinyin",
+          "lexical-tones",
+          "contextual-reading",
+          "cloze",
+          "ordering"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "pinyin-tone-marked"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      },
+      "exercises": [
+        {
+          "id": "zh-p15-pronoun-guided",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Which original Hanzi pronoun means 'I; me'?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The source defines 我 (wǒ) as first-person singular.",
+          "options": [
+            "我",
+            "我们",
+            "我的"
+          ],
+          "acceptedAnswers": [
+            "我"
+          ]
+        },
+        {
+          "id": "zh-p15-write-guided",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Write the original first-person singular pronoun in Hanzi.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "normalization": "unicode-nfc",
+          "grading": "exact",
+          "explanation": "我 means I/me; written character accuracy does not assess its spoken tone.",
+          "acceptedAnswers": [
+            "我"
+          ]
+        },
+        {
+          "id": "zh-p15-plural-guided",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Which original source expression means 'we; us'?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The source gives 我们 (wǒmen) for we/us.",
+          "options": [
+            "我",
+            "我们",
+            "我的"
+          ],
+          "acceptedAnswers": [
+            "我们"
+          ]
+        },
+        {
+          "id": "zh-p15-pinyin-guided",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Write the original tone-marked Pinyin for 我.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "orthography",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "normalization": "pinyin-tone-marked",
+          "grading": "exact",
+          "explanation": "The source records wǒ, not unmarked wo. Spoken tone accuracy is not evaluated.",
+          "acceptedAnswers": [
+            "wǒ"
+          ],
+          "misconceptions": [
+            {
+              "answer": "wo",
+              "feedback": "The source's written lexical reading is wǒ with a third-tone mark."
+            }
+          ]
+        },
+        {
+          "id": "zh-p15-identity-guided",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Read the original Hanzi sentence about the speaker's identity.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The original sentence uses 我 as I and 是 for a subject-to-noun identity.",
+          "passage": "我是学生。",
+          "reading": "Wǒ shì xuésheng.",
+          "question": "Which meaning matches the source?",
+          "options": [
+            "I am a student.",
+            "We are students.",
+            "This is my book."
+          ],
+          "acceptedAnswers": [
+            "I am a student."
+          ]
+        },
+        {
+          "id": "zh-p15-plural-independent",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "You are referring to yourself and another person. Write the source's first-person plural form in Hanzi.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "normalization": "unicode-nfc",
+          "grading": "exact",
+          "explanation": "我们 means we/us; 我 alone is singular.",
+          "acceptedAnswers": [
+            "我们"
+          ],
+          "sourceAid": {
+            "targetText": "我们",
+            "meaning": "we; us",
+            "cue": "This source compound names more than one first-person participant."
+          }
+        },
+        {
+          "id": "zh-p15-ownership-independent",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Select the original expression that means 'my; mine' rather than 'we'.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "The source distinguishes 我的 (wǒ de) from 我们 (wǒmen).",
+          "options": [
+            "我",
+            "我们",
+            "我的"
+          ],
+          "acceptedAnswers": [
+            "我的"
+          ],
+          "misconceptions": [
+            {
+              "answer": "我们",
+              "feedback": "我们 means we/us; 我的 marks possession."
+            },
+            {
+              "answer": "我",
+              "feedback": "我 means I/me without the possessive 的."
+            }
+          ]
+        },
+        {
+          "id": "zh-p15-identity-independent",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Complete the original identity sentence in Hanzi.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "normalization": "unicode-nfc",
+          "grading": "exact",
+          "explanation": "我是学生。 is the original identity statement; 是 links 我 to 学生.",
+          "before": "我",
+          "after": "学生。",
+          "acceptedAnswers": [
+            "是"
+          ],
+          "misconceptions": [
+            {
+              "answer": "们",
+              "feedback": "我们 is the plural pronoun, not the linking verb in 我是学生。"
+            }
+          ]
+        },
+        {
+          "id": "zh-p15-reading-independent",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Which original sentence identifies the speaker as a student?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "Only 我是学生。 is a complete identity statement in these examples.",
+          "passage": "我 / 我们 / 我的 / 我是学生。",
+          "question": "Select the complete identity statement.",
+          "options": [
+            "我",
+            "我们",
+            "我是学生。"
+          ],
+          "acceptedAnswers": [
+            "我是学生。"
+          ]
+        },
+        {
+          "id": "zh-p15-writing-independent",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Write a brief original exchange in Hanzi using 我, 我们 and 我的 with their distinct meanings, then explain the three forms in English. Do not assign yourself a pronunciation grade.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-wo-demo"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "explanation": "Your free-production response is ungraded and requires independent linguistic review.",
+          "rubric": [
+            "Use 我 for the first-person singular.",
+            "Use 我们 for the first-person plural, not possession.",
+            "Use 我的 for a possessive expression and distinguish its function from 我们.",
+            "Do not claim written Hanzi or Pinyin exercises certify spoken tones."
+          ],
+          "sourceAid": {
+            "targetText": "我是学生。",
+            "meaning": "I am a student.",
+            "cue": "The original identity sentence illustrates 我 with a noun predicate; make your own short context."
+          }
+        }
+      ]
+    }
+  ]
+}

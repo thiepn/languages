@@ -34,10 +34,13 @@ export function sourceCoverage(bundle:LessonBundleV1):readonly SourceCoverage[] 
   });
 }
 
-/** Explicit three-pilot preview allowance, not source/redistribution approval. */
+/** Explicit original pilot and next-lesson preview allowances, never publication approval. */
 const PINNED_INTERNAL_PILOTS:Readonly<Record<string,{language:string;sources:readonly string[]}>>={
   "fr:a1-01:shared-pilot":{language:"fr",sources:["fr-a1-01-original@3fb5c720cfeceaf682ce53c897701b489b7eaf6f"]},
+  "fr:a1-02:shared-pilot":{language:"fr",sources:["fr-a1-02-original@3fb5c720cfeceaf682ce53c897701b489b7eaf6f"]},
   "ja:cf-a1-01-01:shared-pilot":{language:"ja",sources:["ja-cf-a1-01-01-original@1e3667ebdcb0cd50491c126b948c11f47414decb"]},
+  "ja:cf-a1-01-02:shared-pilot":{language:"ja",sources:["ja-cf-a1-01-02-original@1e3667ebdcb0cd50491c126b948c11f47414decb"]},
+  "zh:wo:shared-pilot":{language:"zh",sources:["zh-wo-demo@9688e7354142b7127fd5f6eb69b03b595a437008"]},
   "zh:ni-hao:shared-pilot":{language:"zh",sources:[
     "zh-hao-demo@9688e7354142b7127fd5f6eb69b03b595a437008",
     "zh-ni-demo@9688e7354142b7127fd5f6eb69b03b595a437008"
@@ -45,14 +48,20 @@ const PINNED_INTERNAL_PILOTS:Readonly<Record<string,{language:string;sources:rea
 };
 const PINNED_LOCATIONS:Readonly<Record<string,string>>={
   "fr-a1-01-original":"thiepn/french|app/src/core/unified/u6-a1-01-04.ts|a1-01",
+  "fr-a1-02-original":"thiepn/french|app/src/core/unified/u6-a1-01-04.ts|a1-02",
   "ja-cf-a1-01-01-original":"thiepn/japanese|apps/web/src/study/courseFirstA1.ts|cf-a1-01-01",
+  "ja-cf-a1-01-02-original":"thiepn/japanese|apps/web/src/study/courseFirstA1.ts|cf-a1-01-02",
   "zh-ni-demo":"thiepn/chinese|src/demo-lessons.mjs|你",
+  "zh-wo-demo":"thiepn/chinese|src/demo-lessons.mjs|我",
   "zh-hao-demo":"thiepn/chinese|src/demo-lessons.mjs|好"
 };
 const PINNED_RIGHTS:Readonly<Record<string,LessonSourceV1["rights"]>>={
   "fr-a1-01-original":"original-owned",
+  "fr-a1-02-original":"original-owned",
   "ja-cf-a1-01-01-original":"original-owned",
+  "ja-cf-a1-01-02-original":"original-owned",
   "zh-ni-demo":"review-required",
+  "zh-wo-demo":"review-required",
   "zh-hao-demo":"review-required"
 };
 /** Fail closed before additional originals enter this internal-only learner preview. */

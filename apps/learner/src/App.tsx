@@ -6,14 +6,15 @@ import {
   checkpointId, DEMO_CHECKPOINT_KEY,
   framesFor, parseOrderingDraft, parseDemoCheckpoint, serializeDemoCheckpoint
 } from "./lesson-model";
-import {DEMO_BUNDLES,DEMO_SOURCE_COVERAGE,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
+import {DEMO_BUNDLES,COURSE_BUNDLES,SOURCE_COVERAGE_BY_LESSON,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
+import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
 
 type Destination = "home" | "course" | "review" | "profile";
 const NAV: readonly {id:Destination;label:string}[] = [
   {id:"home",label:"Home"},{id:"course",label:"Course"},
   {id:"review",label:"Review"},{id:"profile",label:"Profile"}
 ];
-const ALL_BUNDLES=Object.values(DEMO_BUNDLES);
+const ALL_BUNDLES=Object.values(COURSE_BUNDLES).flat();
 
 const DEMO_LANGUAGE_KEY="thiepn-languages-phase04-active-language";
 function readSelected():LanguageChoice{
@@ -252,6 +253,12 @@ export function App(){
     dispatch({type:"load",bundle,restoredIndex:frameIndex});
     startLesson();
   }
+  function openCourseLesson(next:LessonBundleV1){
+    if(next.lesson.id===bundle.lesson.id){startLesson();return;}
+    if(!confirmWritingDiscard())return;
+    dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
+    startLesson();
+  }
   function restart(){
     if(!confirmWritingDiscard())return;
     dispatch({type:"reset"});
@@ -329,7 +336,7 @@ export function App(){
           <h2 className="section-title">Languages</h2>
           <div className="course-list">{LANGUAGES.map(language=><button key={language.id} className="course-entry" type="button" onClick={()=>selectLanguage(language.id)}>
             <span className="course-name">{language.label}<small>{language.nativeLabel}</small></span>
-            <span className="course-state">1 demo lesson</span>
+            <span className="course-state">{COURSE_BUNDLES[language.id].length} internal lessons</span>
             <span aria-hidden="true">→</span>
           </button>)}</div>
         </section>:destination==="course"?<section className="page">
@@ -344,9 +351,19 @@ export function App(){
             <span>Teaching · guided practice · independent writing</span>
             <span>{bundle.lesson.level??"Original beginner material"}</span>
           </div>
+          <section className="course-sequence" aria-label="Available internal lessons">
+            <h2 className="section-title">Lessons</h2>
+            <ol>{COURSE_BUNDLES[selected].map(candidate=><li key={candidate.lesson.id}>
+              <button type="button" aria-label={"Open "+candidate.lesson.title} aria-current={candidate.lesson.id===bundle.lesson.id?"true":undefined}
+                onClick={()=>openCourseLesson(candidate)}>
+                <span className="course-sequence-title">{candidate.lesson.title}</span>
+                <span className="course-sequence-meta">{framesFor(candidate).length} activities</span>
+              </button>
+            </li>)}</ol>
+          </section>
           <section className="source-practice" aria-label="Original source practice">
             <h2 className="section-title">Practice by original source</h2>
-            {DEMO_SOURCE_COVERAGE[selected].map(entry=><div className="source-practice-group" key={entry.source.id}>
+            {SOURCE_COVERAGE_BY_LESSON[bundle.lesson.id].map(entry=><div className="source-practice-group" key={entry.source.id}>
               <div className="source-practice-heading">
                 <h3>{entry.source.originalEntityId}</h3>
                 <span>{entry.independent.length} independent activities</span>
