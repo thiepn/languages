@@ -22,7 +22,7 @@ for(const lang of ["fr","ja","zh"]){
   await start(page,lang);
   const bundle=lessons[lang]!;
   const frames=framesFor(bundle);
-  expect(frames).toHaveLength(19);
+  expect(frames).toHaveLength(20);
   for(const [index,frame] of frames.entries()){
    if(frame.type==="teaching"){
     if(frame.step?.type==="encounter")await expect(page.locator(".example-list .example").first()).toBeVisible();
