@@ -15,13 +15,13 @@ const fails=(bundle,code)=>{
  assert.ok(errors.some(e=>e.code===code),JSON.stringify(errors));
 };
 
-test("three original-source extended courses share the same 16-frame contract with independent transfer",()=>{
+test("three original-source extended courses share the same 19-frame contract with independent transfer",()=>{
  for(const lang of ["fr","ja","zh"]){
   const b=langs[lang];
   assert.deepEqual(validateLessonBundleV1(b),[]);
   assert.deepEqual(b.exercises.filter(e=>e.id.includes("-p06-")&&["cloze","ordering","reading"].includes(e.kind)).map(e=>e.kind),["cloze","ordering","reading"]);
-  assert.equal(framesFor(b).length,16);
-  assert.equal(framesFor(b).filter(f=>f.stage==="independent").length,4);
+  assert.equal(framesFor(b).length,19);
+  assert.equal(framesFor(b).filter(f=>f.stage==="independent").length,7);
   assert.ok(b.lesson.contentVersion.includes("-p06"));
   assert.equal(b.lesson.publication,"internal-fixture");
   assert.ok(b.lesson.sources.every(s=>s.editorialReview==="pending"&&!s.redistributionVerified));
