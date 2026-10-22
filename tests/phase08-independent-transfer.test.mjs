@@ -13,14 +13,14 @@ const languages=["fr","ja","zh"];
 const entry=(lang,part)=>byLanguage[lang].exercises.find(e=>e.id===lang+"-p08-situated-"+part);
 const copy=v=>JSON.parse(JSON.stringify(v));
 
-test("19 source-pinned frames and seven independent transfer tasks per language stay internal",()=>{
+test("20 source-pinned frames and eight independent transfer tasks per language stay internal",()=>{
  for(const lang of languages){
   const bundle=byLanguage[lang],frames=framesFor(bundle);
   assert.deepEqual(validateLessonBundleV1(bundle),[]);
-  assert.equal(frames.length,19);
-  assert.equal(frames.filter(f=>f.stage==="independent").length,7);
+  assert.equal(frames.length,20);
+  assert.equal(frames.filter(f=>f.stage==="independent").length,8);
   assert.deepEqual(frames.slice(15,18).map(f=>f.exercise.kind),["cloze","ordering","reading"]);
-  assert.ok(bundle.lesson.contentVersion.endsWith("-p08"));
+  assert.ok(bundle.lesson.contentVersion.includes("-p08"));
   assert.equal(bundle.lesson.publication,"internal-fixture");
   assert.ok(bundle.lesson.sources.every(s=>s.editorialReview==="pending"&&!s.redistributionVerified));
   assert.ok(bundle.exercises.every(e=>e.evidence.mayScheduleReview===false&&e.evidence.mayAssertProficiency===false));
@@ -97,7 +97,8 @@ test("same Phase 05 reducer handles independent repair and completion without gr
    state=reduceLessonPlayer(state,{type:"next"});
   }
   assert.equal(state.index,18);
-  assert.equal(activeFrame(state).stage,"reflect");
+  assert.equal(activeFrame(state).stage,"independent");
+  assert.equal(activeFrame(state).exercise.id,lang+"-p09-context-composition");
   const positions=serializeDemoCheckpoint({[checkpointId(b)]:state.index},bundles);
   assert.ok(!/acceptedAnswers|responseText|grade|correct|accountId/.test(positions));
   const restored=parseDemoCheckpoint(positions,bundles)[checkpointId(b)];
