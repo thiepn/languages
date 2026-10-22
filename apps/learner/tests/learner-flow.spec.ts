@@ -81,7 +81,7 @@ test("wrong answer requires retry or explicit uncredited reveal",async({page})=>
 
 test("interruption restores exact frame while clearing unanswered drafts and feedback",async({page})=>{
  await start(page,"ja");
- for(let i=0;i<4;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
+ for(let i=0;i<3;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
  await expect(page.getByRole("heading",{name:"At 8 a.m. you meet your instructor. What do you say?"})).toBeVisible();
  await page.getByRole("radio").first().check();
  await page.reload();
@@ -125,22 +125,30 @@ test("mobile navigation and lesson controls remain visible without page-level ho
 
 test("native keyboard input and exact-tone check stay bounded",async({page})=>{
  await start(page,"zh");
- for(let i=0;i<7;i++){
-  const next=page.getByRole("button",{name:"Continue",exact:true});
-  if(await next.isEnabled()){await next.click();continue;}
-  const radio=page.getByRole("radio");
-  if(await radio.count()){
-    const options=await radio.all();
-    const greeting=await Promise.all(options.map(x=>x.inputValue()));
-    await radio.nth(greeting.includes("你好")?greeting.indexOf("你好"):greeting.indexOf("好吃")).check();
-    await page.getByRole("button",{name:"Check answer"}).click();
-    await next.click();
-  }else if(await page.getByRole("textbox",{name:"Your answer"}).count()){
-    const prompt=await page.locator(".activity h2").innerText();
-    await page.getByRole("textbox",{name:"Your answer"}).fill(prompt.includes("tone-marked")?"nǐ hǎo":"你好");
-    await page.getByRole("textbox",{name:"Your answer"}).press("Enter");
-    await expect(page.getByText("Answer accepted")).toBeVisible();
-    await next.click();
-  }
- }
+ for(let i=0;i<3;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
+ const choose=async(value:string)=>{
+   const radios=page.getByRole("radio");
+   const options=await radios.all();
+   const values=await Promise.all(options.map(x=>x.inputValue()));
+   expect(values).toContain(value);
+   await radios.nth(values.indexOf(value)).check();
+   await page.getByRole("button",{name:"Check answer"}).click();
+   await expect(page.getByText("Answer accepted")).toBeVisible();
+   await page.getByRole("button",{name:"Continue",exact:true}).click();
+ };
+ await choose("你好");
+ await page.getByRole("textbox",{name:"Your answer"}).fill("你好");
+ await page.getByRole("textbox",{name:"Your answer"}).press("Enter");
+ await expect(page.getByText("Answer accepted")).toBeVisible();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await choose("好吃");
+ await expect(page.getByRole("heading",{name:"Write the tone-marked Hanyu Pinyin for 你好 (not the Hanzi)."})).toBeVisible();
+ await page.getByRole("textbox",{name:"Your answer"}).fill("ni hao");
+ await page.getByRole("textbox",{name:"Your answer"}).press("Enter");
+ await expect(page.getByText("Not quite — try again")).toBeVisible();
+ await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeDisabled();
+ await page.getByRole("button",{name:"Try again"}).click();
+ await page.getByRole("textbox",{name:"Your answer"}).fill("nǐ hǎo");
+ await page.getByRole("textbox",{name:"Your answer"}).press("Enter");
+ await expect(page.getByText("Answer accepted")).toBeVisible();
 });
