@@ -63,5 +63,50 @@ export const CHINESE_VISUAL_BINDINGS:readonly VisualBinding[]=[
     "languageId": "chinese",
     "lexemeId": "冬天|dongtian",
     "conceptId": "season.winter-snow"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "看书|kanshu",
+    "conceptId": "action.read-book"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "写字|xiezi",
+    "conceptId": "action.write-with-pencil"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "吃饭|chifan",
+    "conceptId": "action.eat-food"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "喝水|heshui",
+    "conceptId": "action.drink-from-cup"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "水果|shuiguo",
+    "conceptId": "food.mixed-fruit"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "汽车|qiche",
+    "conceptId": "vehicle.car"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "火车|huoche",
+    "conceptId": "vehicle.train"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "飞机|feiji",
+    "conceptId": "vehicle.airplane"
+  },
+  {
+    "languageId": "chinese",
+    "lexemeId": "学生|xuesheng",
+    "conceptId": "person.student-with-book"
   }
 ];

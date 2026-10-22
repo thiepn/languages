@@ -7,7 +7,7 @@ import {spawnSync} from "node:child_process";
 
 /** Runs the exact original copy/manifests scripts in a disposable Node fixture, no network or app data. */
 describe("visual lexicon local packaging",()=>{
- it("exports all 103 assets and 121 source bindings, rejecting tampering before writes",()=>{
+ it("exports all 103 assets and 130 source bindings, rejecting tampering before writes",()=>{
   const dir=mkdtempSync(join(tmpdir(),"thiepn-visual-lexicon-"));
   try{
    const scripts=join(dir,"scripts"),dist=join(dir,"dist"),assets=join(dir,"assets");
@@ -24,7 +24,7 @@ describe("visual lexicon local packaging",()=>{
     return {id:"fixture."+i,asset:name,origin:{blobSha}};
    });
    const japanese=concepts.map((c,i)=>({languageId:"japanese",lexemeId:"lex-"+i,conceptId:c.id}));
-   const chinese=concepts.slice(0,12).map((c,i)=>({languageId:"chinese",lexemeId:"zh-"+i,conceptId:c.id}));
+   const chinese=concepts.slice(0,21).map((c,i)=>({languageId:"chinese",lexemeId:"zh-"+i,conceptId:c.id}));
    const french=concepts.slice(0,6).map((c,i)=>({languageId:"french",lexemeId:"fr-"+i,conceptId:c.id}));
    for(const [name,exportName,rows] of [
     ["catalog","VISUAL_CONCEPTS",concepts],
@@ -40,7 +40,7 @@ describe("visual lexicon local packaging",()=>{
    const index=JSON.parse(readFileSync(join(output,"visual-catalog.json"),"utf8"));
    expect(index.schema).toBe("thiepn-visual-lexicon-v1");
    expect(index.concepts).toHaveLength(103);
-   expect(index.bindings).toHaveLength(121);
+   expect(index.bindings).toHaveLength(130);
    appendFileSync(join(assets,concepts[0]!.asset),"tampered");
    const rejectedTarget=join(dir,"must-not-exist");
    const rejected=run("copy-assets.mjs",[rejectedTarget]);

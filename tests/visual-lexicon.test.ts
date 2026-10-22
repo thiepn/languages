@@ -28,7 +28,7 @@ describe("cross-language first-party visual lexicon",()=>{
  });
  it("retains all Japanese lexemes and twelve attested Chinese original canonical keys",()=>{
   expect(JAPANESE_VISUAL_BINDINGS).toHaveLength(103);
-  expect(CHINESE_VISUAL_BINDINGS).toHaveLength(12);
+  expect(CHINESE_VISUAL_BINDINGS).toHaveLength(21);
   expect(FRENCH_VISUAL_BINDINGS).toHaveLength(6);
   const all=[...JAPANESE_VISUAL_BINDINGS,...CHINESE_VISUAL_BINDINGS,...FRENCH_VISUAL_BINDINGS];
   expect(validateVisualBindings(all)).toEqual([]);
@@ -41,6 +41,15 @@ describe("cross-language first-party visual lexicon",()=>{
   expect(visualForLexeme("chinese","书|shu")?.id).toBe("object.book");
   expect(visualForLexeme("chinese","绿茶|lucha")?.id).toBe("beverage.green-tea");
   expect(visualForLexeme("chinese","冬天|dongtian")?.id).toBe("season.winter-snow");
+  expect(visualForLexeme("chinese","看书|kanshu")?.id).toBe("action.read-book");
+  expect(visualForLexeme("chinese","写字|xiezi")?.id).toBe("action.write-with-pencil");
+  expect(visualForLexeme("chinese","吃饭|chifan")?.id).toBe("action.eat-food");
+  expect(visualForLexeme("chinese","喝水|heshui")?.id).toBe("action.drink-from-cup");
+  expect(visualForLexeme("chinese","水果|shuiguo")?.id).toBe("food.mixed-fruit");
+  expect(visualForLexeme("chinese","汽车|qiche")?.id).toBe("vehicle.car");
+  expect(visualForLexeme("chinese","火车|huoche")?.id).toBe("vehicle.train");
+  expect(visualForLexeme("chinese","飞机|feiji")?.id).toBe("vehicle.airplane");
+  expect(visualForLexeme("chinese","学生|xuesheng")?.id).toBe("person.student-with-book");
  });
  it("fails closed without approved language/sense, avoiding translating lexical homographs",()=>{
   expect(visualForConcept("food.apple")?.alt).toContain("apple");

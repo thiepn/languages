@@ -17,7 +17,7 @@ const images=await Promise.all(VISUAL_CONCEPTS.map(async image=>{
 }));
 const manifest=await readFile(new URL("../dist/visual-catalog.json",import.meta.url));
 const parsed=JSON.parse(manifest.toString("utf8"));
-if(parsed.schema!=="thiepn-visual-lexicon-v1"||parsed.concepts.length!==103||parsed.bindings.length!==121)
+if(parsed.schema!=="thiepn-visual-lexicon-v1"||parsed.concepts.length!==103||parsed.bindings.length!==130)
  throw Error("Visual manifest missing or incomplete");
 await mkdir(join(target,"assets"),{recursive:true});
 for(const item of images)await copyFile(fileURLToPath(item.original),join(target,"assets",item.asset));
