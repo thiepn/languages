@@ -42,7 +42,7 @@ for(const lang of ["fr","ja","zh"]){
   await expect(page.getByRole("heading",{name:reading.instruction})).toBeFocused();
   await expect(page.getByText(reading.question)).toBeVisible();
   await expect(page.locator(".passage-text")).toContainText(reading.passage.split("\n")[0]);
-  await page.getByRole("radio",{name:reading.acceptedAnswers[0],exact:true}).check();
+  await page.getByRole("radio").nth(reading.options.indexOf(reading.acceptedAnswers[0])).check();
   await page.getByRole("button",{name:"Check answer"}).click();
   await expect(page.getByText("Answer accepted")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
