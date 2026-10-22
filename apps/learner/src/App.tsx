@@ -33,7 +33,7 @@ function stageName(frame:LearningFrame):string {
   return "Reflection";
 }
 function ExerciseView({
-  frame,draft,result,onDraft,onSubmit,onRetry,onReveal,headingRef
+  frame,draft,result,onDraft,onSubmit,onRetry,onReveal,onRevise,headingRef
 }:{
   frame:LearningFrame;
   draft:string;
@@ -42,17 +42,20 @@ function ExerciseView({
   onSubmit:()=>void;
   onRetry:()=>void;
   onReveal:()=>void;
+  onRevise:()=>void;
   headingRef:RefObject<HTMLHeadingElement|null>;
 }){
   const composing=useRef(false);
   const feedbackRef=useRef<HTMLDivElement>(null);
   const formRef=useRef<HTMLFormElement>(null);
   const hadIncorrect=useRef(false);
+  const hadWritingFeedback=useRef(false);
   useEffect(()=>{
     if(result!==undefined)feedbackRef.current?.focus();
-    else if(hadIncorrect.current)
+    else if(hadIncorrect.current||hadWritingFeedback.current)
       formRef.current?.querySelector<HTMLElement>('input:not(:disabled),textarea:not(:disabled),button.order-option:not(:disabled)')?.focus();
     hadIncorrect.current=result?.kind==="incorrect";
+    hadWritingFeedback.current=result?.kind==="ungraded";
   },[result]);
   const exercise=frame.exercise;
   if(!exercise)return null;
@@ -72,6 +75,20 @@ function ExerciseView({
       <p className="reading-question">{exercise.question}</p>
     </div>}
     {exercise.kind==="cloze"&&<p className="cloze-prompt" lang={exercise.languageId}>{exercise.before}<span aria-label="missing word">_____</span>{exercise.after}</p>}
+    {exercise.kind==="free-production"&&<div className="writing-references">
+      <details>
+        <summary>Writing criteria</summary>
+        <ul>{exercise.rubric.map(item=><li key={item}>{item}</li>)}</ul>
+      </details>
+      {exercise.sourceAid&&<details>
+        <summary>Original source example</summary>
+        <blockquote>
+          <p className="target" lang={exercise.languageId}>{exercise.sourceAid.targetText}</p>
+          <p className="translation">{exercise.sourceAid.meaning}</p>
+        </blockquote>
+        <p>{exercise.sourceAid.cue}</p>
+      </details>}
+    </div>}
     {(exercise.kind==="choice"||exercise.kind==="reading")?
       <fieldset className="choice-list" disabled={result!==undefined}>
         <legend className="sr-only">{exercise.instruction}</legend>
@@ -106,7 +123,9 @@ function ExerciseView({
           <textarea value={draft} onChange={event=>onDraft(event.target.value)}
             onCompositionStart={()=>{composing.current=true;}}
             onCompositionEnd={()=>{composing.current=false;}}
-            disabled={result!==undefined} maxLength={8192} rows={4} lang={exercise.languageId}/>}
+            disabled={result!==undefined} maxLength={8192} rows={5} lang={exercise.languageId}/>}
+        {exercise.kind==="free-production"&&result===undefined&&!!draft.trim()&&
+          <span className="draft-warning">Unsubmitted writing stays on this page, but is lost if you reload.</span>}
       </label>}
     {result!==undefined?<div ref={feedbackRef} tabIndex={-1} className={"feedback "+result.kind} role="status" aria-live="polite">
       <strong>{result.kind==="correct"?"Answer accepted":result.kind==="incorrect"?"Not quite — try again":result.kind==="revealed"?"Answer revealed — not credited":"Ungraded practice"}</strong>
@@ -124,6 +143,7 @@ function ExerciseView({
     </div>:<p className="scoring-note">
       {exercise.kind==="free-production"?"This response is not automatically graded.":"Practice feedback only — no review grade is recorded."}
     </p>}
+    {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>}
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
     {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>Check answer</button>}
   </form>;
@@ -254,7 +274,7 @@ export function App(){
               </div>
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult} headingRef={activityHeadingRef}
-                onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})}/>:null}
+                onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>dispatch({type:"revise"})}/>:null}
           </div>
           {!complete&&<div className="lesson-actions" aria-label="Lesson controls">
             <button className="secondary-action" type="button" disabled={index===0} onClick={()=>dispatch({type:"previous"})}>Previous</button>
