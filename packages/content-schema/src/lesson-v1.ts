@@ -221,7 +221,7 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
      !hasText(ex.primaryTarget?.id)||!hasText(ex.primaryTarget?.kind)||
      !hasText(ex.skillDimension))add("target-language",path,"Invalid or foreign-language target");
   if(!hasText(ex.instruction)||!hasText(ex.explanation)||!Array.isArray(ex.sourceIds)||
-      !ex.sourceIds.length||!ex.sourceIds.every(id=>sourceIds.has(id)))
+      !ex.sourceIds.length||!ex.sourceIds.every((id:string)=>sourceIds.has(id)))
       add("exercise-provenance",path,"Missing instructions, feedback or source provenance");
   const ev=ex.evidence;
   if(!ev||ev.mayScheduleReview!==false||ev.mayAssertProficiency!==false||
@@ -230,16 +230,16 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
      add("evidence-policy",path,"Unverified learning evidence or authority escalation");
   if(ex.kind==="choice"||ex.kind==="typed"){
    if(ex.grading!=="exact"||!Array.isArray(ex.acceptedAnswers)||!ex.acceptedAnswers.length||
-      !unique(ex.acceptedAnswers)||ex.acceptedAnswers.some(a=>!hasText(a))||
+      !unique(ex.acceptedAnswers)||ex.acceptedAnswers.some((a:string)=>!hasText(a))||
       ev?.classification==="ungraded-production")add("answer-key",path,"Invalid deterministic grading definition");
    if(ex.kind==="choice"&&(!Array.isArray(ex.options)||ex.options.length<2||
-      !unique(ex.options)||!ex.acceptedAnswers.every(a=>ex.options.includes(a))||ex.normalization!=="literal"))
+      !unique(ex.options)||!ex.acceptedAnswers.every((a:string)=>ex.options.includes(a))||ex.normalization!=="literal"))
       add("choice-options",path,"Ambiguous or missing choice key");
    if(ex.kind==="typed"&&!plugin.answerNormalizations.includes(ex.normalization))
       add("unsupported-normalizer",path,"Language plugin does not declare normalization "+ex.normalization);
   }else if(ex.kind==="free-production"){
    if(ex.grading!=="ungraded"||ev?.classification!=="ungraded-production"||
-       !Array.isArray(ex.rubric)||!ex.rubric.length||ex.rubric.some(x=>!hasText(x)))
+       !Array.isArray(ex.rubric)||!ex.rubric.length||ex.rubric.some((x:string)=>!hasText(x)))
      add("production-grading",path,"Free production must remain ungraded with a useful rubric");
   }else add("exercise-kind",path,"Unknown exercise kind");
  }
