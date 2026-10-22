@@ -1,15 +1,17 @@
 import {VISUAL_CONCEPTS,type VisualConcept} from "./catalog.js";
 import {JAPANESE_VISUAL_BINDINGS} from "./japanese.js";
 import {CHINESE_VISUAL_BINDINGS} from "./chinese.js";
+import {FRENCH_VISUAL_BINDINGS} from "./french.js";
 import type {VisualBinding} from "./types.js";
 export {VISUAL_CONCEPTS} from "./catalog.js";
 export {JAPANESE_VISUAL_BINDINGS} from "./japanese.js";
 export {CHINESE_VISUAL_BINDINGS} from "./chinese.js";
+export {FRENCH_VISUAL_BINDINGS} from "./french.js";
 export type {VisualConcept} from "./catalog.js";
 export type {VisualBinding} from "./types.js";
 
 const byConcept=new Map<string,VisualConcept>(VISUAL_CONCEPTS.map(row=>[row.id,row]));
-export const ALL_APPROVED_BINDINGS:readonly VisualBinding[]=[...JAPANESE_VISUAL_BINDINGS,...CHINESE_VISUAL_BINDINGS];
+export const ALL_APPROVED_BINDINGS:readonly VisualBinding[]=[...JAPANESE_VISUAL_BINDINGS,...CHINESE_VISUAL_BINDINGS,...FRENCH_VISUAL_BINDINGS];
 
 /** Opt-in picture lookup. A missing or ambiguous binding intentionally returns null. */
 export function visualForConcept(conceptId:string):VisualConcept|null{

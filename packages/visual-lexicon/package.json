@@ -6,6 +6,7 @@
   "files": [
     "dist/**",
     "assets/**",
+    "scripts/**",
     "README.md"
   ],
   "scripts": {
@@ -34,6 +35,16 @@
       "default": "./dist/chinese.js"
     },
     "./manifest": "./dist/visual-catalog.json",
-    "./assets/*": "./assets/*"
+    "./assets/*": "./assets/*",
+    "./french-bindings": {
+      "types": "./dist/french.d.ts",
+      "import": "./dist/french.js",
+      "default": "./dist/french.js"
+    },
+    "./consumer": {
+      "types": "./dist/consumer.d.ts",
+      "import": "./dist/consumer.js",
+      "default": "./dist/consumer.js"
+    }
   }
 }
