@@ -21,7 +21,7 @@ test("one typed reducer owns all three complete source lesson journeys",()=>{
   for(const language of ["fr","ja","zh"]){
     let state=createLessonPlayerState(byLang[language]);
     assert.equal(state.index,0);
-    for(let i=0;i<16;i++){
+    for(let i=0;i<19;i++){
       const frame=activeFrame(state);
       assert.ok(frame);
       if(frame.exercise){
@@ -133,7 +133,7 @@ test("version changes reject stale checkpoints, and completed recovery makes no 
   assert.deepEqual(restored,{});
   let state=createLessonPlayerState(updated,restored[checkpointId(updated)]);
   assert.equal(state.index,0);
-  state=createLessonPlayerState(previous,16);
+  state=createLessonPlayerState(previous,19);
   assert.equal(isLessonComplete(state),true);
   assert.deepEqual(state.attempts,{});
   assert.equal(mayAdvance(state),false);
