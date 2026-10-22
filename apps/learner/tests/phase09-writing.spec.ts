@@ -111,3 +111,23 @@ test("320×420 mobile writing remains editable with lesson actions visible",asyn
  await page.getByRole("button",{name:"Revise writing"}).click();
  await expect(textbox).toBeFocused();
 });
+
+test("typed correction retains the wrong form so accents and spelling can be edited",async({page})=>{
+ await page.goto("/");
+ const bundle=bundles.fr;
+ const key=bundle.lesson.id+"@"+bundle.lesson.contentVersion;
+ await page.evaluate(k=>sessionStorage.setItem("thiepn-languages-phase03-preview-v1",JSON.stringify({version:1,positions:{[k]:4}})),key);
+ await page.reload();
+ await page.getByRole("button",{name:"Continue French"}).click();
+ const input=page.getByRole("textbox",{name:"Your answer"});
+ await input.fill("appelles");
+ await input.press("Enter");
+ await expect(page.getByText("Not quite — try again")).toBeVisible();
+ await page.getByRole("button",{name:"Try again"}).click();
+ await expect(input).toBeFocused();
+ await expect(input).toHaveValue("appelles");
+ await input.fill("appelle");
+ await input.press("Enter");
+ await expect(page.getByText("Answer accepted")).toBeVisible();
+ await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeEnabled();
+});
