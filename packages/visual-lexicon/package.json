@@ -1,0 +1,13 @@
+{
+  "name": "@thiepn/visual-lexicon",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./catalog": "./src/catalog.ts",
+    "./japanese-bindings": "./src/japanese.ts",
+    "./chinese-bindings": "./src/chinese.ts",
+    "./assets/*": "./assets/*"
+  }
+}
