@@ -15,7 +15,8 @@ export interface LearningFrame {
 
 export type AnswerResult =
   | {readonly kind: "correct"; readonly explanation: string}
-  | {readonly kind: "incorrect"; readonly explanation: string; readonly expected: readonly string[]}
+  | {readonly kind: "incorrect"; readonly explanation: string}
+  | {readonly kind: "revealed"; readonly explanation: string; readonly expected: readonly string[]}
   | {readonly kind: "ungraded"; readonly explanation: string; readonly rubric: readonly string[]};
 
 export function framesFor(bundle: LessonBundleV1): readonly LearningFrame[] {
@@ -39,6 +40,9 @@ export function framesFor(bundle: LessonBundleV1): readonly LearningFrame[] {
 export function normalizeAnswer(value: string, policy: AnswerNormalizationV1): string {
   if (policy === "unicode-nfc") return value.normalize("NFC");
   if (policy === "trim-whitespace") return value.trim().replace(/\s+/gu, " ");
+  if (policy === "french-apostrophe") return value.normalize("NFC").trim().replace(/\s+/gu," ").replace(/[\u2018\u2019]/gu,"'");
+  if (policy === "japanese-terminal-punctuation") return value.normalize("NFC").trim().replace(/。$/u,"");
+  if (policy === "pinyin-tone-marked") return value.normalize("NFC").trim().replace(/\s+/gu," ");
   return value;
 }
 
@@ -50,7 +54,17 @@ export function evaluateExercise(exercise: ExerciseV1, rawAnswer: string): Answe
   const correct = exercise.acceptedAnswers.some(expected => normalizeAnswer(expected, exercise.normalization) === answer);
   return correct
     ? {kind:"correct", explanation:exercise.explanation}
-    : {kind:"incorrect", explanation:exercise.explanation, expected:exercise.acceptedAnswers};
+    : {kind:"incorrect", explanation:exercise.explanation};
+}
+
+/** Explicit reveal is distinct from a correct attempt and never produces learner evidence. */
+export function revealExercise(exercise: ExerciseV1):AnswerResult {
+  if(exercise.kind==="free-production")return evaluateExercise(exercise,"");
+  return {kind:"revealed",explanation:exercise.explanation,expected:exercise.acceptedAnswers};
+}
+
+export function canContinueAfterAnswer(result:AnswerResult|undefined):boolean {
+  return result!==undefined&&result.kind!=="incorrect";
 }
 
 export interface DemoCheckpoint {
