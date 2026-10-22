@@ -1,5 +1,6 @@
 import {test,expect,type Page} from "@playwright/test";
 import raw from "../../../contracts/fixtures/phase02-source-lessons.json" with {type:"json"};
+import {completePhase13Independent} from "./phase13-acceptance-helper";
 
 const languages={fr:"French",ja:"Japanese",zh:"Chinese"} as const;
 type Lang=keyof typeof languages;
@@ -47,6 +48,7 @@ for(const lang of ["fr","ja","zh"] as const){
   await page.getByRole("button",{name:"Review writing"}).click();
   await expect(page.getByText("Ungraded practice")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await completePhase13Independent(page,lang);
   await expect(page.getByRole("heading",{name:"What to remember"})).toBeVisible();
   await page.getByRole("button",{name:"Finish preview"}).click();
   await expect(page.getByRole("heading",{name:"Preview complete"})).toBeVisible();
