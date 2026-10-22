@@ -1,5 +1,6 @@
 import {useEffect,useMemo,useReducer,useRef,useState,type RefObject} from "react";
 import type {AnswerResult, LearningFrame} from "./lesson-model";
+import type {ExerciseSourceComparisonV1} from "../../../packages/content-schema/src/lesson-v1";
 import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance,hasUnsubmittedWriting} from "./lesson-player";
 import {
   checkpointId, DEMO_CHECKPOINT_KEY,
@@ -31,6 +32,21 @@ function stageName(frame:LearningFrame):string {
   if(frame.stage==="guided")return "Guided practice";
   if(frame.stage==="independent")return "Independent practice";
   return "Reflection";
+}
+function SourceComparisonView({comparison,languageId}:{
+  comparison:ExerciseSourceComparisonV1;
+  languageId:string;
+}){
+  return <details className="source-comparison">
+    <summary>Compare source contexts</summary>
+    <div className="comparison-examples">
+      {[comparison.first,comparison.second].map((example,i)=><blockquote key={i}>
+        <p className="target" lang={languageId}>{example.targetText}</p>
+        <p className="translation">{example.meaning}</p>
+      </blockquote>)}
+    </div>
+    <p className="source-cue">{comparison.cue}</p>
+  </details>;
 }
 function ExerciseView({
   frame,draft,result,onDraft,onSubmit,onRetry,onReveal,onRevise,headingRef
@@ -80,6 +96,8 @@ function ExerciseView({
         <summary>Writing criteria</summary>
         <ul>{exercise.rubric.map(item=><li key={item}>{item}</li>)}</ul>
       </details>
+      {exercise.sourceComparison&&
+        <SourceComparisonView comparison={exercise.sourceComparison} languageId={exercise.languageId}/>}
       {exercise.sourceAid&&<details>
         <summary>Original source example</summary>
         <blockquote>
@@ -138,6 +156,8 @@ function ExerciseView({
         </blockquote>
         <p className="source-cue">{exercise.sourceAid.cue}</p>
       </details>}
+      {result.kind==="incorrect"&&exercise.sourceComparison&&
+        <SourceComparisonView comparison={exercise.sourceComparison} languageId={exercise.languageId}/>}
       {result.kind==="revealed" && <p>Expected: <span lang={exercise.languageId}>{result.expected.join(" / ")}</span></p>}
       {result.kind==="ungraded" && <ul>{result.rubric.map(item=><li key={item}>{item}</li>)}</ul>}
     </div>:<p className="scoring-note">
