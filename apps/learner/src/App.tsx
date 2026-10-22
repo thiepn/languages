@@ -13,6 +13,13 @@ const NAV: readonly {id:Destination;label:string}[] = [
 ];
 const ALL_BUNDLES=Object.values(DEMO_BUNDLES);
 
+const DEMO_LANGUAGE_KEY="thiepn-languages-phase04-active-language";
+function readSelected():LanguageChoice{
+  try{
+    const value=window.sessionStorage.getItem(DEMO_LANGUAGE_KEY);
+    return LANGUAGES.some(language=>language.id===value)?value as LanguageChoice:"fr";
+  }catch{return "fr";}
+}
 function readPositions():Record<string,number>{
   try{return parseDemoCheckpoint(window.sessionStorage.getItem(DEMO_CHECKPOINT_KEY),ALL_BUNDLES);}
   catch{return {};}
@@ -93,7 +100,7 @@ function TeachingView({frame,languageId}:{frame:LearningFrame;languageId:string}
 }
 
 export function App(){
-  const [selected,setSelected]=useState<LanguageChoice>("fr");
+  const [selected,setSelected]=useState<LanguageChoice>(readSelected);
   const [destination,setDestination]=useState<Destination>("home");
   const [lessonOpen,setLessonOpen]=useState(false);
   const [positions,setPositions]=useState<Record<string,number>>(readPositions);
@@ -111,6 +118,9 @@ export function App(){
   const currentDraft=drafts[answerKey]??"";
   const canAdvance=!!frame&&(frame.type==="teaching"||canContinueAfterAnswer(currentResult));
 
+  useEffect(()=>{
+    try{window.sessionStorage.setItem(DEMO_LANGUAGE_KEY,selected);}catch{/* Optional tab-only language choice. */}
+  },[selected]);
   useEffect(()=>{
     try{window.sessionStorage.setItem(DEMO_CHECKPOINT_KEY,serializeDemoCheckpoint(positions,ALL_BUNDLES));}
     catch{/* The preview still works in memory if browser tab storage is unavailable. */}
@@ -158,7 +168,8 @@ export function App(){
     setDrafts({});
     setResults({});
     setLessonOpen(false);
-    try{window.sessionStorage.removeItem(DEMO_CHECKPOINT_KEY);}catch{/* No storage access. */}
+    setSelected("fr");
+    try{window.sessionStorage.removeItem(DEMO_LANGUAGE_KEY);window.sessionStorage.removeItem(DEMO_CHECKPOINT_KEY);}catch{/* No storage access. */}
   }
 
   return <div className="app-shell">
