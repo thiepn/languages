@@ -1,84 +1,146 @@
-import {test,expect} from "@playwright/test";
+import {test,expect,type Page} from "@playwright/test";
+import raw from "../../../contracts/fixtures/phase02-source-lessons.json";
+import {framesFor} from "../src/lesson-model";
+import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
 
-test("French enters the actual shared lesson and checks a bounded answer",async({page})=>{
-  await page.goto("/");
-  await expect(page.getByRole("heading",{name:"Home"})).toBeVisible();
-  await page.getByRole("button",{name:"Start French lesson"}).click();
-  await expect(page.getByRole("heading",{name:"First French words and sounds"})).toBeVisible();
-  await expect(page.getByText("Bonjour ! Je m’appelle Inès.")).toBeVisible();
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.getByRole("heading",{name:"Understand the pattern"})).toBeVisible();
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.getByRole("heading",{name:"Which greeting is suited to an unfamiliar teacher?"})).toBeVisible();
-  await page.getByRole("radio",{name:/Bonjour, madame/}).check();
-  await page.getByRole("button",{name:"Check answer"}).click();
-  await expect(page.getByText("Answer accepted")).toBeVisible();
-  await expect(page.getByText("Practice feedback only — no review grade is recorded.")).toHaveCount(0);
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await page.getByRole("textbox",{name:"Your answer"}).fill("appelle");
-  await page.getByRole("button",{name:"Check answer"}).click();
-  await expect(page.getByText("Answer accepted")).toBeVisible();
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await page.getByRole("textbox",{name:"Your response"}).fill("Bonjour, je m’appelle Sam. Au revoir.");
-  await page.getByRole("button",{name:"Check answer"}).click();
-  await expect(page.getByText("Ungraded practice")).toBeVisible();
-  await page.getByRole("button",{name:"Finish preview"}).click();
+const bundles=raw.bundles as unknown as LessonBundleV1[];
+const lessons=Object.fromEntries(bundles.map(b=>[b.lesson.languageId,b])) as Record<string,LessonBundleV1>;
+const languageNames:Record<string,string>={fr:"French",ja:"Japanese",zh:"Chinese"};
+
+async function start(page:Page,lang:string){
+ await page.goto("/");
+ if(lang==="fr")await page.getByRole("button",{name:"Start French lesson"}).click();
+ else{
+  await page.getByRole("combobox",{name:"Study language"}).selectOption(lang);
+  await page.getByRole("button",{name:"Start lesson"}).click();
+ }
+ await expect(page.getByRole("heading",{name:lessons[lang]!.lesson.title})).toBeVisible();
+}
+
+for(const lang of ["fr","ja","zh"]){
+ test(languageNames[lang]+" — complete guided and independent teaching journey, no false grade",async({page})=>{
+  await start(page,lang);
+  const bundle=lessons[lang]!;
+  const frames=framesFor(bundle);
+  expect(frames).toHaveLength(10);
+  for(const [index,frame] of frames.entries()){
+   if(frame.type==="teaching"){
+    if(frame.step?.type==="encounter")await expect(page.locator(".example-list .example").first()).toBeVisible();
+    if(frame.step?.type==="explain")await expect(page.getByRole("heading",{name:frame.step.heading??"Understand the pattern"})).toBeVisible();
+    if(frame.step?.type==="reflect")await expect(page.getByRole("heading",{name:"What to remember"})).toBeVisible();
+   }else{
+    const ex=frame.exercise!;
+    await expect(page.getByRole("heading",{name:ex.instruction})).toBeVisible();
+    if(ex.kind==="choice"){
+      const position=ex.options.indexOf(ex.acceptedAnswers[0]!);
+      expect(position).toBeGreaterThanOrEqual(0);
+      await page.getByRole("radio").nth(position).check();
+    }else if(ex.kind==="typed")await page.getByRole("textbox",{name:"Your answer"}).fill(ex.acceptedAnswers[0]!);
+    else await page.getByRole("textbox",{name:"Your response"}).fill(
+      lang==="fr"?"Bonsoir, madame. Je m’appelle Léa. Au revoir.":
+      lang==="ja"?"おはようございます。こんにちは。こんばんは。おやすみなさい。":
+      "你好！这个苹果很好吃。");
+    await page.getByRole("button",{name:"Check answer"}).click();
+    await expect(page.getByText(ex.kind==="free-production"?"Ungraded practice":"Answer accepted")).toBeVisible();
+   }
+   await page.getByRole("button",{name:index===frames.length-1?"Finish preview":"Continue",exact:true}).click();
+  }
   await expect(page.getByRole("heading",{name:"Preview complete"})).toBeVisible();
-  await expect(page.getByText(/No learning grade or review progress was recorded/)).toBeVisible();
-});
-
-test("Japanese and Chinese use the same navigation and step player",async({page})=>{
-  await page.goto("/");
-  await page.getByRole("combobox",{name:"Study language"}).selectOption("ja");
-  await expect(page.getByRole("heading",{name:"Course"})).toBeVisible();
-  await page.getByRole("button",{name:"Start lesson"}).click();
-  await expect(page.getByRole("heading",{name:"Greetings at different times"})).toBeVisible();
-  await expect(page.getByText("朝：おはようございます。")).toBeVisible();
-  await page.getByRole("combobox",{name:"Study language"}).selectOption("zh");
-  await page.getByRole("button",{name:"Start lesson"}).click();
-  await expect(page.getByRole("heading",{name:"你好: characters in a greeting"})).toBeVisible();
-  await expect(page.getByText("nǐ hǎo")).toBeVisible();
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
-  await expect(page.getByRole("heading",{name:"Understand the pattern"})).toBeVisible();
-});
-
-test("demo continuation survives a refresh without persisting any answers",async({page})=>{
-  await page.goto("/");
-  await page.getByRole("button",{name:"Start French lesson"}).click();
-  await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.getByText("No learning grade or review progress was recorded.",{exact:false})).toBeVisible();
   const checkpoint=await page.evaluate(()=>sessionStorage.getItem("thiepn-languages-phase03-preview-v1"));
-  expect(checkpoint).toContain('"version":1');
-  expect(checkpoint).not.toContain("Bonjour");
+  expect(checkpoint).toBeTruthy();
+  expect(checkpoint).not.toContain("acceptedAnswers");
+  expect(checkpoint).not.toContain("responseText");
   expect(checkpoint).not.toContain("accountId");
-  await page.reload();
-  await expect(page.getByRole("heading",{name:"Home"})).toBeVisible();
-  await page.getByRole("button",{name:"Continue French"}).click();
-  await expect(page.getByRole("heading",{name:"Understand the pattern"})).toBeVisible();
-  await page.getByRole("button",{name:"Profile"}).last().click();
-  await expect(page.getByText("Not connected in preview")).toBeVisible();
-  await page.getByRole("button",{name:"Clear demo continuation"}).click();
-  const after=await page.evaluate(()=>sessionStorage.getItem("thiepn-languages-phase03-preview-v1"));
-  expect(after===null||after.includes('"positions":{}')).toBeTruthy();
+  expect(await page.evaluate(()=>localStorage.length)).toBe(0);
+ });
+}
+
+test("wrong answer requires retry or explicit uncredited reveal",async({page})=>{
+ await start(page,"fr");
+ for(let i=0;i<3;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.getByRole("heading",{name:"Which greeting is suited to an unfamiliar teacher?"})).toBeVisible();
+ await page.getByRole("radio").first().check();
+ await page.getByRole("button",{name:"Check answer"}).click();
+ await expect(page.getByText("Not quite — try again")).toBeVisible();
+ await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeDisabled();
+ await expect(page.getByText("Expected:",{exact:false})).toHaveCount(0);
+ await page.getByRole("button",{name:"Try again"}).click();
+ await expect(page.getByText("Not quite — try again")).toHaveCount(0);
+ await page.getByRole("radio").first().check();
+ await page.getByRole("button",{name:"Check answer"}).click();
+ await page.getByRole("button",{name:"Show answer"}).click();
+ await expect(page.getByText("Answer revealed — not credited")).toBeVisible();
+ await expect(page.getByText("Expected:",{exact:false})).toBeVisible();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.getByRole("heading",{name:"Complete: Je m’___ Inès."})).toBeVisible();
+ await page.getByRole("textbox",{name:"Your answer"}).fill("appelle");
+ await page.getByRole("textbox",{name:"Your answer"}).press("Enter");
+ await expect(page.getByText("Answer accepted")).toBeVisible();
 });
 
-test("Review refuses to fabricate due cards or learner grades",async({page})=>{
-  await page.goto("/");
-  const reviewButtons=page.getByRole("button",{name:"Review",exact:true});
-  await reviewButtons.first().click();
-  await expect(page.getByRole("heading",{name:"Scheduled reviews unavailable"})).toBeVisible();
-  await expect(page.getByText(/retain review authority/)).toBeVisible();
-  expect(await page.getByRole("button",{name:/grade|mark mastered|review now/i}).count()).toBe(0);
+test("interruption restores exact frame while clearing unanswered drafts and feedback",async({page})=>{
+ await start(page,"ja");
+ for(let i=0;i<4;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.getByRole("heading",{name:"At 8 a.m. you meet your instructor. What do you say?"})).toBeVisible();
+ await page.getByRole("radio").first().check();
+ await page.reload();
+ await page.getByRole("button",{name:"Continue Japanese"}).click();
+ await expect(page.getByRole("heading",{name:"At 8 a.m. you meet your instructor. What do you say?"})).toBeVisible();
+ await expect(page.getByRole("radio").first()).not.toBeChecked();
+ await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeDisabled();
+ const s=await page.evaluate(()=>sessionStorage.getItem("thiepn-languages-phase03-preview-v1"));
+ expect(s).not.toContain("おはよう");
+ await page.getByRole("button",{name:"← Course"}).click();
+ await expect(page.getByRole("heading",{name:"Course"})).toBeVisible();
+ await page.getByRole("button",{name:"Continue lesson"}).click();
+ await expect(page.getByRole("heading",{name:"At 8 a.m. you meet your instructor. What do you say?"})).toBeVisible();
 });
 
-test("small viewport keeps primary actions and navigation accessible",async({page})=>{
-  await page.setViewportSize({width:360,height:690});
-  await page.goto("/");
-  const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-  expect(overflow).toBeLessThanOrEqual(1);
-  await page.getByRole("button",{name:"Start French lesson"}).click();
-  await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeInViewport();
-  await expect(page.getByRole("button",{name:"Previous"})).toBeVisible();
-  await expect(page.getByRole("navigation",{name:"Mobile primary"})).toBeVisible();
-  const overflowLesson=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
-  expect(overflowLesson).toBeLessThanOrEqual(1);
+test("review and profile never create or imply due cards, account access or sync",async({page})=>{
+ await page.goto("/");
+ await page.getByRole("button",{name:"Review",exact:true}).first().click();
+ await expect(page.getByRole("heading",{name:"Scheduled reviews unavailable"})).toBeVisible();
+ await expect(page.getByText(/retain review authority/)).toBeVisible();
+ await page.getByRole("button",{name:"Profile",exact:true}).last().click();
+ await expect(page.getByText("Not connected in preview")).toBeVisible();
+ await expect(page.getByText("Disabled")).toBeVisible();
+ await page.getByRole("button",{name:"Clear demo continuation"}).click();
+ const after=await page.evaluate(()=>sessionStorage.getItem("thiepn-languages-phase03-preview-v1"));
+ expect(after===null||after.includes('"positions":{}')).toBeTruthy();
+});
+
+test("mobile navigation and lesson controls remain visible without page-level horizontal overflow",async({page})=>{
+ await page.setViewportSize({width:320,height:568});
+ await start(page,"zh");
+ await expect(page.getByRole("navigation",{name:"Mobile primary"})).toBeVisible();
+ await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeInViewport();
+ await expect(page.getByRole("button",{name:"Previous"})).toBeInViewport();
+ await expect(page.getByText("nǐ hǎo")).toBeVisible();
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
+ expect(overflow).toBeLessThanOrEqual(1);
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await expect(page.getByRole("heading",{name:"Understand the pattern"})).toBeVisible();
+});
+
+test("native keyboard input and exact-tone check stay bounded",async({page})=>{
+ await start(page,"zh");
+ for(let i=0;i<7;i++){
+  const next=page.getByRole("button",{name:"Continue",exact:true});
+  if(await next.isEnabled()){await next.click();continue;}
+  const radio=page.getByRole("radio");
+  if(await radio.count()){
+    const options=await radio.all();
+    const greeting=await Promise.all(options.map(x=>x.inputValue()));
+    await radio.nth(greeting.includes("你好")?greeting.indexOf("你好"):greeting.indexOf("好吃")).check();
+    await page.getByRole("button",{name:"Check answer"}).click();
+    await next.click();
+  }else if(await page.getByRole("textbox",{name:"Your answer"}).count()){
+    const prompt=await page.locator(".activity h2").innerText();
+    await page.getByRole("textbox",{name:"Your answer"}).fill(prompt.includes("tone-marked")?"nǐ hǎo":"你好");
+    await page.getByRole("textbox",{name:"Your answer"}).press("Enter");
+    await expect(page.getByText("Answer accepted")).toBeVisible();
+    await next.click();
+  }
+ }
 });
