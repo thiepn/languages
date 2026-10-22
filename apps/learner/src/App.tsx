@@ -111,6 +111,14 @@ function ExerciseView({
     {result!==undefined?<div ref={feedbackRef} tabIndex={-1} className={"feedback "+result.kind} role="status" aria-live="polite">
       <strong>{result.kind==="correct"?"Answer accepted":result.kind==="incorrect"?"Not quite — try again":result.kind==="revealed"?"Answer revealed — not credited":"Ungraded practice"}</strong>
       <p>{result.explanation}</p>
+      {result.kind==="incorrect"&&exercise.sourceAid&&<details className="source-aid">
+        <summary>Review source example</summary>
+        <blockquote>
+          <p className="target" lang={exercise.languageId}>{exercise.sourceAid.targetText}</p>
+          <p className="translation">{exercise.sourceAid.meaning}</p>
+        </blockquote>
+        <p className="source-cue">{exercise.sourceAid.cue}</p>
+      </details>}
       {result.kind==="revealed" && <p>Expected: <span lang={exercise.languageId}>{result.expected.join(" / ")}</span></p>}
       {result.kind==="ungraded" && <ul>{result.rubric.map(item=><li key={item}>{item}</li>)}</ul>}
     </div>:<p className="scoring-note">
