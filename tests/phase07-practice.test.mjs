@@ -12,13 +12,13 @@ const owned=lang=>byLang[lang];
 const exercise=(l,id)=>owned(l).exercises.find(e=>e.id===id);
 const clone=x=>JSON.parse(JSON.stringify(x));
 
-test("three pinned lessons each have twenty activities and eight independent tasks",()=>{
+test("three pinned lessons each have twenty-two activities and ten independent tasks",()=>{
  for(const l of ["fr","ja","zh"]){
   const b=owned(l),frames=framesFor(b);
   assert.deepEqual(validateLessonBundleV1(b),[]);
-  assert.equal(frames.length,20);
+  assert.equal(frames.length,22);
   assert.equal(frames.filter(f=>f.stage==="guided").length,8);
-  assert.equal(frames.filter(f=>f.stage==="independent").length,8);
+  assert.equal(frames.filter(f=>f.stage==="independent").length,10);
   assert.ok(b.lesson.contentVersion.includes("-p07"));
   assert.equal(b.lesson.publication,"internal-fixture");
   assert.ok(b.lesson.sources.every(s=>s.editorialReview==="pending"&&!s.redistributionVerified));
