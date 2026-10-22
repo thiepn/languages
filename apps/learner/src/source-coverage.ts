@@ -49,13 +49,19 @@ const PINNED_LOCATIONS:Readonly<Record<string,string>>={
   "zh-ni-demo":"thiepn/chinese|src/demo-lessons.mjs|你",
   "zh-hao-demo":"thiepn/chinese|src/demo-lessons.mjs|好"
 };
+const PINNED_RIGHTS:Readonly<Record<string,LessonSourceV1["rights"]>>={
+  "fr-a1-01-original":"original-owned",
+  "ja-cf-a1-01-01-original":"original-owned",
+  "zh-ni-demo":"review-required",
+  "zh-hao-demo":"review-required"
+};
 /** Fail closed before additional originals enter this internal-only learner preview. */
 export function admitInternalPilot(bundle:LessonBundleV1):readonly SourceCoverage[] {
   const expected=PINNED_INTERNAL_PILOTS[bundle.lesson.id];
   if(!expected||bundle.lesson.languageId!==expected.language||
     bundle.lesson.publication!=="internal-fixture"||
     bundle.lesson.sources.some(s=>s.editorialReview!=="pending"||s.redistributionVerified||
-      [s.repository,s.path,s.originalEntityId].join("|")!==PINNED_LOCATIONS[s.id])||
+      ([s.repository,s.path,s.originalEntityId].join("|")!==PINNED_LOCATIONS[s.id]||s.rights!==PINNED_RIGHTS[s.id]))||
     JSON.stringify(bundle.lesson.sources.map(s=>s.id+"@"+s.revision).sort())!==
       JSON.stringify([...expected.sources].sort())) {
     throw new Error("Unreviewed source identity or publication change requires separate admission");
