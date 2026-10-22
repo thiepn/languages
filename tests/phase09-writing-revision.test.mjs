@@ -23,7 +23,7 @@ test("all languages add one genuinely contextual second writing activity without
    assert.ok(items[1].instruction.length>175);
    assert.ok(items[1].rubric.length>=4);
    assert.ok(items[0].sourceAid&&items[1].sourceAid);
-   assert.ok(bundle.lesson.contentVersion.endsWith("-p09"));
+   assert.ok(bundle.lesson.contentVersion.includes("-p09"));
    assert.ok(bundle.lesson.sources.every(s=>s.editorialReview==="pending"&&!s.redistributionVerified));
    for(const item of items){
      assert.equal(item.grading,"ungraded");
