@@ -16,8 +16,8 @@ test("all languages add one genuinely contextual second writing activity without
  for(const lang of langs){
    const bundle=selected(lang),frames=framesFor(bundle),items=writing(bundle);
    assert.deepEqual(validateLessonBundleV1(bundle),[]);
-   assert.equal(frames.length,20);
-   assert.equal(frames.filter(frame=>frame.stage==="independent").length,8);
+   assert.equal(frames.length,22);
+   assert.equal(frames.filter(frame=>frame.stage==="independent").length,10);
    assert.equal(items.length,2);
    assert.equal(items[1].id,lang+"-p09-context-composition");
    assert.ok(items[1].instruction.length>175);
@@ -64,8 +64,9 @@ test("existing Phase 05 reducer supports writing revisions without creating a se
    assert.equal(activeAttempt(state).outcome.kind,"ungraded");
    assert.equal(activeAttempt(state).submissions,2);
    state=reduceLessonPlayer(state,{type:"next"});
-   assert.equal(activeFrame(state).stage,"reflect");
+   assert.equal(activeFrame(state).stage,"independent");
    assert.equal(state.index,19);
+   assert.equal(activeFrame(state).exercise.id,lang+"-p13-"+(lang==="fr"?"independent-etre":lang==="ja"?"shop-afternoon":"plural-pinyin"));
  }
 });
 
