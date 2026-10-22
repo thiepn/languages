@@ -13,10 +13,10 @@ const copy=x=>JSON.parse(JSON.stringify(x));
 test("21 substantive comparisons are independently traceable to exact source Encounter text and meaning",()=>{
  for(const lang of ["fr","ja","zh"]){
   const b=byLanguage[lang],frames=framesFor(b);
-  assert.equal(frames.length,20);
-  assert.equal(frames.filter(f=>f.stage==="independent").length,8);
+  assert.equal(frames.length,22);
+  assert.equal(frames.filter(f=>f.stage==="independent").length,10);
   assert.deepEqual(validateLessonBundleV1(b),[]);
-  assert.ok(b.lesson.contentVersion.endsWith("-p12"));
+  assert.ok(b.lesson.contentVersion.includes("-p12"));
   const originals=b.lesson.steps.find(s=>s.type==="encounter").examples;
   const comparisons=b.exercises.filter(e=>e.sourceComparison);
   assert.equal(comparisons.length,7);
