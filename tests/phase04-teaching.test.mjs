@@ -19,7 +19,7 @@ test("all three extended beginner lessons preserve source provenance and the tea
     const frames=framesFor(bundle);
     assert.equal(frames.length,20);
     assert.deepEqual(frames.map(f=>f.stage),
-      ["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","guided","independent","independent","independent","independent","independent","independent","independent","independent","reflect");
+      ["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","guided","independent","independent","independent","independent","independent","independent","independent","independent","reflect"]);
     assert.equal(frames.filter(f=>f.exercise?.purpose==="independent").length,8);
     assert.equal(frames.at(-1).step.type,"reflect");
     assert.ok(bundle.lesson.contentVersion.includes("-p04"));
