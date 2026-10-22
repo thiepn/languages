@@ -1547,7 +1547,7 @@
           "kind": "cloze",
           "grading": "exact",
           "explanation": "你 is the singular second-person pronoun in 你喜欢喝茶吗？; 你们 would address multiple people.",
-          "before": "你",
+          "before": "句子：",
           "after": "喜欢喝茶吗？",
           "acceptedAnswers": [
             "你"
