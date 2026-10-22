@@ -3,7 +3,7 @@ import {
   checkpointId, evaluateExercise, framesFor, revealExercise,
   canContinueAfterAnswer,
   type AnswerResult, type LearningFrame
-} from "./lesson-model.js";
+} from "./lesson-model.ts";
 
 /**
  * Pure, shared Phase 05 player state. Contains NO storage, timestamps, network,
