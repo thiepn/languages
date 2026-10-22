@@ -39,6 +39,14 @@ for(const lang of ["fr","ja","zh"] as const){
   await page.getByRole("button",{name:"Check answer"}).click();
   await expect(page.getByText("Answer accepted")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
+  await expect(page.getByRole("heading",{name:/short written|written four-part day diary|brief two-person scene/i})).toBeVisible();
+  await page.getByRole("textbox",{name:"Your response"}).fill(
+    lang==="fr"?"Bonjour, madame. Je m’appelle Inès. Au revoir. Bonsoir, monsieur. Au revoir.":
+    lang==="ja"?"朝：おはようございます。 昼：こんにちは。 夜：こんばんは。 寝る前：おやすみなさい。":
+    "你好。你喜欢喝茶吗？这个苹果很好吃。 Greeting, question and taste.");
+  await page.getByRole("button",{name:"Check answer"}).click();
+  await expect(page.getByText("Ungraded practice")).toBeVisible();
+  await page.getByRole("button",{name:"Continue",exact:true}).click();
   await expect(page.getByRole("heading",{name:"What to remember"})).toBeVisible();
   await page.getByRole("button",{name:"Finish preview"}).click();
   await expect(page.getByRole("heading",{name:"Preview complete"})).toBeVisible();
