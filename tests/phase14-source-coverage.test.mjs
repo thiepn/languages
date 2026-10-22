@@ -40,6 +40,7 @@ test("preview admission rejects unreviewed owner, identity, revision and publica
   x=>{x.lesson.sources[0].revision="0".repeat(40);},
   x=>{x.lesson.sources[0].path="another/file.ts";},
   x=>{x.lesson.sources[0].originalEntityId="a1-02";},
+  x=>{x.lesson.sources[0].rights="review-required";},
   x=>{x.lesson.sources[0].redistributionVerified=true;},
   x=>{x.lesson.sources[0].editorialReview="approved";},
   x=>{x.lesson.publication="candidate";},
