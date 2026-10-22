@@ -18,7 +18,7 @@ test("21 substantive comparisons are independently traceable to exact source Enc
   assert.deepEqual(validateLessonBundleV1(b),[]);
   assert.ok(b.lesson.contentVersion.includes("-p12"));
   const originals=b.lesson.steps.find(s=>s.type==="encounter").examples;
-  const comparisons=b.exercises.filter(e=>e.sourceComparison);
+  const comparisons=b.exercises.filter(e=>e.sourceComparison&&!e.id.includes("-p13-"));
   assert.equal(comparisons.length,7);
   for(const exercise of comparisons){
    const {first,second,cue}=exercise.sourceComparison;
