@@ -35,7 +35,7 @@ for(const lang of ["fr","ja","zh"] as const){
   const textbox=page.getByRole("textbox",{name:"Your response"});
   await textbox.fill(original[lang]);
   await expect(page.getByText(/Unsubmitted writing stays on this page/)).toBeVisible();
-  await page.getByRole("button",{name:"Check answer"}).click();
+  await page.getByRole("button",{name:"Review writing"}).click();
   await expect(page.getByText("Ungraded practice")).toBeVisible();
   await expect(page.getByRole("button",{name:"Revise writing"})).toBeVisible();
   await page.getByRole("button",{name:"Revise writing"}).click();
@@ -44,7 +44,7 @@ for(const lang of ["fr","ja","zh"] as const){
   await expect(page.getByRole("button",{name:"Continue",exact:true})).toBeDisabled();
   const updated=original[lang]+(lang==="zh"?" 这个苹果很好吃。":lang==="ja"?"夜：こんばんは。寝る前：おやすみなさい。":" Bonsoir, monsieur. Au revoir, à demain.");
   await textbox.fill(updated);
-  await page.getByRole("button",{name:"Check answer"}).click();
+  await page.getByRole("button",{name:"Review writing"}).click();
   await expect(page.getByText("Ungraded practice")).toBeVisible();
   await page.getByRole("button",{name:"Continue",exact:true}).click();
   await expect(page.getByRole("heading",{name:"What to remember"})).toBeFocused();
@@ -94,7 +94,7 @@ test("IME-composition on ungraded textarea never submits on Enter, ordinary Ente
  await textbox.press("Enter");
  await expect(textbox).toHaveValue("你好。\n");
  await expect(page.getByText("Ungraded practice")).toHaveCount(0);
- await page.getByRole("button",{name:"Check answer"}).click();
+ await page.getByRole("button",{name:"Review writing"}).click();
  await expect(page.getByText("Ungraded practice")).toBeVisible();
 });
 test("320×420 mobile writing remains editable with lesson actions visible",async({page})=>{
@@ -107,7 +107,7 @@ test("320×420 mobile writing remains editable with lesson actions visible",asyn
  await expect(page.getByRole("navigation",{name:"Mobile primary"})).toBeVisible();
  const extra=await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth);
  expect(extra).toBeLessThanOrEqual(1);
- await page.getByRole("button",{name:"Check answer"}).click();
+ await page.getByRole("button",{name:"Review writing"}).click();
  await page.getByRole("button",{name:"Revise writing"}).click();
  await expect(textbox).toBeFocused();
 });
