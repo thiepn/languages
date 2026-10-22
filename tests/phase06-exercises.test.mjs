@@ -15,13 +15,13 @@ const fails=(bundle,code)=>{
  assert.ok(errors.some(e=>e.code===code),JSON.stringify(errors));
 };
 
-test("three original-source extended courses share the same 13-frame contract with independent transfer",()=>{
+test("three original-source extended courses share the same 16-frame contract with independent transfer",()=>{
  for(const lang of ["fr","ja","zh"]){
   const b=langs[lang];
   assert.deepEqual(validateLessonBundleV1(b),[]);
   assert.deepEqual(b.exercises.filter(e=>["cloze","ordering","reading"].includes(e.kind)).map(e=>e.kind),["cloze","ordering","reading"]);
-  assert.equal(framesFor(b).length,13);
-  assert.equal(framesFor(b).filter(f=>f.stage==="independent").length,2);
+  assert.equal(framesFor(b).length,16);
+  assert.equal(framesFor(b).filter(f=>f.stage==="independent").length,4);
   assert.ok(b.lesson.contentVersion.endsWith("-p06"));
   assert.equal(b.lesson.publication,"internal-fixture");
   assert.ok(b.lesson.sources.every(s=>s.editorialReview==="pending"&&!s.redistributionVerified));
@@ -99,6 +99,12 @@ test("same Phase 05 reducer handles all three new types without grade/schedule e
     assert.equal(mayAdvance(state),true);
     state=reduceLessonPlayer(state,{type:"next"});
   }
+  assert.equal(activeFrame(state).exercise.purpose,"guided");
+  const guided=activeFrame(state).exercise;
+  state=reduceLessonPlayer(state,{type:"draft",value:guided.acceptedAnswers[0]});
+  state=reduceLessonPlayer(state,{type:"submit"});
+  assert.equal(activeAttempt(state).outcome.kind,"correct");
+  state=reduceLessonPlayer(state,{type:"next"});
   assert.equal(activeFrame(state).exercise.purpose,"independent");
   const serialized=serializeDemoCheckpoint({[checkpointId(langs[l])]:state.index},Object.values(langs));
   assert.ok(!serialized.includes("correct"));
@@ -106,7 +112,7 @@ test("same Phase 05 reducer handles all three new types without grade/schedule e
   assert.ok(!serialized.includes("grade"));
   const restoredIndex=parseDemoCheckpoint(serialized,Object.values(langs))[checkpointId(langs[l])];
   const recovery=createLessonPlayerState(langs[l],restoredIndex);
-  assert.equal(recovery.index,10);
+  assert.equal(recovery.index,11);
   assert.deepEqual(recovery.attempts,{});
   assert.equal(activeAttempt(recovery).outcome,undefined);
  }
