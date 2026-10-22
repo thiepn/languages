@@ -95,7 +95,7 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
-    return updateAttempt(state,frame,{draft:"",submissions:attempt.submissions});
+    return updateAttempt(state,frame,{draft:exercise.kind==="typed"||exercise.kind==="cloze"?attempt.draft:"",submissions:attempt.submissions});
   }
   if(action.type==="reveal"){
     if(attempt.outcome?.kind!=="incorrect")return state;
