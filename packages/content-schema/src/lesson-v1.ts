@@ -112,7 +112,36 @@ export interface ProductionExerciseV1 extends ExerciseBaseV1 {
   readonly grading: "ungraded";
   readonly rubric: readonly string[];
 }
-export type ExerciseV1 = ChoiceExerciseV1 | TypedExerciseV1 | ProductionExerciseV1;
+/** Cloze responses are checked only against explicitly authored answer forms. */
+export interface ClozeExerciseV1 extends ExerciseBaseV1 {
+  readonly kind: "cloze";
+  readonly before: string;
+  readonly after: string;
+  readonly acceptedAnswers: readonly string[];
+  readonly normalization: AnswerNormalizationV1;
+  readonly grading: "exact";
+}
+/** Ordering answer is a comma-separated sequence of zero-based token indices. */
+export interface OrderingExerciseV1 extends ExerciseBaseV1 {
+  readonly kind: "ordering";
+  readonly tokens: readonly string[];
+  readonly acceptedAnswers: readonly string[];
+  readonly normalization: "literal";
+  readonly grading: "exact";
+}
+/** Contextual reading is recognition only; it never asserts reading proficiency. */
+export interface ReadingExerciseV1 extends ExerciseBaseV1 {
+  readonly kind: "reading";
+  readonly passage: string;
+  readonly reading?: string;
+  readonly question: string;
+  readonly options: readonly string[];
+  readonly acceptedAnswers: readonly string[];
+  readonly normalization: "literal";
+  readonly grading: "exact";
+}
+export type ExerciseV1 = ChoiceExerciseV1 | TypedExerciseV1 | ProductionExerciseV1 |
+  ClozeExerciseV1 | OrderingExerciseV1 | ReadingExerciseV1;
 
 export interface LanguagePluginV1 {
   readonly schemaVersion: 1;
@@ -121,7 +150,8 @@ export interface LanguagePluginV1 {
   readonly writingSystems: readonly string[];
   readonly capabilities: readonly (
     "latin-orthography" | "morphology" | "kana" | "kanji" | "furigana" |
-    "hanzi" | "pinyin" | "lexical-tones" | "contextual-reading"
+    "hanzi" | "pinyin" | "lexical-tones" | "contextual-reading" |
+    "cloze" | "ordering"
   )[];
   readonly answerNormalizations: readonly AnswerNormalizationV1[];
   readonly recordedAudio: "none" | "source-verified";
@@ -146,7 +176,7 @@ const STAGES:readonly LessonStageV1[]=["encounter","explain","guided","independe
 const ALLOWED_NORMALIZATIONS:readonly AnswerNormalizationV1[]=["literal","unicode-nfc","trim-whitespace","french-apostrophe","japanese-terminal-punctuation","pinyin-tone-marked"];
 const CAPABILITIES:readonly LanguagePluginV1["capabilities"][number][]=[
  "latin-orthography","morphology","kana","kanji","furigana",
- "hanzi","pinyin","lexical-tones","contextual-reading"
+ "hanzi","pinyin","lexical-tones","contextual-reading","cloze","ordering"
 ];
 
 /** Fail-closed structural validation, not a linguistic review or release certificate. */
@@ -230,15 +260,33 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
      ev.independent!==(ex.purpose==="independent")||
      !["formative-recognition","formative-recall","ungraded-production"].includes(ev.classification))
      add("evidence-policy",path,"Unverified learning evidence or authority escalation");
-  if(ex.kind==="choice"||ex.kind==="typed"){
+  if(ex.kind==="choice"||ex.kind==="typed"||ex.kind==="cloze"||ex.kind==="ordering"||ex.kind==="reading"){
    if(ex.grading!=="exact"||!Array.isArray(ex.acceptedAnswers)||!ex.acceptedAnswers.length||
       !unique(ex.acceptedAnswers)||ex.acceptedAnswers.some((a:string)=>!hasText(a))||
       ev?.classification==="ungraded-production")add("answer-key",path,"Invalid deterministic grading definition");
-   if(ex.kind==="choice"&&(!Array.isArray(ex.options)||ex.options.length<2||
-      !unique(ex.options)||!ex.acceptedAnswers.every((a:string)=>ex.options.includes(a))||ex.normalization!=="literal"))
+   if((ex.kind==="choice"||ex.kind==="reading")&&(!Array.isArray(ex.options)||ex.options.length<2||
+      !unique(ex.options)||ex.options.some(o=>!hasText(o))||
+      !ex.acceptedAnswers.every((a:string)=>ex.options.includes(a))||ex.normalization!=="literal"))
       add("choice-options",path,"Ambiguous or missing choice key");
-   if(ex.kind==="typed"&&!plugin.answerNormalizations.includes(ex.normalization))
+   if(ex.kind==="reading"&&(!hasText(ex.passage)||!hasText(ex.question)||
+     !plugin.capabilities.includes("contextual-reading")))
+     add("reading-contract",path,"Contextual reading needs a source passage, question and language capability");
+   if((ex.kind==="typed"||ex.kind==="cloze")&&!plugin.answerNormalizations.includes(ex.normalization))
       add("unsupported-normalizer",path,"Language plugin does not declare normalization "+ex.normalization);
+   if(ex.kind==="cloze"&&(!hasText(ex.before)||!hasText(ex.after)||
+     !plugin.capabilities.includes("cloze")))
+      add("cloze-contract",path,"Cloze requires meaningful framing before/after its blank and declared capability");
+   if(ex.kind==="ordering"){
+     const n=ex.tokens?.length??0;
+     if(!Array.isArray(ex.tokens)||n<2||n>8||ex.tokens.some(t=>!hasText(t))||
+       !unique(ex.tokens)||ex.normalization!=="literal"||
+       !plugin.capabilities.includes("ordering")||
+       !ex.acceptedAnswers.every(answer=>{
+         const ids=answer.split(",");
+         return ids.length===n&&ids.every(t=>/^(0|[1-9][0-9]*)$/.test(t)&&Number(t)<n)&&unique(ids);
+       }))
+       add("ordering-contract",path,"Ordering requires unique source tokens and complete, unambiguous authored index permutations");
+   }
   }else if(ex.kind==="free-production"){
    if(ex.grading!=="ungraded"||ev?.classification!=="ungraded-production"||
        !Array.isArray(ex.rubric)||!ex.rubric.length||ex.rubric.some((x:string)=>!hasText(x)))
