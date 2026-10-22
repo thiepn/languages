@@ -1,0 +1,47 @@
+name: Phase 02 lesson contracts
+
+on:
+  pull_request:
+    paths:
+      - "packages/content-schema/src/index.ts"
+      - "packages/content-schema/src/lesson-v1.ts"
+      - "contracts/fixtures/phase02-source-lessons.json"
+      - "tests/phase02-lesson-contract.test.mjs"
+      - "docs/PHASE02_LESSON_CONTRACT.md"
+      - ".github/workflows/phase02-lesson-contract.yml"
+  push:
+    paths:
+      - "packages/content-schema/src/index.ts"
+      - "packages/content-schema/src/lesson-v1.ts"
+      - "contracts/fixtures/phase02-source-lessons.json"
+      - "tests/phase02-lesson-contract.test.mjs"
+      - ".github/workflows/phase02-lesson-contract.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lesson-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Check TypeScript syntax without private dependency installation
+        run: node --check packages/content-schema/src/lesson-v1.ts
+      - name: Run native Node 24 three-language contract tests
+        run: node --experimental-strip-types --test tests/phase02-lesson-contract.test.mjs
+      - name: Assert no native app, Hub or Account imports in Phase 02 module
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+          const code=readFileSync("packages/content-schema/src/lesson-v1.ts","utf8");
+          if (/\b(?:fetch|localStorage|indexedDB|document|window|createStudyEvent|createFsrsScheduler)\s*\(/.test(code)||
+              /\b(?:account|hub|french|japanese|chinese)\b/i.test(code.replace(/\/\*[\s\S]*?\*\//g,"").replace(/\/\/[^\n]*/g,""))) {
+            throw Error("Phase 02 contract code unexpectedly owns native runtime authority");
+          }
+          console.log("Phase 02 core is language-neutral and side-effect-free");
+          NODE
