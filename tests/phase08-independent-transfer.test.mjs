@@ -13,12 +13,12 @@ const languages=["fr","ja","zh"];
 const entry=(lang,part)=>byLanguage[lang].exercises.find(e=>e.id===lang+"-p08-situated-"+part);
 const copy=v=>JSON.parse(JSON.stringify(v));
 
-test("20 source-pinned frames and eight independent transfer tasks per language stay internal",()=>{
+test("22 source-pinned frames and ten independent transfer tasks per language stay internal",()=>{
  for(const lang of languages){
   const bundle=byLanguage[lang],frames=framesFor(bundle);
   assert.deepEqual(validateLessonBundleV1(bundle),[]);
-  assert.equal(frames.length,20);
-  assert.equal(frames.filter(f=>f.stage==="independent").length,8);
+  assert.equal(frames.length,22);
+  assert.equal(frames.filter(f=>f.stage==="independent").length,10);
   assert.deepEqual(frames.slice(15,18).map(f=>f.exercise.kind),["cloze","ordering","reading"]);
   assert.ok(bundle.lesson.contentVersion.includes("-p08"));
   assert.equal(bundle.lesson.publication,"internal-fixture");
