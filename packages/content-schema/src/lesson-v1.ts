@@ -83,6 +83,12 @@ export interface ExerciseEvidenceV1 {
   readonly mayAssertProficiency: false;
 }
 
+/** Source-linked targeted correction for an authored, *incorrect* form.
+ * These are not accepted-answer variants, mastery evidence, or generic grading rules. */
+export interface ExerciseMisconceptionV1 {
+  readonly answer: string;
+  readonly feedback: string;
+}
 export interface ExerciseBaseV1 extends ProvenancedContent {
   readonly id: string;
   readonly languageId: string;
@@ -92,6 +98,7 @@ export interface ExerciseBaseV1 extends ProvenancedContent {
   readonly skillDimension: SkillDimension;
   readonly evidence: ExerciseEvidenceV1;
   readonly explanation: string;
+  readonly misconceptions?: readonly ExerciseMisconceptionV1[];
 }
 
 export interface ChoiceExerciseV1 extends ExerciseBaseV1 {
@@ -255,6 +262,23 @@ export function validateLessonBundleV1(bundle:LessonBundleV1):readonly LessonCon
   if(!hasText(ex.instruction)||!hasText(ex.explanation)||!Array.isArray(ex.sourceIds)||
       !ex.sourceIds.length||!ex.sourceIds.every((id:string)=>sourceIds.has(id)))
       add("exercise-provenance",path,"Missing instructions, feedback or source provenance");
+  if(ex.misconceptions!==undefined){
+   if(!Array.isArray(ex.misconceptions)||ex.misconceptions.length>6||
+      ex.misconceptions.some(m=>!hasText(m.answer)||!hasText(m.feedback))||
+      !unique(ex.misconceptions.map(m=>m.answer)))
+      add("misconception-contract",path,"Misconceptions need unique, authored incorrect forms and substantive feedback");
+   else if(ex.kind==="free-production"||
+      ex.misconceptions.some(m=>{
+       const policy=ex.normalization;
+       const norm=(v:string)=>policy==="french-apostrophe"?v.normalize("NFC").trim().replace(/\s+/gu," ").replace(/[\u2018\u2019]/gu,"'"):
+         policy==="trim-whitespace"?v.trim().replace(/\s+/gu," "):
+         policy==="japanese-terminal-punctuation"?v.normalize("NFC").trim().replace(/\s*。$/u,""):
+         policy==="pinyin-tone-marked"?v.normalize("NFC").trim().replace(/\s+/gu," "):
+         policy==="unicode-nfc"?v.normalize("NFC"):v;
+       return ex.acceptedAnswers.some(answer=>norm(answer)===norm(m.answer));
+      }))
+      add("misconception-collision",path,"Targeted wrong-answer guidance must not match accepted forms");
+  }
   const ev=ex.evidence;
   if(!ev||ev.mayScheduleReview!==false||ev.mayAssertProficiency!==false||
      ev.independent!==(ex.purpose==="independent")||
