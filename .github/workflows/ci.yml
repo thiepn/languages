@@ -8,7 +8,7 @@ on:
 
 jobs:
   verify:
-    if: github.event_name != 'pull_request' || !github.event.pull_request.draft || github.head_ref == 'feature/shared-visual-lexicon-v1'
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,6 +19,29 @@ jobs:
       - run: pnpm install --no-frozen-lockfile
       - run: pnpm verify
       - run: pnpm package:consumer
+
+  visual-lexicon:
+    name: Visual Lexicon · real package consumer
+    if: github.event_name == 'pull_request' && github.event.pull_request.draft && github.head_ref == 'feature/shared-visual-lexicon-v1'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: corepack enable
+      # Full monorepo install requires private thiepn/account SSH access.
+      # Scope to source-owned public package and root test harness only.
+      - name: Install pinned public Visual Lexicon toolchain
+        run: pnpm install --filter @thiepn/languages --filter @thiepn/visual-lexicon --no-frozen-lockfile
+      - name: Confirm original compiler and runner versions
+        run: node --version && pnpm --version && pnpm exec tsc --version && pnpm exec vitest --version
+      - name: Compile TypeScript 7 package and actual JSON manifest
+        run: pnpm --filter @thiepn/visual-lexicon build
+      - name: Run all original Visual Lexicon Vitest and packed consumer acceptance
+        run: pnpm exec vitest run tests/visual-lexicon.test.ts tests/visual-lexicon-distribution.test.ts tests/visual-lexicon-consumer.test.ts
 
   package-consumer:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
