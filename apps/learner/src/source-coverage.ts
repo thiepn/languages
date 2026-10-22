@@ -61,8 +61,8 @@ export function admitInternalPilot(bundle:LessonBundleV1):readonly SourceCoverag
     throw new Error("Unreviewed source identity or publication change requires separate admission");
   }
   const coverage=sourceCoverage(bundle);
-  if(coverage.some(item=>!item.guided.length||!item.independent.length))
-    throw new Error("Original source lacks guided or independent source-linked coverage");
+  if(coverage.some(item=>!item.independent.length))
+    throw new Error("Original source lacks independent source-linked coverage");
   return coverage;
 }
 export interface EditorialPreflight {
