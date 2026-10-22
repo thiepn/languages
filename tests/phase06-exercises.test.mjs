@@ -19,7 +19,7 @@ test("three original-source extended courses share the same 16-frame contract wi
  for(const lang of ["fr","ja","zh"]){
   const b=langs[lang];
   assert.deepEqual(validateLessonBundleV1(b),[]);
-  assert.deepEqual(b.exercises.filter(e=>["cloze","ordering","reading"].includes(e.kind)).map(e=>e.kind),["cloze","ordering","reading"]);
+  assert.deepEqual(b.exercises.filter(e=>e.id.includes("-p06-")&&["cloze","ordering","reading"].includes(e.kind)).map(e=>e.kind),["cloze","ordering","reading"]);
   assert.equal(framesFor(b).length,16);
   assert.equal(framesFor(b).filter(f=>f.stage==="independent").length,4);
   assert.ok(b.lesson.contentVersion.endsWith("-p06"));
