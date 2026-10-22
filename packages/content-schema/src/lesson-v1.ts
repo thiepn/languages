@@ -9,7 +9,7 @@ import type { ProvenancedContent } from "./index.js";
 
 export type LessonStageV1 = "encounter" | "explain" | "guided" | "independent" | "reflect";
 export type ExercisePurposeV1 = "guided" | "independent";
-export type AnswerNormalizationV1 = "literal" | "unicode-nfc" | "trim-whitespace";
+export type AnswerNormalizationV1 = "literal" | "unicode-nfc" | "trim-whitespace" | "french-apostrophe" | "japanese-terminal-punctuation" | "pinyin-tone-marked";
 export type EvidenceClassificationV1 = "formative-recognition" | "formative-recall" | "ungraded-production";
 export type LessonPublicationV1 = "internal-fixture" | "candidate" | "public";
 
@@ -47,6 +47,7 @@ export interface EncounterStepV1 extends LessonStepBaseV1 {
 export interface ExplainStepV1 extends LessonStepBaseV1 {
   readonly type: "explain";
   readonly explanation: string;
+  readonly heading?: string;
   readonly conceptIds: readonly string[];
 }
 export interface ExerciseStepV1 extends LessonStepBaseV1 {
@@ -55,6 +56,7 @@ export interface ExerciseStepV1 extends LessonStepBaseV1 {
 }
 export interface ReflectStepV1 extends LessonStepBaseV1 {
   readonly type: "reflect";
+  readonly heading?: string;
   readonly feedback: string;
 }
 export type LessonStepV1 = EncounterStepV1 | ExplainStepV1 | ExerciseStepV1 | ReflectStepV1;
@@ -141,7 +143,7 @@ const hasText=(s:unknown):s is string=>typeof s==="string"&&s.trim().length>0;
 const unique=(xs:readonly string[])=>new Set(xs).size===xs.length;
 const SHA=/^[0-9a-f]{40}$/;
 const STAGES:readonly LessonStageV1[]=["encounter","explain","guided","independent","reflect"];
-const ALLOWED_NORMALIZATIONS:readonly AnswerNormalizationV1[]=["literal","unicode-nfc","trim-whitespace"];
+const ALLOWED_NORMALIZATIONS:readonly AnswerNormalizationV1[]=["literal","unicode-nfc","trim-whitespace","french-apostrophe","japanese-terminal-punctuation","pinyin-tone-marked"];
 const CAPABILITIES:readonly LanguagePluginV1["capabilities"][number][]=[
  "latin-orthography","morphology","kana","kanji","furigana",
  "hanzi","pinyin","lexical-tones","contextual-reading"
