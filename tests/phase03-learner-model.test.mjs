@@ -9,14 +9,14 @@ import {
 
 const raw=JSON.parse(readFileSync(fileURLToPath(new URL("../contracts/fixtures/phase02-source-lessons.json",import.meta.url)),"utf8"));
 const bundles=raw.bundles;
-test("all three original language packs become thirteen frames through one renderer model",()=>{
+test("all three original language packs become sixteen frames through one renderer model",()=>{
   assert.deepEqual(bundles.map(b=>b.lesson.languageId),["fr","ja","zh"]);
   for(const bundle of bundles){
     const frames=framesFor(bundle);
-    assert.equal(frames.length,13);
-    assert.deepEqual(frames.map(f=>f.stage),["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","independent","independent","reflect"]);
+    assert.equal(frames.length,16);
+    assert.deepEqual(frames.map(f=>f.stage),["encounter","explain","explain","guided","guided","guided","guided","guided","guided","guided","guided","independent","independent","independent","independent","reflect"]);
     assert.equal(new Set(frames.map(f=>f.id)).size,frames.length);
-    assert.equal(frames[11].exercise.kind,"free-production");
+    assert.equal(frames[12].exercise.kind,"free-production");
   }
 });
 test("deterministic exact or permitted normalization does not invent linguistic equivalence",()=>{
