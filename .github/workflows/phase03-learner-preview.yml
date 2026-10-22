@@ -1,4 +1,4 @@
-name: Phases 03-09 learner preview
+name: Phases 03-10 learner qualification
 
 on:
   pull_request:
@@ -52,3 +52,22 @@ jobs:
           test -f dist/learner-preview/index.html
           test ! -d dist/hub
           test ! -e dist/learner-preview/release.json
+
+  root-compatibility:
+    # Draft-PR root verification: the existing root CI intentionally skips draft PRs.
+    # Run its real commands independently, without changing the release gate.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Enable pinned pnpm
+        run: corepack enable
+      - name: Install original monorepo dependencies
+        run: pnpm install --no-frozen-lockfile
+      - name: Run original monorepo verification
+        run: pnpm verify
+      - name: Build original consumer package
+        run: pnpm package:consumer
