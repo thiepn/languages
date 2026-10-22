@@ -44,11 +44,26 @@ function ExerciseView({
   onReveal:()=>void;
   headingRef:RefObject<HTMLHeadingElement|null>;
 }){
+  const composing=useRef(false);
+  const feedbackRef=useRef<HTMLDivElement>(null);
+  const formRef=useRef<HTMLFormElement>(null);
+  const hadIncorrect=useRef(false);
+  useEffect(()=>{
+    if(result!==undefined)feedbackRef.current?.focus();
+    else if(hadIncorrect.current)
+      formRef.current?.querySelector<HTMLElement>('input:not(:disabled),textarea:not(:disabled),button.order-option:not(:disabled)')?.focus();
+    hadIncorrect.current=result?.kind==="incorrect";
+  },[result]);
   const exercise=frame.exercise;
   if(!exercise)return null;
   const order=exercise.kind==="ordering"?parseOrderingDraft(draft,exercise.tokens.length):[];
   const canCheck=exercise.kind==="ordering"?order.length===exercise.tokens.length:!!draft.trim();
-  return <form className="activity" aria-label={stageName(frame)} onSubmit={event=>{event.preventDefault();onSubmit();}}>
+  return <form ref={formRef} className="activity" aria-label={stageName(frame)}
+    onKeyDown={event=>{
+      if(event.key==="Enter"&&(composing.current||event.nativeEvent.isComposing||event.keyCode===229))
+        event.preventDefault();
+    }}
+    onSubmit={event=>{event.preventDefault();if(!composing.current)onSubmit();}}>
     <p className="phase">{stageName(frame)}</p>
     <h2 tabIndex={-1} ref={headingRef}>{exercise.instruction}</h2>
     {exercise.kind==="reading"&&<div className="reading-passage">
@@ -84,11 +99,16 @@ function ExerciseView({
         <span>{exercise.kind==="free-production"?"Your response":"Your answer"}</span>
         {exercise.kind!=="free-production"?
           <input value={draft} onChange={event=>onDraft(event.target.value)}
-            disabled={result!==undefined} autoComplete="off" spellCheck={false} lang={exercise.languageId} />:
+            onCompositionStart={()=>{composing.current=true;}}
+            onCompositionEnd={()=>{composing.current=false;}}
+            disabled={result!==undefined} autoComplete="off" autoCapitalize="off" spellCheck={false}
+            inputMode="text" maxLength={8192} lang={exercise.languageId} />:
           <textarea value={draft} onChange={event=>onDraft(event.target.value)}
-            disabled={result!==undefined} rows={4} lang={exercise.languageId}/>}
+            onCompositionStart={()=>{composing.current=true;}}
+            onCompositionEnd={()=>{composing.current=false;}}
+            disabled={result!==undefined} maxLength={8192} rows={4} lang={exercise.languageId}/>}
       </label>}
-    {result!==undefined?<div className={"feedback "+result.kind} role="status" aria-live="polite">
+    {result!==undefined?<div ref={feedbackRef} tabIndex={-1} className={"feedback "+result.kind} role="status" aria-live="polite">
       <strong>{result.kind==="correct"?"Answer accepted":result.kind==="incorrect"?"Not quite — try again":result.kind==="revealed"?"Answer revealed — not credited":"Ungraded practice"}</strong>
       <p>{result.explanation}</p>
       {result.kind==="revealed" && <p>Expected: <span lang={exercise.languageId}>{result.expected.join(" / ")}</span></p>}
