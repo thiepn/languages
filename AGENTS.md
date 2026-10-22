@@ -26,3 +26,14 @@ Do not remove substantive educational lessons, domain explanations, real records
 - Review affected desktop and mobile views, and adjust tests only for intentional copy changes.
 
 **Acceptance:** Any new visible text has an identifiable user-facing function; no ornamental UI commentary is introduced.
+
+## Shared language platform — canonical Phase 01 authority
+
+See `docs/PHASE01_SOURCE_AND_AUTHORITY.md` and the pinned, machine-checked `contracts/phase01-source-ownership.json`. Run `node scripts/check-phase01-architecture.mjs --check` when editing platform boundaries.
+
+- `thiepn/languages` is the **future** owner of one learner application, lesson/exercise runtime, evidence engine, course authoring and review boundary. Extend the shared capability rather than building independently competing engines or study workspaces for French, Japanese or Chinese.
+- **Current** original-language applications still own their original content, learner state, grades, memory scheduler traces, offline storage and production behavior until an explicit reversible migration qualifies them. Phase 01 does not grant write authority, alter Hub read-only permissions or justify deleting native functionality.
+- Reuse source-provenance, content-validation, curriculum, adapter SDK and learner contracts already here. Prefer importing the best native implementation behind a shared contract over recreating it; keep legitimate language-specific morphology, script, pronunciation and grading adapters.
+- Prevent fabricated language evidence: source rights and native audio must be verified; supported/free production cannot automatically become independently correct; lesson completion never implies CEFR/HSK/JLPT certification.
+- Before implementing Phase 02, recheck the exact current source refs and open PR ancestry listed in the Phase 01 snapshot, especially Languages #27/#29, French #79/#80, Japanese #102/#103/#104 and Chinese #91/#93/#94. The pinned snapshot is historical evidence, not a remote-drift monitor.
+- No automatic source migration, Account/Core mutation, production deployment, grading/scheduling authority switch, original-app deletion or learner-history rewrite without separate authorized work and demonstrated preservation.
