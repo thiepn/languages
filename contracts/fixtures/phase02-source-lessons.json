@@ -1,0 +1,576 @@
+{
+  "schema": "thiepn.languages.phase02.source-lesson-fixtures",
+  "schemaVersion": 1,
+  "purpose": "internal-contract-testing-only",
+  "status": "not-published-not-linguistically-certified",
+  "sourceBoundary": "Original THIEPN source texts cited at immutable Git commit. Adapted exercise composition requires independent language/editorial review. These are not certified release-ready lessons.",
+  "bundles": [
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "fr:a1-01:shared-pilot",
+        "languageId": "fr",
+        "contentVersion": "unified-u1-original-v1",
+        "title": "First French words and sounds",
+        "level": "A1",
+        "objective": {
+          "statement": "Greet someone, say your name and distinguish common written vowel sounds.",
+          "skillDimension": "spoken_interaction"
+        },
+        "prerequisiteLessonIds": [],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "fr-a1-01-original"
+        ],
+        "sources": [
+          {
+            "id": "fr-a1-01-original",
+            "repository": "thiepn/french",
+            "revision": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+            "path": "app/src/core/unified/u6-a1-01-04.ts",
+            "originalEntityId": "a1-01",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "fr-a1-01-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "Bonjour ! Je m’appelle Inès.",
+                "meaning": "Hello! My name is Inès."
+              },
+              {
+                "targetText": "Salut, Inès. Moi, c’est Malik.",
+                "meaning": "Hi, Inès. I’m Malik."
+              }
+            ]
+          },
+          {
+            "id": "fr-a1-01-explain",
+            "type": "explain",
+            "explanation": "Bonjour works in formal and informal daytime settings; salut is familiar and appropriate among friends. Use bonsoir in the evening. Say au revoir when leaving.",
+            "conceptIds": [
+              "etre"
+            ]
+          },
+          {
+            "id": "fr-a1-01-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "fr-a1-01-choice",
+              "fr-a1-01-fill"
+            ]
+          },
+          {
+            "id": "fr-a1-01-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "fr-a1-01-writing"
+            ]
+          }
+        ]
+      },
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "french",
+        "languageId": "fr",
+        "writingSystems": [
+          "Latn"
+        ],
+        "capabilities": [
+          "latin-orthography",
+          "morphology"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      },
+      "exercises": [
+        {
+          "id": "fr-a1-01-choice",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Which greeting is suited to an unfamiliar teacher?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "options": [
+            "Salut, madame.",
+            "Bonjour, madame.",
+            "À bientôt, madame."
+          ],
+          "acceptedAnswers": [
+            "Bonjour, madame."
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "Bonjour is an appropriate formal daytime greeting."
+        },
+        {
+          "id": "fr-a1-01-fill",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Complete: Je m’___ Inès.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "acceptedAnswers": [
+            "appelle"
+          ],
+          "normalization": "trim-whitespace",
+          "grading": "exact",
+          "explanation": "The expression je m’appelle introduces a name."
+        },
+        {
+          "id": "fr-a1-01-writing",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Write a polite two-line greeting with your name and one goodbye.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "fr-a1-01-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "rubric": [
+            "Use a suitable opening greeting.",
+            "Introduce yourself with je m’appelle.",
+            "Close with au revoir or à bientôt."
+          ],
+          "explanation": "This task is ungraded. Compare your response against the provided lesson's three writing criteria."
+        }
+      ]
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "ja:cf-a1-01-01:shared-pilot",
+        "languageId": "ja",
+        "contentVersion": "course-first-c7-original-v1",
+        "title": "Greetings at different times",
+        "level": "A1",
+        "objective": {
+          "statement": "Distinguish morning, daytime and evening greetings.",
+          "skillDimension": "spoken_interaction"
+        },
+        "prerequisiteLessonIds": [],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "ja-cf-a1-01-01-original"
+        ],
+        "sources": [
+          {
+            "id": "ja-cf-a1-01-01-original",
+            "repository": "thiepn/japanese",
+            "revision": "1e3667ebdcb0cd50491c126b948c11f47414decb",
+            "path": "apps/web/src/study/courseFirstA1.ts",
+            "originalEntityId": "cf-a1-01-01",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "ja-a1-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "朝：おはようございます。",
+                "meaning": "Morning: Good morning (polite)."
+              },
+              {
+                "targetText": "昼：こんにちは。",
+                "meaning": "Daytime: Hello."
+              },
+              {
+                "targetText": "夜：こんばんは。",
+                "meaning": "Evening: Good evening."
+              }
+            ]
+          },
+          {
+            "id": "ja-a1-explain",
+            "type": "explain",
+            "explanation": "Japanese greetings respond to time and the situation. おはようございます is polite in the morning; こんにちは is a daytime greeting, and こんばんは is used in the evening. おやすみなさい is said when going to bed, not when meeting someone in the evening.",
+            "conceptIds": []
+          },
+          {
+            "id": "ja-a1-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "ja-a1-choice",
+              "ja-a1-typed"
+            ]
+          },
+          {
+            "id": "ja-a1-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "ja-a1-writing"
+            ]
+          }
+        ]
+      },
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "japanese",
+        "languageId": "ja",
+        "writingSystems": [
+          "Jpan"
+        ],
+        "capabilities": [
+          "kana",
+          "kanji",
+          "furigana",
+          "contextual-reading"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      },
+      "exercises": [
+        {
+          "id": "ja-a1-choice",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "At 8 a.m. you meet your instructor. What do you say?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "options": [
+            "おはようございます。",
+            "こんばんは。",
+            "おやすみなさい。"
+          ],
+          "acceptedAnswers": [
+            "おはようございます。"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "A polite morning greeting fits a morning meeting."
+        },
+        {
+          "id": "ja-a1-typed",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Write the polite Japanese morning greeting.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "acceptedAnswers": [
+            "おはようございます。"
+          ],
+          "normalization": "unicode-nfc",
+          "grading": "exact",
+          "explanation": "Use おはようございます in a polite morning greeting."
+        },
+        {
+          "id": "ja-a1-writing",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Write three short greetings for morning, daytime and evening in your own order.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "rubric": [
+            "Use an appropriate expression for each time of day.",
+            "Keep greetings polite where context requires.",
+            "Do not confuse an evening arrival with bedtime."
+          ],
+          "explanation": "Independent writing is not automatically graded or treated as evidence of speaking proficiency."
+        }
+      ]
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "zh:ni-hao:shared-pilot",
+        "languageId": "zh",
+        "contentVersion": "original-character-demo-v1",
+        "title": "你好: characters in a greeting",
+        "level": "beginner-original",
+        "objective": {
+          "statement": "Recognize 你好 as a greeting and distinguish 你 and 好 in original expressions.",
+          "skillDimension": "meaning_recognition"
+        },
+        "prerequisiteLessonIds": [],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "zh-ni-demo",
+          "zh-hao-demo"
+        ],
+        "sources": [
+          {
+            "id": "zh-ni-demo",
+            "repository": "thiepn/chinese",
+            "revision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+            "path": "src/demo-lessons.mjs",
+            "originalEntityId": "你",
+            "rights": "review-required",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          },
+          {
+            "id": "zh-hao-demo",
+            "repository": "thiepn/chinese",
+            "revision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+            "path": "src/demo-lessons.mjs",
+            "originalEntityId": "好",
+            "rights": "review-required",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "zh-ni-hao-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "你好",
+                "meaning": "hello",
+                "reading": "nǐ hǎo"
+              },
+              {
+                "targetText": "你们",
+                "meaning": "you (plural)",
+                "reading": "nǐmen"
+              },
+              {
+                "targetText": "好吃",
+                "meaning": "tasty; delicious",
+                "reading": "hǎochī"
+              }
+            ]
+          },
+          {
+            "id": "zh-ni-hao-explain",
+            "type": "explain",
+            "explanation": "你好 is a greeting, not an exact translation of “you good”. 好 describes something as good; 好吃 is specifically used for enjoyable taste.",
+            "conceptIds": []
+          },
+          {
+            "id": "zh-ni-hao-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "zh-ni-hao-choice",
+              "zh-ni-hao-typed"
+            ]
+          },
+          {
+            "id": "zh-ni-hao-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "zh-ni-hao-production"
+            ]
+          }
+        ]
+      },
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "mandarin-simplified",
+        "languageId": "zh",
+        "writingSystems": [
+          "Hans"
+        ],
+        "capabilities": [
+          "hanzi",
+          "pinyin",
+          "lexical-tones",
+          "contextual-reading"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      },
+      "exercises": [
+        {
+          "id": "zh-ni-hao-choice",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Which original expression is used as a greeting?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "options": [
+            "好吃",
+            "你好",
+            "你们"
+          ],
+          "acceptedAnswers": [
+            "你好"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "explanation": "你好 is a greeting; 好吃 means tasty, and 你们 addresses more than one person."
+        },
+        {
+          "id": "zh-ni-hao-typed",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Write the original two-character greeting in Hanzi.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "orthography",
+          "sourceIds": [
+            "zh-ni-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "acceptedAnswers": [
+            "你好"
+          ],
+          "normalization": "unicode-nfc",
+          "grading": "exact",
+          "explanation": "The greeting 你好 uses 你 followed by 好. This check does not evaluate spoken tones."
+        },
+        {
+          "id": "zh-ni-hao-production",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Write a short greeting using 你好, then explain why 好吃 is not a greeting.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-hao-demo"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "zh-hao-demo"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "grading": "ungraded",
+          "rubric": [
+            "Use 你好 to greet the other person.",
+            "Distinguish the contextual meaning of 好吃.",
+            "Do not infer the meaning of compounds from character glosses alone."
+          ],
+          "explanation": "Free production requires external linguistic feedback and is not scored by the lesson fixture."
+        }
+      ]
+    }
+  ]
+}
