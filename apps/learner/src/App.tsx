@@ -363,7 +363,7 @@ export function App(){
           </section>
           <section className="source-practice" aria-label="Original source practice">
             <h2 className="section-title">Practice by original source</h2>
-            {SOURCE_COVERAGE_BY_LESSON[bundle.lesson.id].map(entry=><div className="source-practice-group" key={entry.source.id}>
+            {(SOURCE_COVERAGE_BY_LESSON[bundle.lesson.id]??[]).map(entry=><div className="source-practice-group" key={entry.source.id}>
               <div className="source-practice-heading">
                 <h3>{entry.source.originalEntityId}</h3>
                 <span>{entry.independent.length} independent activities</span>
