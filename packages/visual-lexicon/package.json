@@ -1,13 +1,39 @@
 {
   "name": "@thiepn/visual-lexicon",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
+  "files": [
+    "dist/**",
+    "assets/**",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node scripts/write-manifest.mjs",
+    "copy:assets": "node scripts/copy-assets.mjs"
+  },
   "exports": {
-    ".": "./src/index.ts",
-    "./catalog": "./src/catalog.ts",
-    "./japanese-bindings": "./src/japanese.ts",
-    "./chinese-bindings": "./src/chinese.ts",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./catalog": {
+      "types": "./dist/catalog.d.ts",
+      "import": "./dist/catalog.js",
+      "default": "./dist/catalog.js"
+    },
+    "./japanese-bindings": {
+      "types": "./dist/japanese.d.ts",
+      "import": "./dist/japanese.js",
+      "default": "./dist/japanese.js"
+    },
+    "./chinese-bindings": {
+      "types": "./dist/chinese.d.ts",
+      "import": "./dist/chinese.js",
+      "default": "./dist/chinese.js"
+    },
+    "./manifest": "./dist/visual-catalog.json",
     "./assets/*": "./assets/*"
   }
 }

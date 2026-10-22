@@ -1,3 +1,8 @@
 # @thiepn/visual-lexicon
 
-Shared original vocabulary images with semantic concept IDs, explicit language bindings, local SVG assets and Git source provenance. See [Visual Lexicon](../../docs/VISUAL_LEXICON.md).
+103 original Japanese SVGs with language-neutral semantic concept IDs and source-preserving Japanese/Chinese bindings. Independent apps can use the compiled package or copy a local JSON/SVG catalog. See [Visual Lexicon contract](../../docs/VISUAL_LEXICON.md).
+
+```sh
+pnpm --filter @thiepn/visual-lexicon build
+pnpm --filter @thiepn/visual-lexicon copy:assets -- ./my-app/public/visual-lexicon
+```
