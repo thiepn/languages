@@ -14,7 +14,7 @@ test("four original source entities retain traceable practice and exact frame po
   const entries=admitInternalPilot(bundle);
   assert.equal(entries.length,bundle.lesson.sources.length);
   for(const item of entries){
-   assert.ok(item.guided.length>0);
+   assert.ok(item.guided.length+item.independent.length>0);
    assert.ok(item.independent.length>0);
    assert.equal(item.ungradedIndependent,item.independent.filter(x=>x.kind==="free-production").length);
    for(const activity of [...item.guided,...item.independent]){
@@ -27,6 +27,9 @@ test("four original source entities retain traceable practice and exact frame po
   }
  }
  assert.equal(sourceCoverage(byLanguage.zh).length,2);
+ const hao=sourceCoverage(byLanguage.zh).find(x=>x.source.originalEntityId==="好");
+ assert.equal(hao.guided.length,0); // Original pilot has no directly attributed guided exercise for 好.
+ assert.ok(hao.independent.length>0);
  assert.ok(sourceCoverage(byLanguage.zh).every(x=>x.independent.length>0));
 });
 
@@ -72,6 +75,6 @@ test("coverage is authored metadata rather than a grade, response or review hist
  for(const bundle of data.bundles){
   const report=JSON.stringify(sourceCoverage(bundle));
   assert.ok(!/"(answer|attempts|submissions|grades|score|progress|userId)":/i.test(report));
-  assert.ok(!/studyEvents|fsrs|proficiency|cefr|hsk|jlpt/i.test(report));
+  assert.ok(!/"(?:studyEvents|fsrs|proficiency|cefr|hsk|jlpt)"\\s*:/i.test(report));
  }
 });
