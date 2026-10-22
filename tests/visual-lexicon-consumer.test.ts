@@ -28,10 +28,10 @@ if(image?.src!=="/visual-lexicon/assets/book.svg"||image.loading!=="lazy"||image
 if(localVocabularyImage({languageId:"chinese",lexemeId:"书|shu",usage:"independent-recall"})!==null)throw Error("Independent recall leaked image");
 if(localVocabularyImage({languageId:"chinese",lexemeId:"missing",usage:"reference"})!==null)throw Error("Unapproved key leaked image");
 if(localVocabularyImage({languageId:"chinese",lexemeId:"书|shu",usage:"reference",assetBase:"https://outside.example"})!==null)throw Error("External asset accepted");
-if(CHINESE_VISUAL_BINDINGS.length!==12||validateVisualBindings(CHINESE_VISUAL_BINDINGS).length||!visualForLexeme("chinese","水|shui"))throw Error("Packaged Chinese bindings invalid");
+if(CHINESE_VISUAL_BINDINGS.length!==21||validateVisualBindings(CHINESE_VISUAL_BINDINGS).length||!visualForLexeme("chinese","水|shui"))throw Error("Packaged Chinese bindings invalid");
 const require=createRequire(import.meta.url);
 const manifest=JSON.parse(readFileSync(require.resolve("@thiepn/visual-lexicon/manifest"),"utf8"));
-if(manifest.concepts.length!==103||manifest.bindings.length!==121)throw Error("Packaged manifest incomplete");
+if(manifest.concepts.length!==103||manifest.bindings.length!==130)throw Error("Packaged manifest incomplete");
 `;
    const exercised=run(process.execPath,["--input-type=module","-e",script]);
    expect(exercised.status,exercised.stderr||exercised.stdout).toBe(0);
@@ -43,7 +43,7 @@ if(manifest.concepts.length!==103||manifest.bindings.length!==121)throw Error("P
    expect(readdirSync(join(target,"assets"))).toHaveLength(103);
    const manifest=JSON.parse(readFileSync(join(target,"visual-catalog.json"),"utf8"));
    expect(manifest.concepts).toHaveLength(103);
-   expect(manifest.bindings).toHaveLength(121);
+   expect(manifest.bindings).toHaveLength(130);
   }finally{rmSync(temp,{force:true,recursive:true});}
  },120000);
 });
