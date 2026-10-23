@@ -304,7 +304,8 @@ export function App(){
     if(!applicationWriting||!currentPath||!frame?.exercise||!reviewGuide||!currentDraft.trim())return;
     const exerciseId=frame.exercise.id;
     setWritingReview(previous=>previous?.pathId===currentPath.id&&previous.exerciseId===exerciseId
-      ?{...previous,revised:previous.revised||revised}
+      ?{...previous,revised:previous.revised||revised,
+        checked:revised?reviewGuide.criteria.map(()=>false):previous.checked}
       :{pathId:currentPath.id,exerciseId,firstDraft:currentDraft,checked:reviewGuide.criteria.map(()=>false),revised});
   }
   function reviseApplicationWriting(){
@@ -375,7 +376,9 @@ export function App(){
             {applicationWriting&&currentResult?.kind==="ungraded"&&!currentReview&&
               <button type="button" className="secondary-action applied-review-launch" onClick={()=>openWritingReview()}>Review sources before finishing</button>}
             {applicationWriting&&currentPath&&currentReview&&reviewGuide&&<section className="applied-writing-review" aria-label="Source-backed writing review">
-              <h3>Review and revise your writing</h3>
+              <h3>Revise for a changed situation</h3>
+              <p>{reviewGuide.changedSituation}</p>
+              <p>{reviewGuide.revisionInstruction}</p>
               <div className="applied-draft-comparison">
                 <div><strong>First draft</strong><blockquote lang={selected}>{currentReview.firstDraft}</blockquote></div>
                 {currentReview.revised&&currentResult?.kind==="ungraded"&&

@@ -11,3 +11,8 @@ Each path includes a real scenario, three previously authored independently answ
 Focused Node tests and real desktop/mobile Chromium/Firefox/WebKit tests cover source citation links, cross-lesson navigation, actual exact-answer evaluation, independent writing, 320px confirmation and unchanged state authority. Original root qualification remains blocked until the unchanged pinned `thiepn/account#df029d08a49ef27d3fd5fedf58400572746c0b47` can be fetched over authorized SSH.
 
 No Account/Core, Hub, native-app or FSRS write, publication, migration, approval, merge or deployment. Phase 20 should examine genuine source-grounded next curriculum and independently authored learner revision quality before considering broader content expansion.
+
+
+## Further Phase 19 source-grounded transfer
+
+After independent writing, each application now introduces a distinct practical context and an authored rewriting task: articles versus known reference and name versus role in French; first versus familiar meeting and goodwill versus gratitude in Japanese; speaker versus third person and negation versus addition in Chinese. These prompts are new learning scenarios, **not** original-source quotations. Original source quotes and three self-review criteria remain pinned and fail closed. Starting a second draft resets earlier self-review selections, preventing stale checked answers from passing as review of revised text. This is preview-only and ungraded; existing 12 lessons, 126 exercise IDs, source receipts and all native learner-state authorities remain unchanged.
