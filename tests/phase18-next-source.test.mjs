@@ -59,6 +59,11 @@ test("Chinese original 是 stays nonofficial with negative and additive distinct
  assert.equal(evaluateExercise(e("pinyin"),"shi").kind,"incorrect");
  assert.equal(evaluateExercise(e("write"),"他是老师。").kind,"ungraded");
 });
+test("every next-source exercise receipt points to the actually relevant original evidence",()=>{
+ const expected={"fr:a1-03:shared-pilot":{"fr-p18-gender":"Une table est ici.","fr-p18-plural":"Voici des stylos.","fr-p18-elision":"L’école est ouverte.","fr-p18-definite":"Le livre est sur la table.","fr-p18-location":"Le livre est sur la table.","fr-p18-article":"C’est un livre.","fr-p18-write":"Regarde : les stylos sont sur la table."},"ja:cf-a1-01-03:shared-pilot":{"ja-p18-opening":"はじめまして。","ja-p18-name":"ミナです。","ja-p18-sequence":"はじめまして。","ja-p18-goodwill":"よろしくお願いします。","ja-p18-familiar":"はじめまして。","ja-p18-recall":"はじめまして。","ja-p18-write":"ミナです。"},"zh:shi:shared-pilot":{"zh-p18-copula":"是","zh-p18-teacher":"他是老师。","zh-p18-negative":"不是","zh-p18-also":"也是","zh-p18-link":"他是老师。","zh-p18-pinyin":"是","zh-p18-write":"他是老师。"}};
+ for(const [lessonId,items] of Object.entries(expected))
+  assert.deepEqual(receipts.exerciseReceipts[lessonId],items);
+});
 test("source drift, approval, rights, and unreviewed exercise additions fail closed",()=>{
  for(const b of next){
   for(const change of [
