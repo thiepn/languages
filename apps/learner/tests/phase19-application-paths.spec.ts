@@ -20,7 +20,14 @@ for(const lang of ["fr","ja","zh"] as const){
    else await page.getByRole("textbox",{name:"Your answer"}).fill(ex.acceptedAnswers[0]);
    await page.getByRole("button",{name:ex.kind==="free-production"?"Review writing":"Check answer"}).click();
    await expect(page.getByText(ex.kind==="free-production"?"Ungraded practice":"Answer accepted")).toBeVisible();
-   await page.getByRole("button",{name:index===2?"Return to Course":"Next application task"}).click();
+   if(index===2){
+    await page.getByRole("button",{name:"Review sources before finishing"}).click();
+    const review=page.getByRole("region",{name:"Source-backed writing review"});
+    for(const checkbox of await review.getByRole("checkbox").all())await checkbox.check();
+    await review.getByRole("button",{name:"Finish application"}).click();
+   }else{
+    await page.getByRole("button",{name:"Next application task"}).click();
+   }
   }
   await expect(page.getByRole("heading",{name:"Course"})).toBeVisible();
   expect(await page.evaluate(()=>localStorage.length)).toBe(0);
