@@ -176,6 +176,24 @@ export const APPLICATION_PATHS:readonly ApplicationPath[]=[
   }
 ] as const;
 
+export interface ApplicationReviewCriterion {
+ readonly prompt:string;
+ readonly sourceId:string;
+ readonly quote:string;
+}
+export interface ApplicationReviewGuide {
+ readonly criteria:readonly ApplicationReviewCriterion[];
+}
+/** Author-edited source-backed self-review prompts. Never generated grading. */
+export const APPLICATION_REVIEWS:Readonly<Record<string,ApplicationReviewGuide>>={
+"fr-object-reference":{criteria:[{"prompt":"Check that a newly introduced object uses an indefinite article.","sourceId":"fr-a1-03-original","quote":"C’est un livre."},{"prompt":"Check that plural objects are introduced with des.","sourceId":"fr-a1-03-original","quote":"Voici des stylos."},{"prompt":"Check that a known book uses the definite article in its location.","sourceId":"fr-a1-03-original","quote":"Le livre est sur la table."}]},
+"fr-introduce-and-describe":{criteria:[{"prompt":"Check that your name uses the je m’appelle model.","sourceId":"fr-a1-01-original","quote":"Je m’appelle Inès."},{"prompt":"Check that your profession uses je suis rather than an object introduction.","sourceId":"fr-a1-02-original","quote":"Je suis professeur."},{"prompt":"Check that a known book takes the correct article in the location sentence.","sourceId":"fr-a1-03-original","quote":"Le livre est sur la table."}]},
+"ja-first-meeting":{criteria:[{"prompt":"Check that はじめまして marks a genuine first meeting.","sourceId":"ja-cf-a1-01-03-original","quote":"はじめまして。"},{"prompt":"Check that your name follows the noun + です model.","sourceId":"ja-cf-a1-01-03-original","quote":"ミナです。"},{"prompt":"Check that goodwill is expressed separately from the name.","sourceId":"ja-cf-a1-01-03-original","quote":"よろしくお願いします。"}]},
+"ja-first-contact-help":{criteria:[{"prompt":"Check that an attention request is not mistaken for a first-meeting greeting.","sourceId":"ja-cf-a1-01-02-original","quote":"すみません。"},{"prompt":"Check that gratitude follows assistance rather than replacing goodwill.","sourceId":"ja-cf-a1-01-02-original","quote":"ありがとうございます。"},{"prompt":"Check that introductory goodwill has a different purpose from thanks.","sourceId":"ja-cf-a1-01-03-original","quote":"よろしくお願いします。"}]},
+"zh-speaker-identity":{criteria:[{"prompt":"Check that 我 identifies the speaker.","sourceId":"zh-wo-demo","quote":"我"},{"prompt":"Check that the student identity is in the first person.","sourceId":"zh-wo-demo","quote":"我是学生。"},{"prompt":"Check that the teacher statement describes another person.","sourceId":"zh-shi-demo","quote":"他是老师。"}]},
+"zh-negative-or-also":{criteria:[{"prompt":"Check that 不是 negates identity rather than adding 'also'.","sourceId":"zh-shi-demo","quote":"不是"},{"prompt":"Check that 也是 adds 'also' rather than negating.","sourceId":"zh-shi-demo","quote":"也是"},{"prompt":"Check that 是 links a subject with a noun identity in the source sentence.","sourceId":"zh-shi-demo","quote":"他是老师。"}]}
+};
+
 export function resolveApplicationStep(bundles:readonly LessonBundleV1[],step:ApplicationStep):
   {bundle:LessonBundleV1;frameIndex:number;exercise:ExerciseV1}|undefined {
   const bundle=bundles.find(b=>b.lesson.id===step.lessonId);
@@ -213,6 +231,19 @@ export function auditApplicationPaths(bundles:readonly LessonBundleV1[]):readonl
       if(exercise.kind==="free-production")foundWriting=true;
     }
     if(!foundWriting)append(path,path.steps[path.steps.length-1]!,"missing-independent-writing");
+    const review=APPLICATION_REVIEWS[path.id];
+    if(!review||review.criteria.length!==3||
+      new Set(review.criteria.map(c=>c.sourceId+"|"+c.quote)).size!==3)
+      append(path,path.steps[path.steps.length-1]!,"invalid-review-guide");
+    else for(const criterion of review.criteria){
+      const original=path.steps.some(s=>s.sourceId===criterion.sourceId)&&bundles.some(bundle=>
+        bundle.lesson.sources.some(source=>source.id===criterion.sourceId&&
+          source.editorialReview==="pending"&&!source.redistributionVerified)&&
+        bundle.lesson.steps.some(s=>s.type==="encounter"&&s.examples.some(example=>example.targetText===criterion.quote)));
+      if(!criterion.prompt.trim()||!original||
+        !(receipts.originalSourceQuotes as Record<string,string[]>)[criterion.sourceId]?.includes(criterion.quote))
+        append(path,path.steps[path.steps.length-1]!,"unverified-review-criterion");
+    }
   }
   return issues;
 }
