@@ -77,7 +77,7 @@ export function admitInternalPilot(bundle:LessonBundleV1):readonly SourceCoverag
     throw new Error("Unreviewed source identity or publication change requires separate admission");
   }
   const issues=auditSourceEvidence(bundle);
-  if(issues.length)throw new Error("Original source exercise receipt failed: "+issues[0].code);
+  if(issues.length)throw new Error("Original source exercise receipt failed: "+issues[0]?.code);
   const coverage=sourceCoverage(bundle);
   if(coverage.some(item=>!item.independent.length))
     throw new Error("Original source lacks independent source-linked coverage");
