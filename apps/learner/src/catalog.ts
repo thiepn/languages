@@ -1,6 +1,7 @@
 import raw from "../../../contracts/fixtures/phase02-source-lessons.json";
 import nextRaw from "../../../contracts/fixtures/phase15-source-lessons.json";
 import bridgeRaw from "../../../contracts/fixtures/phase17-cross-source-lessons.json";
+import continuationRaw from "../../../contracts/fixtures/phase18-next-source-lessons.json";
 import {admitInternalPilot,sourceCoverage,type SourceCoverage} from "./source-coverage";
 import {
   validateLessonBundleV1,
@@ -19,14 +20,17 @@ export type LanguageChoice = typeof LANGUAGES[number]["id"];
 const originalBundles = raw.bundles as unknown as LessonBundleV1[];
 const newBundles = nextRaw.bundles as unknown as LessonBundleV1[];
 const bridgeBundles=bridgeRaw.bundles as unknown as LessonBundleV1[];
-const bundles = [...originalBundles,...newBundles,...bridgeBundles];
+const continuationBundles=continuationRaw.bundles as unknown as LessonBundleV1[];
+const bundles = [...originalBundles,...newBundles,...bridgeBundles,...continuationBundles];
 if (raw.purpose !== "internal-contract-testing-only" ||
     nextRaw.purpose !== "internal-contract-testing-only" ||
     bridgeRaw.purpose !== "internal-contract-testing-only" ||
+    continuationRaw.purpose !== "internal-contract-testing-only" ||
     originalBundles.length !== LANGUAGES.length ||
     newBundles.length !== LANGUAGES.length ||
     bridgeBundles.length !== LANGUAGES.length ||
-    bundles.length !== LANGUAGES.length*3 ||
+    continuationBundles.length !== LANGUAGES.length ||
+    bundles.length !== LANGUAGES.length*4 ||
     new Set(bundles.map(bundle=>bundle.lesson.id)).size !== bundles.length ||
     bundles.some(bundle =>
       bundle.lesson.publication !== "internal-fixture" ||
@@ -35,8 +39,9 @@ if (raw.purpose !== "internal-contract-testing-only" ||
     ) ||
     LANGUAGES.some(language => originalBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
       newBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
-      bridgeBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1)) {
-  throw new Error("The internal learner requires exactly three original, three follow-up and three cross-lesson internal fixtures.");
+      bridgeBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
+      continuationBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1)) {
+  throw new Error("The internal learner requires exactly four admitted internal lessons per language.");
 }
 
 export const DEMO_BUNDLES: Readonly<Record<LanguageChoice, LessonBundleV1>> =

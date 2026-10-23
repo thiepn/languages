@@ -48,6 +48,26 @@
       "我们",
       "我的",
       "我是学生。"
+    ],
+    "fr-a1-03-original": [
+      "C’est un livre.",
+      "Voici des stylos.",
+      "Le livre est sur la table.",
+      "L’école est ouverte.",
+      "Une table est ici.",
+      "J’ai un stylo.",
+      "Regarde : les stylos sont sur la table."
+    ],
+    "ja-cf-a1-01-03-original": [
+      "はじめまして。",
+      "ミナです。",
+      "よろしくお願いします。"
+    ],
+    "zh-shi-demo": [
+      "是",
+      "不是",
+      "也是",
+      "他是老师。"
     ]
   },
   "exerciseReceipts": {
@@ -264,6 +284,33 @@
         "zh-hao-demo": "好吃",
         "zh-wo-demo": "我"
       }
+    },
+    "fr:a1-03:shared-pilot": {
+      "fr-p18-gender": "C’est un livre.",
+      "fr-p18-plural": "C’est un livre.",
+      "fr-p18-elision": "C’est un livre.",
+      "fr-p18-definite": "C’est un livre.",
+      "fr-p18-location": "C’est un livre.",
+      "fr-p18-article": "C’est un livre.",
+      "fr-p18-write": "C’est un livre."
+    },
+    "ja:cf-a1-01-03:shared-pilot": {
+      "ja-p18-opening": "はじめまして。",
+      "ja-p18-name": "はじめまして。",
+      "ja-p18-sequence": "はじめまして。",
+      "ja-p18-goodwill": "はじめまして。",
+      "ja-p18-familiar": "はじめまして。",
+      "ja-p18-recall": "はじめまして。",
+      "ja-p18-write": "はじめまして。"
+    },
+    "zh:shi:shared-pilot": {
+      "zh-p18-copula": "是",
+      "zh-p18-teacher": "是",
+      "zh-p18-negative": "是",
+      "zh-p18-also": "是",
+      "zh-p18-link": "是",
+      "zh-p18-pinyin": "是",
+      "zh-p18-write": "是"
     }
   }
 }
