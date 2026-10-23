@@ -12,14 +12,17 @@ for(const lang of ["fr","ja","zh"]){
   await page.getByRole("button",{name:"Open "+second[lang].lesson.title}).click();
   await expect(page.getByRole("heading",{name:second[lang].lesson.title})).toBeVisible();
   await page.getByRole("button",{name:"← Course"}).click();
-  await expect(page.getByRole("heading",{name:second[lang].lesson.sources[0].originalEntityId})).toBeVisible();
+  await expect(page.getByRole("heading",{name:second[lang].lesson.sources[0].originalEntityId,exact:true})).toBeVisible();
  });
 }
 test("incorrect French subject form offers distinct original contrast and prevents next activity",async({page})=>{
  await page.goto("/");
  await page.getByRole("button",{name:"Course",exact:true}).click();
  await page.getByRole("button",{name:"Open Who are you? Using être"}).click();
- for(let i=0;i<4;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
+ for(let i=0;i<3;i++)await page.getByRole("button",{name:"Continue",exact:true}).click();
+ await page.getByRole("textbox",{name:"Your answer"}).fill("suis");
+ await page.getByRole("button",{name:"Check answer"}).click();
+ await page.getByRole("button",{name:"Continue",exact:true}).click();
  await page.getByRole("radio").first().check();
  await page.getByRole("button",{name:"Check answer"}).click();
  await expect(page.getByText("Sommes belongs to nous, not vous.")).toBeVisible();
@@ -33,7 +36,8 @@ test("Chinese 好 original source-specific practice stays accessible at 320px",a
  await page.getByRole("combobox",{name:"Study language"}).selectOption("zh");
  await page.getByRole("button",{name:"Course",exact:true}).click();
  await expect(page.getByRole("heading",{name:"好",exact:true})).toBeVisible();
- await page.getByRole("button",{name:/Practice: Compose a short two-person scene/}).click();
+ await page.locator(".source-practice-group").filter({has:page.getByRole("heading",{name:"好",exact:true})})
+   .getByRole("button",{name:/Practice: Compose a short two-person scene/}).click();
  await expect(page.getByRole("textbox",{name:"Your response"})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });
