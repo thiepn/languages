@@ -207,6 +207,9 @@ export function App(){
   const frames=useMemo(()=>framesFor(bundle),[bundle]);
   const index=player.index;
   const complete=isLessonComplete(player);
+  const courseSequence=COURSE_BUNDLES[selected];
+  const lessonPosition=courseSequence.findIndex(item=>item.lesson.id===bundle.lesson.id);
+  const nextLesson=lessonPosition<0?undefined:courseSequence[lessonPosition+1];
   const frame=frames[index];
   const currentResult=activeAttempt(player).outcome;
   const currentDraft=activeAttempt(player).draft;
@@ -308,7 +311,8 @@ export function App(){
               <h2 ref={activityHeadingRef} tabIndex={-1}>Preview complete</h2>
               <p>You reached the end of this internal lesson fixture. No learning grade or review progress was recorded.</p>
               <div className="completion-actions">
-                <button type="button" className="primary-action" onClick={restart}>Repeat lesson</button>
+                {nextLesson&&<button type="button" className="primary-action" onClick={()=>openCourseLesson(nextLesson)}>Next lesson: {nextLesson.lesson.title}</button>}
+                <button type="button" className={nextLesson?"secondary-action":"primary-action"} onClick={restart}>Repeat lesson</button>
                 <button type="button" className="secondary-action" onClick={()=>setLessonOpen(false)}>Back to Course</button>
               </div>
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?

@@ -944,10 +944,6 @@
               {
                 "targetText": "寝る前：おやすみなさい。",
                 "meaning": "Before bed: Good night."
-              },
-              {
-                "targetText": "先生：おはようございます。",
-                "meaning": "Teacher: Good morning."
               }
             ]
           },
@@ -1939,7 +1935,8 @@
           },
           "skillDimension": "comprehension",
           "sourceIds": [
-            "zh-ni-demo"
+            "zh-ni-demo",
+            "zh-hao-demo"
           ],
           "evidence": {
             "classification": "formative-recognition",
@@ -1970,9 +1967,9 @@
             }
           ],
           "sourceAid": {
-            "targetText": "你喜欢喝茶吗？",
-            "meaning": "Do you like drinking tea?",
-            "cue": "Compare the full question about tea with the source description of an apple; choose by meaning and written function."
+            "targetText": "你好",
+            "meaning": "hello",
+            "cue": "你好 greets a person; 好吃 describes food as tasty."
           },
           "sourceComparison": {
             "first": {
@@ -2026,7 +2023,8 @@
           },
           "skillDimension": "writing",
           "sourceIds": [
-            "zh-hao-demo"
+            "zh-hao-demo",
+            "zh-ni-demo"
           ],
           "evidence": {
             "classification": "ungraded-production",
@@ -2072,7 +2070,8 @@
           },
           "skillDimension": "comprehension",
           "sourceIds": [
-            "zh-ni-demo"
+            "zh-ni-demo",
+            "zh-hao-demo"
           ],
           "evidence": {
             "classification": "formative-recognition",
@@ -2188,7 +2187,8 @@
           },
           "skillDimension": "orthography",
           "sourceIds": [
-            "zh-ni-demo"
+            "zh-ni-demo",
+            "zh-hao-demo"
           ],
           "evidence": {
             "classification": "formative-recall",
@@ -2251,7 +2251,8 @@
           },
           "skillDimension": "comprehension",
           "sourceIds": [
-            "zh-ni-demo"
+            "zh-ni-demo",
+            "zh-hao-demo"
           ],
           "evidence": {
             "classification": "formative-recognition",
@@ -2550,7 +2551,8 @@
           },
           "skillDimension": "writing",
           "sourceIds": [
-            "zh-hao-demo"
+            "zh-hao-demo",
+            "zh-ni-demo"
           ],
           "evidence": {
             "classification": "ungraded-production",

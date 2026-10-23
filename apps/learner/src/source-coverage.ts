@@ -1,6 +1,7 @@
 import type {ExerciseV1,LessonBundleV1,LessonSourceV1} from "../../../packages/content-schema/src/lesson-v1.js";
 import {validateLessonBundleV1} from "../../../packages/content-schema/src/lesson-v1.ts";
 import {framesFor} from "./lesson-model.ts";
+import {auditSourceEvidence} from "./source-evidence.ts";
 
 export interface SourcePracticeLink {
   readonly id:string;
@@ -75,6 +76,8 @@ export function admitInternalPilot(bundle:LessonBundleV1):readonly SourceCoverag
       JSON.stringify([...expected.sources].sort())) {
     throw new Error("Unreviewed source identity or publication change requires separate admission");
   }
+  const issues=auditSourceEvidence(bundle);
+  if(issues.length)throw new Error("Original source exercise receipt failed: "+issues[0].code);
   const coverage=sourceCoverage(bundle);
   if(coverage.some(item=>!item.independent.length))
     throw new Error("Original source lacks independent source-linked coverage");
@@ -88,6 +91,7 @@ export interface EditorialPreflight {
 export function editorialPreflight(bundle:LessonBundleV1):EditorialPreflight {
   const blockers:string[]=[];
   if(validateLessonBundleV1(bundle).length)blockers.push("Invalid lesson or provenance contract");
+  else if(auditSourceEvidence(bundle).length)blockers.push("Invalid pinned original-source exercise receipt");
   else {
     for(const entry of sourceCoverage(bundle)){
       if(!entry.guided.length||!entry.independent.length)

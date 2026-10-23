@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "purpose": "pinned-original-source-exercise-traceability-internal-only",
+  "editorialReview": "pending",
+  "redistributionVerified": false,
+  "originalSourceQuotes": {
+    "fr-a1-01-original": [
+      "Bonjour ! Je m’appelle Inès.",
+      "Salut, Inès. Moi, c’est Malik.",
+      "Bonsoir, monsieur.",
+      "Au revoir, à demain.",
+      "Je m’appelle Inès.",
+      "Je suis étudiant."
+    ],
+    "fr-a1-02-original": [
+      "Nous sommes à Lyon.",
+      "Elles sont étudiantes.",
+      "Je suis professeur.",
+      "Il est à Paris.",
+      "Tu es étudiante ?",
+      "Oui, je suis étudiante à Paris.",
+      "Elle est française."
+    ],
+    "ja-cf-a1-01-01-original": [
+      "朝：おはようございます。",
+      "昼：こんにちは。",
+      "夜：こんばんは。",
+      "寝る前：おやすみなさい。"
+    ],
+    "ja-cf-a1-01-02-original": [
+      "ありがとうございます。",
+      "どういたしまして。",
+      "すみません。",
+      "はい、どうぞ。"
+    ],
+    "zh-ni-demo": [
+      "你好",
+      "你们",
+      "你喜欢喝茶吗？"
+    ],
+    "zh-hao-demo": [
+      "你好",
+      "好吃",
+      "这个苹果很好吃。"
+    ],
+    "zh-wo-demo": [
+      "我",
+      "我们",
+      "我的",
+      "我是学生。"
+    ]
+  },
+  "exerciseReceipts": {
+    "fr:a1-01:shared-pilot": {
+      "fr-a1-01-choice": "Bonjour ! Je m’appelle Inès.",
+      "fr-a1-01-fill": "Je m’appelle Inès.",
+      "fr-a1-01-writing": "Bonsoir, monsieur.",
+      "fr-p04-context-choice": "Bonsoir, monsieur.",
+      "fr-p04-transfer": "Bonsoir, monsieur.",
+      "fr-p04-apostrophe": "Je m’appelle Inès.",
+      "fr-p06-cloze": "Je m’appelle Inès.",
+      "fr-p06-ordering": "Bonsoir, monsieur.",
+      "fr-p06-reading": "Salut, Inès. Moi, c’est Malik.",
+      "fr-p07-context-reading": "Salut, Inès. Moi, c’est Malik.",
+      "fr-p07-transfer-cloze": "Au revoir, à demain.",
+      "fr-p07-transfer-reading": "Au revoir, à demain.",
+      "fr-p08-situated-cloze": "Salut, Inès. Moi, c’est Malik.",
+      "fr-p08-situated-ordering": "Au revoir, à demain.",
+      "fr-p08-situated-reading": "Au revoir, à demain.",
+      "fr-p09-context-composition": "Bonsoir, monsieur.",
+      "fr-p13-independent-etre": "Je suis étudiant.",
+      "fr-p13-identity-role-reading": "Je suis étudiant."
+    },
+    "ja:cf-a1-01-01:shared-pilot": {
+      "ja-a1-choice": "朝：おはようございます。",
+      "ja-a1-typed": "朝：おはようございます。",
+      "ja-a1-writing": "寝る前：おやすみなさい。",
+      "ja-p04-context-choice": "寝る前：おやすみなさい。",
+      "ja-p04-transfer": "夜：こんばんは。",
+      "ja-p04-evening-arrival": "夜：こんばんは。",
+      "ja-p06-cloze": "夜：こんばんは。",
+      "ja-p06-ordering": "朝：おはようございます。",
+      "ja-p06-reading": "寝る前：おやすみなさい。",
+      "ja-p07-context-reading": "昼：こんにちは。",
+      "ja-p07-transfer-cloze": "寝る前：おやすみなさい。",
+      "ja-p07-transfer-reading": "夜：こんばんは。",
+      "ja-p08-situated-cloze": "朝：おはようございます。",
+      "ja-p08-situated-ordering": "昼：こんにちは。",
+      "ja-p08-situated-reading": "寝る前：おやすみなさい。",
+      "ja-p09-context-composition": "夜：こんばんは。",
+      "ja-p13-shop-afternoon": "昼：こんにちは。",
+      "ja-p13-social-timeline": "寝る前：おやすみなさい。"
+    },
+    "zh:ni-hao:shared-pilot": {
+      "zh-ni-hao-choice": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃"
+      },
+      "zh-ni-hao-typed": "你好",
+      "zh-ni-hao-production": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃"
+      },
+      "zh-p04-context-choice": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃"
+      },
+      "zh-p04-transfer": "你们",
+      "zh-p04-pinyin": "你好",
+      "zh-p06-cloze": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "这个苹果很好吃。"
+      },
+      "zh-p06-ordering": "你好",
+      "zh-p06-reading": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "这个苹果很好吃。"
+      },
+      "zh-p07-context-reading": "你们",
+      "zh-p07-transfer-cloze": "你喜欢喝茶吗？",
+      "zh-p07-transfer-reading": "你好",
+      "zh-p08-situated-cloze": "你喜欢喝茶吗？",
+      "zh-p08-situated-ordering": "你喜欢喝茶吗？",
+      "zh-p08-situated-reading": "你喜欢喝茶吗？",
+      "zh-p09-context-composition": {
+        "zh-ni-demo": "你喜欢喝茶吗？",
+        "zh-hao-demo": "这个苹果很好吃。"
+      },
+      "zh-p13-plural-pinyin": "你们",
+      "zh-p13-question-statement": {
+        "zh-ni-demo": "你喜欢喝茶吗？",
+        "zh-hao-demo": "这个苹果很好吃。"
+      }
+    },
+    "fr:a1-02:shared-pilot": {
+      "fr-p15-suis-guided": "Je suis professeur.",
+      "fr-p15-vous-guided": "Tu es étudiante ?",
+      "fr-p15-nous-guided": "Nous sommes à Lyon.",
+      "fr-p15-aya-guided": "Oui, je suis étudiante à Paris.",
+      "fr-p15-agreement-guided": "Elle est française.",
+      "fr-p15-role-independent": "Je suis professeur.",
+      "fr-p15-place-independent": "Nous sommes à Lyon.",
+      "fr-p15-people-independent": "Elles sont étudiantes.",
+      "fr-p15-ordre-independent": "Nous sommes à Lyon.",
+      "fr-p15-writing-independent": "Je suis professeur."
+    },
+    "ja:cf-a1-01-02:shared-pilot": {
+      "ja-p15-thanks-guided": "ありがとうございます。",
+      "ja-p15-attention-guided": "すみません。",
+      "ja-p15-write-guided": "ありがとうございます。",
+      "ja-p15-reply-guided": "どういたしまして。",
+      "ja-p15-hand-guided": "はい、どうぞ。",
+      "ja-p15-attention-independent": "すみません。",
+      "ja-p15-reply-independent": "どういたしまして。",
+      "ja-p15-intent-independent": "すみません。",
+      "ja-p15-sequence-independent": "ありがとうございます。",
+      "ja-p15-writing-independent": "すみません。"
+    },
+    "zh:wo:shared-pilot": {
+      "zh-p15-pronoun-guided": "我",
+      "zh-p15-write-guided": "我",
+      "zh-p15-plural-guided": "我们",
+      "zh-p15-pinyin-guided": "我",
+      "zh-p15-identity-guided": "我是学生。",
+      "zh-p15-plural-independent": "我们",
+      "zh-p15-ownership-independent": "我的",
+      "zh-p15-identity-independent": "我是学生。",
+      "zh-p15-reading-independent": "我是学生。",
+      "zh-p15-writing-independent": "我的"
+    }
+  }
+}

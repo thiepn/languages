@@ -28,7 +28,7 @@ test("four original source entities retain traceable practice and exact frame po
  }
  assert.equal(sourceCoverage(byLanguage.zh).length,2);
  const hao=sourceCoverage(byLanguage.zh).find(x=>x.source.originalEntityId==="好");
- assert.equal(hao.guided.length,0); // Original pilot has no directly attributed guided exercise for 好.
+ assert.equal(hao.guided.length,4); // Existing original exercises now explicitly cite 好.
  assert.ok(hao.independent.length>0);
  assert.ok(sourceCoverage(byLanguage.zh).every(x=>x.independent.length>0));
 });

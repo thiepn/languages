@@ -170,6 +170,16 @@
           "after": " professeur.",
           "acceptedAnswers": [
             "suis"
+          ],
+          "misconceptions": [
+            {
+              "answer": "est",
+              "feedback": "Est belongs to il/elle/on; je takes suis."
+            },
+            {
+              "answer": "es",
+              "feedback": "Es belongs to tu; je takes suis."
+            }
           ]
         },
         {
@@ -213,7 +223,18 @@
               "answer": "es",
               "feedback": "Es belongs to tu, not vous."
             }
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "Nous sommes à Lyon.",
+              "meaning": "We are in Lyon."
+            },
+            "second": {
+              "targetText": "Tu es étudiante ?",
+              "meaning": "Are you a student?"
+            },
+            "cue": "Nous takes sommes and tu takes es; vous takes êtes. The subject determines the form."
+          }
         },
         {
           "id": "fr-p15-nous-guided",
@@ -241,6 +262,32 @@
           "explanation": "Nous sommes is the original first-person plural form.",
           "acceptedAnswers": [
             "sommes"
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "Nous sommes à Lyon.",
+              "meaning": "We are in Lyon."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Nous sommes refers to a group; je suis to an individual."
+          },
+          "sourceAid": {
+            "targetText": "Nous sommes à Lyon.",
+            "meaning": "We are in Lyon.",
+            "cue": "Find the verb after nous in the original example."
+          },
+          "misconceptions": [
+            {
+              "answer": "êtes",
+              "feedback": "Êtes is for vous; nous takes sommes."
+            },
+            {
+              "answer": "sont",
+              "feedback": "Sont is for ils/elles; nous takes sommes."
+            }
           ]
         },
         {
@@ -276,7 +323,18 @@
           ],
           "acceptedAnswers": [
             "Paris"
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "Tu es étudiante ?",
+              "meaning": "Are you a student?"
+            },
+            "second": {
+              "targetText": "Oui, je suis étudiante à Paris.",
+              "meaning": "Yes, I am a student in Paris."
+            },
+            "cue": "Aya's answer contains the actual location à Paris."
+          }
         },
         {
           "id": "fr-p15-agreement-guided",
@@ -319,7 +377,18 @@
               "answer": "Elle êtes française.",
               "feedback": "Êtes belongs to vous; elle uses est."
             }
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "Elle est française.",
+              "meaning": "She is French."
+            },
+            "second": {
+              "targetText": "Elles sont étudiantes.",
+              "meaning": "They are students."
+            },
+            "cue": "Elle est is singular; elles sont is plural. The source's adjective forms also agree."
+          }
         },
         {
           "id": "fr-p15-role-independent",
@@ -352,7 +421,17 @@
             "targetText": "Je suis professeur.",
             "meaning": "I am a teacher.",
             "cue": "After je use suis and omit an indefinite article before professeur."
-          }
+          },
+          "misconceptions": [
+            {
+              "answer": "Je suis un professeur.",
+              "feedback": "The original standard occupation example is Je suis professeur., without an indefinite article."
+            },
+            {
+              "answer": "Je est professeur.",
+              "feedback": "Je requires suis, not est."
+            }
+          ]
         },
         {
           "id": "fr-p15-place-independent",
@@ -388,7 +467,12 @@
               "answer": "êtes",
               "feedback": "Êtes goes with vous; the original group subject is nous."
             }
-          ]
+          ],
+          "sourceAid": {
+            "targetText": "Nous sommes à Lyon.",
+            "meaning": "We are in Lyon.",
+            "cue": "Use sommes after the plural first-person subject nous."
+          }
         },
         {
           "id": "fr-p15-people-independent",
@@ -423,7 +507,18 @@
           ],
           "acceptedAnswers": [
             "Elles sont étudiantes."
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "Elles sont étudiantes.",
+              "meaning": "They are students."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Choose plural elles sont rather than individual je suis."
+          }
         },
         {
           "id": "fr-p15-ordre-independent",
@@ -490,6 +585,17 @@
             "targetText": "Nous sommes à Lyon.",
             "meaning": "We are in Lyon.",
             "cue": "Apply the same subject–verb–place structure with a place of your choice."
+          },
+          "sourceComparison": {
+            "first": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "second": {
+              "targetText": "Nous sommes à Lyon.",
+              "meaning": "We are in Lyon."
+            },
+            "cue": "The original examples use être for occupation and for location with different subjects."
           }
         }
       ]
@@ -649,6 +755,27 @@
           ],
           "acceptedAnswers": [
             "ありがとうございます。"
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "second": {
+              "targetText": "すみません。",
+              "meaning": "Excuse me / Sorry."
+            },
+            "cue": "ありがとうございます thanks the helper; すみません can attract attention or lightly apologize."
+          },
+          "misconceptions": [
+            {
+              "answer": "こんばんは。",
+              "feedback": "That is an evening greeting, not thanks for assistance."
+            },
+            {
+              "answer": "おやすみなさい。",
+              "feedback": "That is for bedtime, not for thanking a helper."
+            }
           ]
         },
         {
@@ -682,6 +809,32 @@
           ],
           "acceptedAnswers": [
             "すみません。"
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "すみません。",
+              "meaning": "Excuse me / Sorry."
+            },
+            "second": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "cue": "Use すみません to call for help; thank someone afterward with ありがとうございます."
+          },
+          "sourceAid": {
+            "targetText": "すみません。",
+            "meaning": "Excuse me / Sorry.",
+            "cue": "This expression is used to request attention as well as to apologize lightly."
+          },
+          "misconceptions": [
+            {
+              "answer": "いただきます。",
+              "feedback": "This precedes eating, not attracting attention."
+            },
+            {
+              "answer": "おはようございます。",
+              "feedback": "That is a morning greeting, not a request for assistance."
+            }
           ]
         },
         {
@@ -745,7 +898,18 @@
           ],
           "acceptedAnswers": [
             "どういたしまして。"
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "second": {
+              "targetText": "どういたしまして。",
+              "meaning": "You're welcome."
+            },
+            "cue": "The original examples contrast an expression of thanks with a possible reply."
+          }
         },
         {
           "id": "ja-p15-hand-guided",
@@ -842,6 +1006,27 @@
           ],
           "acceptedAnswers": [
             "どういたしまして。"
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "second": {
+              "targetText": "どういたしまして。",
+              "meaning": "You're welcome."
+            },
+            "cue": "どういたしまして is one possible acknowledgment of thanks, not an obligatory response."
+          },
+          "misconceptions": [
+            {
+              "answer": "すみません。",
+              "feedback": "That can apologize or attract attention; it is not this source's example reply to thanks."
+            },
+            {
+              "answer": "はい、どうぞ。",
+              "feedback": "That accompanies handing over an item, not answering thanks here."
+            }
           ]
         },
         {
@@ -877,7 +1062,18 @@
           ],
           "acceptedAnswers": [
             "すみません。"
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "すみません。",
+              "meaning": "Excuse me / Sorry."
+            },
+            "second": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "cue": "すみません asks for attention or apologizes, rather than expressing thanks."
+          }
         },
         {
           "id": "ja-p15-sequence-independent",
@@ -943,6 +1139,17 @@
             "targetText": "ありがとうございます。",
             "meaning": "Thank you (polite).",
             "cue": "Use the original thanks as the second line and a suitable response afterward."
+          },
+          "sourceComparison": {
+            "first": {
+              "targetText": "すみません。",
+              "meaning": "Excuse me / Sorry."
+            },
+            "second": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "cue": "Request attention first, then thank the helper; an acknowledgment may follow."
           }
         }
       ]
@@ -1105,6 +1312,27 @@
           ],
           "acceptedAnswers": [
             "我"
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "我",
+              "meaning": "I; me"
+            },
+            "second": {
+              "targetText": "我们",
+              "meaning": "we; us"
+            },
+            "cue": "我 means I/me; 我们 means we/us."
+          },
+          "misconceptions": [
+            {
+              "answer": "我们",
+              "feedback": "我们 is we/us, not singular I/me."
+            },
+            {
+              "answer": "我的",
+              "feedback": "我的 means my/mine, not singular I/me."
+            }
           ]
         },
         {
@@ -1166,6 +1394,27 @@
           ],
           "acceptedAnswers": [
             "我们"
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "我",
+              "meaning": "I; me"
+            },
+            "second": {
+              "targetText": "我们",
+              "meaning": "we; us"
+            },
+            "cue": "Adding 们 makes the reference plural, unlike stand-alone 我."
+          },
+          "misconceptions": [
+            {
+              "answer": "我",
+              "feedback": "我 means I/me, not we/us."
+            },
+            {
+              "answer": "我的",
+              "feedback": "我的 marks possession; 们 marks first-person plural."
+            }
           ]
         },
         {
@@ -1200,7 +1449,23 @@
               "answer": "wo",
               "feedback": "The source's written lexical reading is wǒ with a third-tone mark."
             }
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "我",
+              "meaning": "I; me"
+            },
+            "second": {
+              "targetText": "我们",
+              "meaning": "we; us"
+            },
+            "cue": "The original lexical Pinyin is wǒ versus wǒmen; written tone marks do not assess speech."
+          },
+          "sourceAid": {
+            "targetText": "我",
+            "meaning": "I; me",
+            "cue": "Use the source's marked wǒ, not unmarked wo."
+          }
         },
         {
           "id": "zh-p15-identity-guided",
@@ -1236,6 +1501,16 @@
           ],
           "acceptedAnswers": [
             "I am a student."
+          ],
+          "misconceptions": [
+            {
+              "answer": "We are students.",
+              "feedback": "The written source subject 我 is singular I."
+            },
+            {
+              "answer": "This is my book.",
+              "feedback": "The original sentence identifies the speaker as a student."
+            }
           ]
         },
         {
@@ -1312,7 +1587,18 @@
               "answer": "我",
               "feedback": "我 means I/me without the possessive 的."
             }
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "我们",
+              "meaning": "we; us"
+            },
+            "second": {
+              "targetText": "我的",
+              "meaning": "my; mine"
+            },
+            "cue": "我们 means we/us, but 我的 means my/mine."
+          }
         },
         {
           "id": "zh-p15-identity-independent",
@@ -1348,7 +1634,23 @@
               "answer": "们",
               "feedback": "我们 is the plural pronoun, not the linking verb in 我是学生。"
             }
-          ]
+          ],
+          "sourceComparison": {
+            "first": {
+              "targetText": "我",
+              "meaning": "I; me"
+            },
+            "second": {
+              "targetText": "我是学生。",
+              "meaning": "I am a student."
+            },
+            "cue": "The complete source sentence adds 是学生 to identify the speaker."
+          },
+          "sourceAid": {
+            "targetText": "我是学生。",
+            "meaning": "I am a student.",
+            "cue": "Use the linking verb 是 in the original sentence."
+          }
         },
         {
           "id": "zh-p15-reading-independent",
@@ -1418,6 +1720,17 @@
             "targetText": "我是学生。",
             "meaning": "I am a student.",
             "cue": "The original identity sentence illustrates 我 with a noun predicate; make your own short context."
+          },
+          "sourceComparison": {
+            "first": {
+              "targetText": "我们",
+              "meaning": "we; us"
+            },
+            "second": {
+              "targetText": "我的",
+              "meaning": "my; mine"
+            },
+            "cue": "Use 我们 for a group and 我的 for possession, not interchangeably."
           }
         }
       ]
