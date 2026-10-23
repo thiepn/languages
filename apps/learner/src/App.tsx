@@ -8,7 +8,7 @@ import {
 } from "./lesson-model";
 import {DEMO_BUNDLES,COURSE_BUNDLES,SOURCE_COVERAGE_BY_LESSON,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
 import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
-import {APPLICATION_PATHS,resolveApplicationStep,auditApplicationPaths,type ApplicationPath} from "./application-paths";
+import {APPLICATION_PATHS,APPLICATION_REVIEWS,resolveApplicationStep,auditApplicationPaths,type ApplicationPath} from "./application-paths";
 
 type Destination = "home" | "course" | "review" | "profile";
 const NAV: readonly {id:Destination;label:string}[] = [
@@ -204,6 +204,9 @@ export function App(){
   const [lessonOpen,setLessonOpen]=useState(false);
   const [positions,setPositions]=useState<Record<string,number>>(readPositions);
   const [activeApplication,setActiveApplication]=useState<{id:string;step:number}|null>(null);
+  const [writingReview,setWritingReview]=useState<{
+    pathId:string;exerciseId:string;firstDraft:string;checked:readonly boolean[];revised:boolean;
+  }|null>(null);
   const titleRef=useRef<HTMLHeadingElement>(null);
   const activityHeadingRef=useRef<HTMLHeadingElement>(null);
   const bundle=player.bundle;
@@ -220,6 +223,10 @@ export function App(){
   const currentPath=APPLICATION_PATHS.find(p=>p.id===activeApplication?.id);
   const currentApplicationStep=currentPath?.steps[activeApplication?.step??0];
   const isAppliedFrame=currentApplicationStep?.lessonId===bundle.lesson.id&&currentApplicationStep.exerciseId===frame?.exercise?.id;
+  const applicationWriting=isAppliedFrame&&frame?.exercise?.kind==="free-production";
+  const reviewGuide=currentPath?APPLICATION_REVIEWS[currentPath.id]:undefined;
+  const currentReview=applicationWriting&&writingReview?.pathId===currentPath?.id&&writingReview.exerciseId===frame?.exercise?.id?writingReview:null;
+  const reviewedWriting=currentReview?.checked.every(Boolean)===true&&currentResult?.kind==="ungraded";
 
   useEffect(()=>{
     try{window.sessionStorage.setItem(DEMO_LANGUAGE_KEY,selected);}catch{/* Optional tab-only language choice. */}
@@ -247,11 +254,13 @@ export function App(){
     const next=DEMO_BUNDLES[id];
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
     setActiveApplication(null);
+    setWritingReview(null);
     setLessonOpen(false);
     setDestination("course");
   }
   function navigate(id:Destination){
     setActiveApplication(null);
+    setWritingReview(null);
     setLessonOpen(false);
     setDestination(id);
   }
@@ -262,13 +271,15 @@ export function App(){
   function openSourcePractice(frameIndex:number){
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
+    setWritingReview(null);
     dispatch({type:"load",bundle,restoredIndex:frameIndex});
     startLesson();
   }
   function openCourseLesson(next:LessonBundleV1){
-    if(next.lesson.id===bundle.lesson.id){setActiveApplication(null);startLesson();return;}
+    if(next.lesson.id===bundle.lesson.id){setActiveApplication(null);setWritingReview(null);startLesson();return;}
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
+    setWritingReview(null);
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
     startLesson();
   }
@@ -278,24 +289,39 @@ export function App(){
     const found=resolveApplicationStep(ALL_BUNDLES,step);
     if(!found)return;
     setActiveApplication({id:path.id,step:stepIndex});
+    setWritingReview(null);
     dispatch({type:"load",bundle:found.bundle,restoredIndex:found.frameIndex});
     startLesson();
   }
   function completeApplicationStep(){
-    if(!currentPath||!isAppliedFrame||!currentResult||currentResult.kind==="incorrect")return;
+    if(!currentPath||!isAppliedFrame||!currentResult||currentResult.kind==="incorrect"||
+      (applicationWriting&&!reviewedWriting))return;
     const next=(activeApplication?.step??0)+1;
     if(next>=currentPath.steps.length){setActiveApplication(null);setLessonOpen(false);setDestination("course");return;}
     startApplication(currentPath,next);
   }
+  function openWritingReview(revised=false){
+    if(!applicationWriting||!currentPath||!frame?.exercise||!reviewGuide||!currentDraft.trim())return;
+    const exerciseId=frame.exercise.id;
+    setWritingReview(previous=>previous?.pathId===currentPath.id&&previous.exerciseId===exerciseId
+      ?{...previous,revised:previous.revised||revised}
+      :{pathId:currentPath.id,exerciseId,firstDraft:currentDraft,checked:reviewGuide.criteria.map(()=>false),revised});
+  }
+  function reviseApplicationWriting(){
+    openWritingReview(true);
+    dispatch({type:"revise"});
+  }
   function restart(){
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
+    setWritingReview(null);
     dispatch({type:"reset"});
     startLesson();
   }
   function clearPreview(){
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
+    setWritingReview(null);
     setPositions({});
     dispatch({type:"load",bundle:DEMO_BUNDLES.fr,restoredIndex:0});
     setLessonOpen(false);
@@ -345,8 +371,34 @@ export function App(){
               </div>
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult} headingRef={activityHeadingRef}
-                onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>dispatch({type:"revise"})}/>:null}
-            {isAppliedFrame&&currentPath&&currentResult&&currentResult.kind!=="incorrect"&&<div className="applied-next">
+                onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>applicationWriting?reviseApplicationWriting():dispatch({type:"revise"})}/>:null}
+            {applicationWriting&&currentResult?.kind==="ungraded"&&!currentReview&&
+              <button type="button" className="secondary-action applied-review-launch" onClick={()=>openWritingReview()}>Review sources before finishing</button>}
+            {applicationWriting&&currentPath&&currentReview&&reviewGuide&&<section className="applied-writing-review" aria-label="Source-backed writing review">
+              <h3>Review and revise your writing</h3>
+              <div className="applied-draft-comparison">
+                <div><strong>First draft</strong><blockquote lang={selected}>{currentReview.firstDraft}</blockquote></div>
+                {currentReview.revised&&currentResult?.kind==="ungraded"&&
+                  <div><strong>Current draft</strong><blockquote lang={selected}>{currentDraft}</blockquote></div>}
+              </div>
+              <fieldset>
+                <legend>Check your writing against the original sources</legend>
+                {reviewGuide.criteria.map((criterion,i)=><label key={criterion.sourceId+"|"+criterion.quote} className="review-criterion">
+                  <input type="checkbox" checked={currentReview.checked[i]??false}
+                    onChange={event=>setWritingReview(previous=>previous&&previous.pathId===currentReview.pathId&&previous.exerciseId===currentReview.exerciseId
+                      ?{...previous,checked:previous.checked.map((value,n)=>n===i?event.target.checked:value)}:previous)}/>
+                  <span><span>{criterion.prompt}</span><blockquote lang={selected}>{criterion.quote}</blockquote></span>
+                </label>)}
+              </fieldset>
+              <p className="review-boundary">These are self-review checks, not verified grammar corrections or grades.</p>
+              {currentResult?.kind==="ungraded"&&<div className="review-operations">
+                <button type="button" className="secondary-action" onClick={reviseApplicationWriting}>Revise against sources</button>
+                <button type="button" className="primary-action" disabled={!reviewedWriting} onClick={completeApplicationStep}>
+                  {(activeApplication?.step??0)+1<currentPath.steps.length?"Next application task":"Finish application"}
+                </button>
+              </div>}
+            </section>}
+            {isAppliedFrame&&currentPath&&currentResult&&currentResult.kind!=="incorrect"&&!applicationWriting&&<div className="applied-next">
               <button type="button" className="secondary-action" onClick={completeApplicationStep}>{(activeApplication?.step??0)+1<currentPath.steps.length?"Next application task":"Return to Course"}</button>
             </div>}
           </div>
