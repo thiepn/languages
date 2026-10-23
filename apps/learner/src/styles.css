@@ -242,3 +242,22 @@ progress::-moz-progress-bar{background:#dadadd}
 .applied-progress{font-size:15px;line-height:1.5;font-weight:650;margin:12px 0}
 .applied-next{margin-top:18px;display:flex;gap:12px}
 @media(max-width:520px){.application-path li{align-items:stretch;flex-direction:column}.application-path li button{width:100%}.application-path h3{font-size:19px}}
+
+/* Phase 20: source-backed self-review and first/current draft comparison. */
+.applied-review-launch{margin-top:16px;min-height:46px}
+.applied-writing-review{margin-top:22px;border-top:1px solid var(--line);padding-top:18px}
+.applied-writing-review h3{font-size:21px;line-height:1.35;margin:0 0 16px}
+.applied-draft-comparison{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:14px;margin-bottom:18px}
+.applied-draft-comparison strong{font-size:16px}
+.applied-draft-comparison blockquote{margin:8px 0 0;padding:14px;border:1px solid var(--line);background:var(--panel);font-size:17px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.applied-writing-review fieldset{border:1px solid var(--line);padding:10px 14px 14px;margin:0;min-width:0}
+.applied-writing-review legend{font-size:17px;font-weight:650;padding:0 6px}
+.review-criterion{display:flex;align-items:flex-start;gap:14px;min-height:56px;padding:14px 0;border-top:1px solid var(--line);font-size:16px;line-height:1.5}
+.review-criterion:first-of-type{border-top:0}
+.review-criterion input{width:20px;height:20px;flex-shrink:0;margin-top:2px;accent-color:var(--accent)}
+.review-criterion>span{min-width:0}
+.review-criterion blockquote{margin:8px 0 0;border-left:2px solid #87898d;padding:7px 12px;font-size:18px;line-height:1.5;overflow-wrap:anywhere;background:var(--panel)}
+.review-boundary{font-size:15px;line-height:1.5;color:var(--muted);margin:12px 0}
+.review-operations{display:flex;gap:12px;flex-wrap:wrap}
+.review-operations button{min-height:46px}
+@media(max-width:520px){.review-operations{flex-direction:column}.review-operations button{width:100%}.applied-writing-review h3{font-size:19px}}

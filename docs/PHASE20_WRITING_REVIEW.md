@@ -1,0 +1,13 @@
+# Phase 20 — Source-backed writing self-review and revision
+
+Same original [draft PR #30](https://github.com/thiepn/languages/pull/30), branch `feature/phase01-platform-ownership-20261022`, exact Phase 19 parent `837cf1966c4bfe8092d351e90f926abafadefe0b`.
+
+The six existing original-source application pathways now include a learner-led, **two-pass writing self-review**. After submitting a free-production response to the existing ungraded Phase 05 player, learners open three contextual source-linked writing checks. Each references a verbatim encountered original quotation, backed by the unchanged Phase 16 source evidence manifest, an exact pinned source ID and pending editorial/rights controls. Examples distinguish French profession/article/reference, Japanese first meeting versus assistance/gratitude, and Mandarin first-person identity versus negation/addition.
+
+The first draft is stored only in in-memory React component state. A learner can use the existing `revise` reducer action to edit and resubmit, then inspect original versus revised text side by side. Finishing a path requires a currently submitted **ungraded** response and explicit manual acknowledgment of all three checks. The learner may keep a draft after review without an arbitrary forced edit. Checkboxes are personal review acknowledgments, **not automated grammar validation, mastery or certification**. The state is not written to account, sessionStorage, localStorage, FSRS, native applications or History. A canceled navigation does not discard a draft or checklist.
+
+Fail-closed `auditApplicationPaths` now rejects missing guides, unsupported source quotations, inaccurate source linkage, missing original encounters and rights changes. No original course data is changed: 12 lessons, 126 original exercise IDs, 12 content-versioned checkpoint identities, all Phase 16 receipts, original French/Chinese main source SHA pins, unmerged Japanese PR #103 source pin, native apps, Account/Core, Hub and FSRS remain intact.
+
+Real Node integrity and regression tests, strict TypeScript/Vite and original Chromium/Firefox/WebKit desktop/mobile browser qualification cover the six guides, revised writing and 320px discarded-navigation safety. Root monorepo verification and consumer packaging remain blocked until owner-authorized SSH access exists for the unchanged private Account pin `thiepn/account#df029d08a49ef27d3fd5fedf58400572746c0b47`.
+
+All content remains `internal-fixture`, `editorialReview=pending`, `redistributionVerified=false`; Chinese sources remain `review-required`. No merge, migration, rights approval, publication or deployment. Phase 21 can deepen original-source learner-led follow-up without adding automatic writing grades or another scheduler.
