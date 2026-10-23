@@ -225,7 +225,7 @@ export function App(){
   const isAppliedFrame=currentApplicationStep?.lessonId===bundle.lesson.id&&currentApplicationStep.exerciseId===frame?.exercise?.id;
   const applicationWriting=isAppliedFrame&&frame?.exercise?.kind==="free-production";
   const reviewGuide=currentPath?APPLICATION_REVIEWS[currentPath.id]:undefined;
-  const currentReview=applicationWriting&&writingReview?.pathId===currentPath?.id&&writingReview.exerciseId===frame?.exercise?.id?writingReview:null;
+  const currentReview=applicationWriting&&writingReview?.pathId===currentPath?.id&&writingReview?.exerciseId===frame?.exercise?.id?writingReview:null;
   const reviewedWriting=currentReview?.checked.every(Boolean)===true&&currentResult?.kind==="ungraded";
 
   useEffect(()=>{
