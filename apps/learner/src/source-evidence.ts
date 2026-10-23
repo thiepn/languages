@@ -1,4 +1,4 @@
-import evidence from "../../../contracts/phase16-source-evidence.json";
+import evidence from "../../../contracts/phase16-source-evidence.json" with {type:"json"};
 import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1.js";
 
 export interface SourceEvidenceIssue {
