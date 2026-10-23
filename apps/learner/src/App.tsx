@@ -8,6 +8,7 @@ import {
 } from "./lesson-model";
 import {DEMO_BUNDLES,COURSE_BUNDLES,SOURCE_COVERAGE_BY_LESSON,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
 import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
+import {APPLICATION_PATHS,resolveApplicationStep,auditApplicationPaths,type ApplicationPath} from "./application-paths";
 
 type Destination = "home" | "course" | "review" | "profile";
 const NAV: readonly {id:Destination;label:string}[] = [
@@ -15,6 +16,7 @@ const NAV: readonly {id:Destination;label:string}[] = [
   {id:"review",label:"Review"},{id:"profile",label:"Profile"}
 ];
 const ALL_BUNDLES=Object.values(COURSE_BUNDLES).flat();
+if(auditApplicationPaths(ALL_BUNDLES).length)throw new Error("Unreviewed application path or original source attribution");
 
 const DEMO_LANGUAGE_KEY="thiepn-languages-phase04-active-language";
 function readSelected():LanguageChoice{
@@ -201,6 +203,7 @@ export function App(){
   const [destination,setDestination]=useState<Destination>("home");
   const [lessonOpen,setLessonOpen]=useState(false);
   const [positions,setPositions]=useState<Record<string,number>>(readPositions);
+  const [activeApplication,setActiveApplication]=useState<{id:string;step:number}|null>(null);
   const titleRef=useRef<HTMLHeadingElement>(null);
   const activityHeadingRef=useRef<HTMLHeadingElement>(null);
   const bundle=player.bundle;
@@ -214,6 +217,9 @@ export function App(){
   const currentResult=activeAttempt(player).outcome;
   const currentDraft=activeAttempt(player).draft;
   const canAdvance=mayAdvance(player);
+  const currentPath=APPLICATION_PATHS.find(p=>p.id===activeApplication?.id);
+  const currentApplicationStep=currentPath?.steps[activeApplication?.step??0];
+  const isAppliedFrame=currentApplicationStep?.lessonId===bundle.lesson.id&&currentApplicationStep.exerciseId===frame?.exercise?.id;
 
   useEffect(()=>{
     try{window.sessionStorage.setItem(DEMO_LANGUAGE_KEY,selected);}catch{/* Optional tab-only language choice. */}
@@ -240,10 +246,12 @@ export function App(){
     if(id===selected||!confirmWritingDiscard())return;
     const next=DEMO_BUNDLES[id];
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
+    setActiveApplication(null);
     setLessonOpen(false);
     setDestination("course");
   }
   function navigate(id:Destination){
+    setActiveApplication(null);
     setLessonOpen(false);
     setDestination(id);
   }
@@ -253,22 +261,41 @@ export function App(){
   }
   function openSourcePractice(frameIndex:number){
     if(!confirmWritingDiscard())return;
+    setActiveApplication(null);
     dispatch({type:"load",bundle,restoredIndex:frameIndex});
     startLesson();
   }
   function openCourseLesson(next:LessonBundleV1){
-    if(next.lesson.id===bundle.lesson.id){startLesson();return;}
+    if(next.lesson.id===bundle.lesson.id){setActiveApplication(null);startLesson();return;}
     if(!confirmWritingDiscard())return;
+    setActiveApplication(null);
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
     startLesson();
   }
+  function startApplication(path:ApplicationPath,stepIndex=0){
+    const step=path.steps[stepIndex];
+    if(!step||!confirmWritingDiscard())return;
+    const found=resolveApplicationStep(ALL_BUNDLES,step);
+    if(!found)return;
+    setActiveApplication({id:path.id,step:stepIndex});
+    dispatch({type:"load",bundle:found.bundle,restoredIndex:found.frameIndex});
+    startLesson();
+  }
+  function completeApplicationStep(){
+    if(!currentPath||!isAppliedFrame||!currentResult||currentResult.kind==="incorrect")return;
+    const next=(activeApplication?.step??0)+1;
+    if(next>=currentPath.steps.length){setActiveApplication(null);setLessonOpen(false);setDestination("course");return;}
+    startApplication(currentPath,next);
+  }
   function restart(){
     if(!confirmWritingDiscard())return;
+    setActiveApplication(null);
     dispatch({type:"reset"});
     startLesson();
   }
   function clearPreview(){
     if(!confirmWritingDiscard())return;
+    setActiveApplication(null);
     setPositions({});
     dispatch({type:"load",bundle:DEMO_BUNDLES.fr,restoredIndex:0});
     setLessonOpen(false);
@@ -307,6 +334,7 @@ export function App(){
               <label className="progress-label" htmlFor="lesson-progress">{complete?`${frames.length} of ${frames.length} activities reached`:`Activity ${index+1} of ${frames.length}`}</label>
               <progress id="lesson-progress" value={index} max={frames.length}/>
             </div>
+            {isAppliedFrame&&currentPath&&<p className="applied-progress">Application task {(activeApplication?.step??0)+1} of {currentPath.steps.length}: {currentPath.title}</p>}
             {complete?<section className="completion" aria-live="polite">
               <h2 ref={activityHeadingRef} tabIndex={-1}>Preview complete</h2>
               <p>You reached the end of this internal lesson fixture. No learning grade or review progress was recorded.</p>
@@ -318,6 +346,9 @@ export function App(){
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult} headingRef={activityHeadingRef}
                 onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>dispatch({type:"revise"})}/>:null}
+            {isAppliedFrame&&currentPath&&currentResult&&currentResult.kind!=="incorrect"&&<div className="applied-next">
+              <button type="button" className="secondary-action" onClick={completeApplicationStep}>{(activeApplication?.step??0)+1<currentPath.steps.length?"Next application task":"Return to Course"}</button>
+            </div>}
           </div>
           {!complete&&<div className="lesson-actions" aria-label="Lesson controls">
             <button className="secondary-action" type="button" disabled={index===0} onClick={()=>dispatch({type:"previous"})}>Previous</button>
@@ -364,6 +395,18 @@ export function App(){
                 <span className="course-sequence-meta">{framesFor(candidate).length} activities</span>
               </button>
             </li>)}</ol>
+          </section>
+          <section className="application-paths" aria-label="Practical applications">
+            <h2 className="section-title">Practical applications</h2>
+            {APPLICATION_PATHS.filter(path=>path.languageId===selected).map(path=><article className="application-path" key={path.id}>
+              <h3>{path.title}</h3>
+              <p>{path.situation}</p>
+              <ol>{path.steps.map((step,i)=><li key={step.exerciseId}>
+                <span>{i+1}. {ALL_BUNDLES.find(b=>b.lesson.id===step.lessonId)?.exercises.find(e=>e.id===step.exerciseId)?.instruction}</span>
+                <button type="button" onClick={()=>startApplication(path,i)} aria-label={"Open application task "+(i+1)+" of "+path.title}>Open task</button>
+              </li>)}</ol>
+              <button type="button" className="secondary-action" onClick={()=>startApplication(path)}>Start application</button>
+            </article>)}
           </section>
           <section className="source-practice" aria-label="Original source practice">
             <h2 className="section-title">Practice by original source</h2>

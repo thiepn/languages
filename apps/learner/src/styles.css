@@ -228,3 +228,17 @@ progress::-moz-progress-bar{background:#dadadd}
 .course-sequence button:hover,.course-sequence button[aria-current="true"]{background:var(--raised);border-color:#87898d}
 .course-sequence-title{font-size:16px;font-weight:650;overflow-wrap:anywhere}
 .course-sequence-meta{font-size:14px;color:var(--muted)}
+
+/* Phase 19: navigable original-source application sequences; no duplicate assessment. */
+.application-paths{border-top:1px solid var(--line);margin-top:30px;padding-top:6px}
+.application-path{border-bottom:1px solid var(--line);padding:8px 0 20px}
+.application-path h3{font-size:21px;margin:12px 0 8px}
+.application-path p{font-size:16px;line-height:1.55;margin:0 0 14px}
+.application-path ol{margin:0 0 12px;padding:0;list-style:none;display:grid;gap:6px}
+.application-path li{display:flex;gap:12px;align-items:center;justify-content:space-between;border:1px solid var(--line);padding:10px 12px;font-size:15px;line-height:1.5;min-width:0}
+.application-path li span{min-width:0;overflow-wrap:anywhere}
+.application-path li button{flex-shrink:0;min-height:44px;padding:8px 12px;border:1px solid var(--line);background:var(--panel);color:var(--text);cursor:pointer}
+.application-path button:hover{background:var(--raised)}
+.applied-progress{font-size:15px;line-height:1.5;font-weight:650;margin:12px 0}
+.applied-next{margin-top:18px;display:flex;gap:12px}
+@media(max-width:520px){.application-path li{align-items:stretch;flex-direction:column}.application-path li button{width:100%}.application-path h3{font-size:19px}}
