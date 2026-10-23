@@ -44,12 +44,15 @@ test("320px rejected navigation retains unsent revision and source self-review",
  const panel=page.getByRole("region",{name:"Source-backed writing review"});
  await panel.getByRole("checkbox").first().check();
  await panel.getByRole("button",{name:"Revise against sources"}).click();
+ await expect(panel.getByRole("checkbox").first()).not.toBeChecked();
+ await expect(panel.getByRole("checkbox").first()).toBeDisabled();
  await page.getByRole("textbox",{name:"Your response"}).fill("他是老师。我是学生。");
  await page.getByRole("button",{name:"← Course"}).click();
  page.once("dialog",dialog=>dialog.dismiss());
  await page.getByRole("button",{name:"Open application task 1 of "+path.title}).click();
  await page.getByRole("button",{name:"Continue lesson"}).click();
  await expect(page.getByRole("textbox",{name:"Your response"})).toHaveValue("他是老师。我是学生。");
- await expect(panel.getByRole("checkbox").first()).toBeChecked();
+ await expect(panel.getByRole("checkbox").first()).not.toBeChecked();
+ await expect(panel.getByRole("checkbox").first()).toBeDisabled();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
 });

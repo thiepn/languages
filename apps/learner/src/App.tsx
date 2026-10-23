@@ -387,7 +387,7 @@ export function App(){
               <fieldset>
                 <legend>Check your writing against the original sources</legend>
                 {reviewGuide.criteria.map((criterion,i)=><label key={criterion.sourceId+"|"+criterion.quote} className="review-criterion">
-                  <input type="checkbox" checked={currentReview.checked[i]??false}
+                  <input type="checkbox" disabled={currentResult?.kind!=="ungraded"} checked={currentReview.checked[i]??false}
                     onChange={event=>setWritingReview(previous=>previous&&previous.pathId===currentReview.pathId&&previous.exerciseId===currentReview.exerciseId
                       ?{...previous,checked:previous.checked.map((value,n)=>n===i?event.target.checked:value)}:previous)}/>
                   <span><span>{criterion.prompt}</span><blockquote lang={selected}>{criterion.quote}</blockquote></span>
