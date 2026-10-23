@@ -37,6 +37,9 @@ export function sourceCoverage(bundle:LessonBundleV1):readonly SourceCoverage[] 
 
 /** Explicit original pilot and next-lesson preview allowances, never publication approval. */
 const PINNED_INTERNAL_PILOTS:Readonly<Record<string,{language:string;sources:readonly string[]}>>={
+  "zh:ni-hao-wo:cross-transfer":{language:"zh",sources:["zh-hao-demo@9688e7354142b7127fd5f6eb69b03b595a437008","zh-ni-demo@9688e7354142b7127fd5f6eb69b03b595a437008","zh-wo-demo@9688e7354142b7127fd5f6eb69b03b595a437008"]},
+  "ja:cf-a1-01-01-02:cross-transfer":{language:"ja",sources:["ja-cf-a1-01-01-original@1e3667ebdcb0cd50491c126b948c11f47414decb","ja-cf-a1-01-02-original@1e3667ebdcb0cd50491c126b948c11f47414decb"]},
+  "fr:a1-01-02:cross-transfer":{language:"fr",sources:["fr-a1-01-original@3fb5c720cfeceaf682ce53c897701b489b7eaf6f","fr-a1-02-original@3fb5c720cfeceaf682ce53c897701b489b7eaf6f"]},
   "fr:a1-01:shared-pilot":{language:"fr",sources:["fr-a1-01-original@3fb5c720cfeceaf682ce53c897701b489b7eaf6f"]},
   "fr:a1-02:shared-pilot":{language:"fr",sources:["fr-a1-02-original@3fb5c720cfeceaf682ce53c897701b489b7eaf6f"]},
   "ja:cf-a1-01-01:shared-pilot":{language:"ja",sources:["ja-cf-a1-01-01-original@1e3667ebdcb0cd50491c126b948c11f47414decb"]},

@@ -167,6 +167,103 @@
       "zh-p15-identity-independent": "我是学生。",
       "zh-p15-reading-independent": "我是学生。",
       "zh-p15-writing-independent": "我的"
+    },
+    "fr:a1-01-02:cross-transfer": {
+      "fr-p17-opening": {
+        "fr-a1-01-original": "Bonsoir, monsieur.",
+        "fr-a1-02-original": "Je suis professeur."
+      },
+      "fr-p17-identify": {
+        "fr-a1-01-original": "Bonsoir, monsieur.",
+        "fr-a1-02-original": "Je suis professeur."
+      },
+      "fr-p17-order": {
+        "fr-a1-01-original": "Bonsoir, monsieur.",
+        "fr-a1-02-original": "Je suis professeur."
+      },
+      "fr-p17-name": {
+        "fr-a1-01-original": "Bonsoir, monsieur.",
+        "fr-a1-02-original": "Je suis professeur."
+      },
+      "fr-p17-farewell": {
+        "fr-a1-01-original": "Bonsoir, monsieur.",
+        "fr-a1-02-original": "Je suis professeur."
+      },
+      "fr-p17-etre": {
+        "fr-a1-01-original": "Bonsoir, monsieur.",
+        "fr-a1-02-original": "Je suis professeur."
+      },
+      "fr-p17-compose": {
+        "fr-a1-01-original": "Bonsoir, monsieur.",
+        "fr-a1-02-original": "Je suis professeur."
+      }
+    },
+    "ja:cf-a1-01-01-02:cross-transfer": {
+      "ja-p17-attention": {
+        "ja-cf-a1-01-01-original": "昼：こんにちは。",
+        "ja-cf-a1-01-02-original": "すみません。"
+      },
+      "ja-p17-function": {
+        "ja-cf-a1-01-01-original": "昼：こんにちは。",
+        "ja-cf-a1-01-02-original": "すみません。"
+      },
+      "ja-p17-sequence": {
+        "ja-cf-a1-01-01-original": "昼：こんにちは。",
+        "ja-cf-a1-01-02-original": "すみません。"
+      },
+      "ja-p17-thank": {
+        "ja-cf-a1-01-01-original": "昼：こんにちは。",
+        "ja-cf-a1-01-02-original": "すみません。"
+      },
+      "ja-p17-reply": {
+        "ja-cf-a1-01-01-original": "昼：こんにちは。",
+        "ja-cf-a1-01-02-original": "すみません。"
+      },
+      "ja-p17-typed": {
+        "ja-cf-a1-01-01-original": "昼：こんにちは。",
+        "ja-cf-a1-01-02-original": "すみません。"
+      },
+      "ja-p17-compose": {
+        "ja-cf-a1-01-01-original": "昼：こんにちは。",
+        "ja-cf-a1-01-02-original": "すみません。"
+      }
+    },
+    "zh:ni-hao-wo:cross-transfer": {
+      "zh-p17-identity": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃",
+        "zh-wo-demo": "我"
+      },
+      "zh-p17-greet": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃",
+        "zh-wo-demo": "我"
+      },
+      "zh-p17-order": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃",
+        "zh-wo-demo": "我"
+      },
+      "zh-p17-speaker": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃",
+        "zh-wo-demo": "我"
+      },
+      "zh-p17-taste": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃",
+        "zh-wo-demo": "我"
+      },
+      "zh-p17-pinyin": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃",
+        "zh-wo-demo": "我"
+      },
+      "zh-p17-compose": {
+        "zh-ni-demo": "你好",
+        "zh-hao-demo": "好吃",
+        "zh-wo-demo": "我"
+      }
     }
   }
 }

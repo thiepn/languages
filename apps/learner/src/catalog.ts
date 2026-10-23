@@ -1,5 +1,6 @@
 import raw from "../../../contracts/fixtures/phase02-source-lessons.json";
 import nextRaw from "../../../contracts/fixtures/phase15-source-lessons.json";
+import bridgeRaw from "../../../contracts/fixtures/phase17-cross-source-lessons.json";
 import {admitInternalPilot,sourceCoverage,type SourceCoverage} from "./source-coverage";
 import {
   validateLessonBundleV1,
@@ -17,12 +18,15 @@ export type LanguageChoice = typeof LANGUAGES[number]["id"];
 
 const originalBundles = raw.bundles as unknown as LessonBundleV1[];
 const newBundles = nextRaw.bundles as unknown as LessonBundleV1[];
-const bundles = [...originalBundles,...newBundles];
+const bridgeBundles=bridgeRaw.bundles as unknown as LessonBundleV1[];
+const bundles = [...originalBundles,...newBundles,...bridgeBundles];
 if (raw.purpose !== "internal-contract-testing-only" ||
     nextRaw.purpose !== "internal-contract-testing-only" ||
+    bridgeRaw.purpose !== "internal-contract-testing-only" ||
     originalBundles.length !== LANGUAGES.length ||
     newBundles.length !== LANGUAGES.length ||
-    bundles.length !== LANGUAGES.length*2 ||
+    bridgeBundles.length !== LANGUAGES.length ||
+    bundles.length !== LANGUAGES.length*3 ||
     new Set(bundles.map(bundle=>bundle.lesson.id)).size !== bundles.length ||
     bundles.some(bundle =>
       bundle.lesson.publication !== "internal-fixture" ||
@@ -30,8 +34,9 @@ if (raw.purpose !== "internal-contract-testing-only" ||
       !admitInternalPilot(bundle).length
     ) ||
     LANGUAGES.some(language => originalBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
-      newBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1)) {
-  throw new Error("The internal learner requires exactly three original and three admitted next-lesson fixtures.");
+      newBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
+      bridgeBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1)) {
+  throw new Error("The internal learner requires exactly three original, three follow-up and three cross-lesson internal fixtures.");
 }
 
 export const DEMO_BUNDLES: Readonly<Record<LanguageChoice, LessonBundleV1>> =
