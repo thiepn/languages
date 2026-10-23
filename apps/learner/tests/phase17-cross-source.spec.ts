@@ -51,7 +51,7 @@ test("bridge keeps unfinished Chinese writing when lesson switching is declined 
  await page.getByRole("textbox",{name:"Your response"}).fill("你好，我是学生。");
  await page.getByRole("button",{name:"← Course"}).click();
  page.once("dialog",dialog=>dialog.dismiss());
- await page.getByRole("button",{name:"Open Greeting and first-person identity"}).click();
+ await page.getByRole("button",{name:"Open 你好: characters in a greeting"}).click();
  await page.getByRole("button",{name:"Continue lesson"}).click();
  await expect(page.getByRole("textbox",{name:"Your response"})).toHaveValue("你好，我是学生。");
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
