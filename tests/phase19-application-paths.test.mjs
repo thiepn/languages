@@ -49,10 +49,10 @@ test("unreviewed or unsourced exercise references never open or qualify",()=>{
  assert.ok(auditApplicationPaths(missing).some(x=>x.problem==="unverified-original-quote"));
 });
 test("all original content versions and 12 frame-only checkpoints survive applied navigation",()=>{
- const checkpoints=Object.fromEntries(bundles.map((b,i)=>[checkpointId(b),i+1]));
+ const checkpoints=Object.fromEntries(bundles.map((b,i)=>[checkpointId(b),Math.min(i+1,framesFor(b).length)]));
  const raw=serializeDemoCheckpoint(checkpoints,bundles);
  const decoded=parseDemoCheckpoint(raw,bundles);
- for(const [i,b] of bundles.entries())assert.equal(decoded[checkpointId(b)],i+1);
+ for(const [i,b] of bundles.entries())assert.equal(decoded[checkpointId(b)],Math.min(i+1,framesFor(b).length));
  assert.equal(Object.keys(decoded).length,12);
  assert.ok(!raw.includes("answer")&&!raw.includes("grade")&&!raw.includes("fsrs"));
 });
