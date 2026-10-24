@@ -1,0 +1,15 @@
+# Phase 17 — original-source cross-lesson transfer (internal)
+
+Same [draft PR #30](https://github.com/thiepn/languages/pull/30) on `feature/phase01-platform-ownership-20261022`, parent exact `76fe85c84b8a51e95b74e98e12a4923a80553235`. AGENTS.md reverified. Phase 01/02 PASS; Phase 16 76/76 Node and 380/380 real browser PASS; unchanged private Account SSH root FAIL.
+
+The six original internal lessons, all their **84 exercise IDs**, original-source receipt entries, original versioned checkpoints and frame sequences are immutable. Three separately identified follow-on **bridge lessons**, not rewrites of source lessons, join their independently pinned original source entities through existing `LessonV1`, `ExerciseV1`, `LanguagePluginV1`, `framesFor`, exact evaluator and Phase 05 reducer. They add seven non-redundant contextual exercises each, including independent ungraded writing: **21 new exercise IDs**, 3×11 frames. A learner's Course list opens the bridge after the two original lessons; no engine, scheduler, persistent study state, credentials or grading authority is added.
+
+- **French** `fr:a1-01-02:cross-transfer`: differentiate first-time greeting, je m’appelle for a name, je suis for a role and au revoir for departure. Never present original independent source examples as one original recorded dialogue.
+- **Japanese** `ja:cf-a1-01-01-02:cross-transfer`: distinguish daytime こんにちは, staff attention すみません, thanks ありがとうございます and possible reply どういたしまして. Japanese native source remains at unmerged draft PR #103 `1e3667ebdcb0cd50491c126b948c11f47414decb`.
+- **Chinese** `zh:ni-hao-wo:cross-transfer`: distinguish addressing another person with 你好, referring to oneself with 我 or 我是学生。, and describing taste using 好吃. All original three entity receipts remain non-official and `review-required`; text-only transfer cannot assert spoken tone proficiency.
+
+Source pins: French main `3fb5c720cfeceaf682ce53c897701b489b7eaf6f`; Chinese main `9688e7354142b7127fd5f6eb69b03b595a437008`; Japanese original draft head as above. Each bridge requires all two or three original source entities, retains `internal-fixture`, `editorialReview=pending`, `redistributionVerified=false`, and explicitly declares both earlier lessons as prerequisites. The expanded fail-closed Phase 14 admission and Phase 16 pinned-excerpt source receipt manifest cover new exercise IDs. No source rights were inferred.
+
+**Next original curriculum gaps inspected, not promoted:** French `a1-03` (needs direct authored-source extraction and editorial agreement), Japanese `cf-a1-01-03` first-meeting self-introduction (currently unmerged PR #103), Chinese `是` original demonstration about noun identity (editorial DEMO_ONLY, not HSK). Bridge transfer uses only already-admitted original sources; Phase 18 should inspect these genuine next entities carefully before adding any lesson or rights change.
+
+No merge, publication, migration, account or native app writes, or deployment. Root CI remains blocked on unchanged private Account SSH dependency.

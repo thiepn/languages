@@ -1,0 +1,1065 @@
+{
+  "schema": "thiepn.languages.phase02.source-lesson-fixtures",
+  "schemaVersion": 1,
+  "purpose": "internal-contract-testing-only",
+  "status": "phase13-source-pinned-role-daypart-pronoun-transfer-internal",
+  "sourceBoundary": "Phase 13 adds two independently answerable contextual transfers per language from pinned French role/name examples, Japanese time-of-day shop context, and original Mandarin Pinyin plus tea/apple sentences. All authored tasks remain internal, editorialReview pending and redistribution unverified; no new persistent grade or native history authority.",
+  "bundles": [
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "fr:a1-03:shared-pilot",
+        "languageId": "fr",
+        "contentVersion": "original-next-p18-v1",
+        "title": "Objects, gender and articles",
+        "level": "A1",
+        "objective": {
+          "statement": "Choose French articles by number, grammatical gender, definiteness and vowel elision.",
+          "skillDimension": "comprehension"
+        },
+        "prerequisiteLessonIds": [
+          "fr:a1-02:shared-pilot",
+          "fr:a1-01-02:cross-transfer"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "fr-a1-03-original"
+        ],
+        "sources": [
+          {
+            "id": "fr-a1-03-original",
+            "repository": "thiepn/french",
+            "revision": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+            "path": "app/src/core/unified/u6-a1-01-04.ts",
+            "originalEntityId": "a1-03",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "fr-p18-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "C’est un livre.",
+                "meaning": "It is a book."
+              },
+              {
+                "targetText": "Voici des stylos.",
+                "meaning": "Here are some pens."
+              },
+              {
+                "targetText": "Le livre est sur la table.",
+                "meaning": "The book is on the table."
+              },
+              {
+                "targetText": "L’école est ouverte.",
+                "meaning": "The school is open."
+              },
+              {
+                "targetText": "Une table est ici.",
+                "meaning": "A table is here."
+              },
+              {
+                "targetText": "J’ai un stylo.",
+                "meaning": "I have a pen."
+              },
+              {
+                "targetText": "Regarde : les stylos sont sur la table.",
+                "meaning": "Look: the pens are on the table."
+              }
+            ]
+          },
+          {
+            "id": "fr-p18-explain-form",
+            "type": "explain",
+            "heading": "Indefinite articles",
+            "explanation": "The source distinguishes un for a masculine singular noun, une for a feminine singular noun and des for plural. Livre is masculine, table feminine. Learn the noun with its gender; spelling alone does not always identify it.",
+            "conceptIds": []
+          },
+          {
+            "id": "fr-p18-explain-context",
+            "type": "explain",
+            "heading": "Definite reference and elision",
+            "explanation": "The source distinguishes le, la, l’ and les for definite reference. Before a vowel or mute h, singular le/la elides to l’, as in L’école est ouverte. L’ does not reveal the noun's gender. Le livre est sur la table contrasts masculine le with feminine la.",
+            "conceptIds": []
+          },
+          {
+            "id": "fr-p18-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "fr-p18-gender",
+              "fr-p18-plural",
+              "fr-p18-elision"
+            ]
+          },
+          {
+            "id": "fr-p18-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "fr-p18-definite",
+              "fr-p18-location",
+              "fr-p18-article",
+              "fr-p18-write"
+            ]
+          },
+          {
+            "id": "fr-p18-reflect",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "Number, gender, definiteness and vowel elision require separate decisions. Written completion is not a spoken proficiency grade."
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "id": "fr-p18-gender",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Which original source phrase demonstrates a feminine singular indefinite article?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "Table is feminine singular; une is used in the original example.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "Une table est ici."
+          ],
+          "normalization": "literal",
+          "options": [
+            "Une table est ici.",
+            "C’est un livre.",
+            "Voici des stylos."
+          ]
+        },
+        {
+          "id": "fr-p18-plural",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Complete the original indefinite plural sentence.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-03-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "explanation": "The original source has Voici des stylos: des introduces indefinite plural.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "des"
+          ],
+          "normalization": "french-apostrophe",
+          "before": "Voici ",
+          "after": " stylos."
+        },
+        {
+          "id": "fr-p18-elision",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Read the original definite-article sentences.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "The source uses l’ before the vowel in école.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "L’école est ouverte."
+          ],
+          "normalization": "literal",
+          "options": [
+            "L’école est ouverte.",
+            "Le livre est sur la table.",
+            "Voici des stylos."
+          ],
+          "passage": "L’école est ouverte. / Le livre est sur la table.",
+          "question": "Which source sentence shows definite singular vowel elision?"
+        },
+        {
+          "id": "fr-p18-definite",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Which original sentence uses masculine singular definite le for a known book?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "Le livre identifies the book using masculine singular definite le.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "Le livre est sur la table."
+          ],
+          "normalization": "literal",
+          "options": [
+            "Le livre est sur la table.",
+            "Voici des stylos.",
+            "Une table est ici."
+          ]
+        },
+        {
+          "id": "fr-p18-location",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Read the original object-location sentence.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "The original text places the book on the table.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "sur la table"
+          ],
+          "normalization": "literal",
+          "options": [
+            "sur la table",
+            "dans le sac",
+            "à l’école"
+          ],
+          "passage": "Le livre est sur la table.",
+          "question": "Where is the book in this exact source example?"
+        },
+        {
+          "id": "fr-p18-article",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Write the original indefinite article preceding the masculine noun livre.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-03-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "explanation": "Un appears in the source sentence C’est un livre.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "un"
+          ],
+          "normalization": "french-apostrophe"
+        },
+        {
+          "id": "fr-p18-write",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Describe four objects you introduce with un, une or des; then refer back with le, la, l’ or les. Explain two gender/number choices.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-03-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "fr-a1-03-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "explanation": "Written production is ungraded; naturalness and agreement require review.",
+          "grading": "ungraded",
+          "rubric": [
+            "Use un for a masculine singular count noun.",
+            "Use une for a feminine singular count noun.",
+            "Use des for plural indefinite introductions.",
+            "Select definite le/la/l’/les according to noun and context."
+          ]
+        }
+      ],
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "french",
+        "languageId": "fr",
+        "writingSystems": [
+          "Latn"
+        ],
+        "capabilities": [
+          "latin-orthography",
+          "morphology",
+          "cloze",
+          "ordering",
+          "contextual-reading"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace",
+          "french-apostrophe"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      }
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "ja:cf-a1-01-03:shared-pilot",
+        "languageId": "ja",
+        "contentVersion": "original-next-p18-v1",
+        "title": "Meeting for the first time",
+        "level": "A1",
+        "objective": {
+          "statement": "Open a first meeting, state a name, and express closing goodwill appropriately.",
+          "skillDimension": "spoken_interaction"
+        },
+        "prerequisiteLessonIds": [
+          "ja:cf-a1-01-02:shared-pilot",
+          "ja:cf-a1-01-01-02:cross-transfer"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "ja-cf-a1-01-03-original"
+        ],
+        "sources": [
+          {
+            "id": "ja-cf-a1-01-03-original",
+            "repository": "thiepn/japanese",
+            "revision": "1e3667ebdcb0cd50491c126b948c11f47414decb",
+            "path": "apps/web/src/study/courseFirstA1.ts",
+            "originalEntityId": "cf-a1-01-03",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "ja-p18-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "はじめまして。",
+                "meaning": "How do you do / Nice to meet you (first encounter)."
+              },
+              {
+                "targetText": "ミナです。",
+                "meaning": "I am Mina."
+              },
+              {
+                "targetText": "よろしくお願いします。",
+                "meaning": "I look forward to getting along with you."
+              }
+            ]
+          },
+          {
+            "id": "ja-p18-explain-form",
+            "type": "explain",
+            "heading": "First-contact opening",
+            "explanation": "The original authored lesson uses はじめまして when meeting someone for the first time, not during every familiar encounter. A time-of-day greeting in the earlier lesson has a different function.",
+            "conceptIds": []
+          },
+          {
+            "id": "ja-p18-explain-context",
+            "type": "explain",
+            "heading": "Name and goodwill",
+            "explanation": "ミナです。 identifies the speaker with a polite noun + です pattern. よろしくお願いします。 often follows an introduction and expresses goodwill or anticipated cooperation; it is not a literal translation of every English 'nice to meet you'.",
+            "conceptIds": []
+          },
+          {
+            "id": "ja-p18-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "ja-p18-opening",
+              "ja-p18-name",
+              "ja-p18-sequence"
+            ]
+          },
+          {
+            "id": "ja-p18-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "ja-p18-goodwill",
+              "ja-p18-familiar",
+              "ja-p18-recall",
+              "ja-p18-write"
+            ]
+          },
+          {
+            "id": "ja-p18-reflect",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "First-contact opening, name and goodwill are distinct social functions; this does not certify spoken politeness."
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "id": "ja-p18-opening",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "You meet a new classmate for the first time. Choose the original first-contact opening.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "The source uses はじめまして for a first meeting.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "はじめまして。"
+          ],
+          "normalization": "literal",
+          "options": [
+            "はじめまして。",
+            "おやすみなさい。",
+            "いただきます。"
+          ]
+        },
+        {
+          "id": "ja-p18-name",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Read the three original first-meeting expressions.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "ミナです。 states the speaker's name.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "ミナです。"
+          ],
+          "normalization": "literal",
+          "options": [
+            "ミナです。",
+            "はじめまして。",
+            "よろしくお願いします。"
+          ],
+          "passage": "はじめまして。 ミナです。 よろしくお願いします。",
+          "question": "Which expression gives the speaker's name?"
+        },
+        {
+          "id": "ja-p18-sequence",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Arrange original examples in a plausible first-meeting order.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "ordering",
+          "explanation": "Open, introduce the name, then express goodwill.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "2,1,0"
+          ],
+          "normalization": "literal",
+          "tokens": [
+            "よろしくお願いします。",
+            "ミナです。",
+            "はじめまして。"
+          ]
+        },
+        {
+          "id": "ja-p18-goodwill",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "After a first-meeting opening and stating a name, which original expression gives goodwill?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "The source introduces よろしくお願いします as a common closing expression in a first meeting.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "よろしくお願いします。"
+          ],
+          "normalization": "literal",
+          "options": [
+            "よろしくお願いします。",
+            "ミナです。",
+            "はじめまして。"
+          ]
+        },
+        {
+          "id": "ja-p18-familiar",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Consider the first-meeting function of the original expression はじめまして。",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-03-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "はじめまして is not ordinarily repeated in familiar encounters.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "Meeting a new neighbor for the first time"
+          ],
+          "normalization": "literal",
+          "options": [
+            "Meeting a new neighbor for the first time",
+            "Greeting a close friend again today",
+            "Saying goodbye before sleep"
+          ],
+          "passage": "はじめまして。",
+          "question": "Which situation fits the original first-meeting expression?"
+        },
+        {
+          "id": "ja-p18-recall",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Type the original first-meeting opening in Japanese.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-03-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-03-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "explanation": "The source's original opening is はじめまして。",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "はじめまして。"
+          ],
+          "normalization": "japanese-terminal-punctuation"
+        },
+        {
+          "id": "ja-p18-write",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Write an original first-meeting introduction with your own name and goodwill. Explain why the opening is not used at a fifth meeting.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-03-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "ja-cf-a1-01-03-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "explanation": "Writing remains ungraded and requires naturalness review.",
+          "grading": "ungraded",
+          "rubric": [
+            "Use はじめまして in a genuine first-contact context.",
+            "Introduce your own name with noun + です.",
+            "Use よろしくお願いします as an appropriate expression of goodwill.",
+            "Do not apply the first-contact opening to repeated familiar meetings."
+          ]
+        }
+      ],
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "japanese",
+        "languageId": "ja",
+        "writingSystems": [
+          "Jpan"
+        ],
+        "capabilities": [
+          "kana",
+          "kanji",
+          "furigana",
+          "contextual-reading",
+          "cloze",
+          "ordering"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace",
+          "japanese-terminal-punctuation"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      }
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "zh:shi:shared-pilot",
+        "languageId": "zh",
+        "contentVersion": "original-next-p18-v1",
+        "title": "是: identity and negation",
+        "level": "beginner-original",
+        "objective": {
+          "statement": "Distinguish 是, 不是 and 也是 in the original non-official character demonstration.",
+          "skillDimension": "meaning_recognition"
+        },
+        "prerequisiteLessonIds": [
+          "zh:wo:shared-pilot",
+          "zh:ni-hao-wo:cross-transfer"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "zh-shi-demo"
+        ],
+        "sources": [
+          {
+            "id": "zh-shi-demo",
+            "repository": "thiepn/chinese",
+            "revision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+            "path": "src/demo-lessons.mjs",
+            "originalEntityId": "是",
+            "rights": "review-required",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "zh-p18-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "是",
+                "meaning": "to be",
+                "reading": "shì"
+              },
+              {
+                "targetText": "不是",
+                "meaning": "is not",
+                "reading": "bú shì"
+              },
+              {
+                "targetText": "也是",
+                "meaning": "also is",
+                "reading": "yě shì"
+              },
+              {
+                "targetText": "他是老师。",
+                "meaning": "He is a teacher.",
+                "reading": "Tā shì lǎoshī."
+              }
+            ]
+          },
+          {
+            "id": "zh-p18-explain-form",
+            "type": "explain",
+            "heading": "Linking an identity noun",
+            "explanation": "The original source defines 是 as often linking a subject with an identity noun. Its example 他是老师。 means 'He is a teacher.' This does not imply that every adjective sentence in Mandarin uses 是.",
+            "conceptIds": []
+          },
+          {
+            "id": "zh-p18-explain-context",
+            "type": "explain",
+            "heading": "Negation versus addition",
+            "explanation": "The original source has 不是 ('is not') and 也是 ('also is'). In these forms 不 negates, whereas 也 signals 'also'. Source Pinyin is written lexical evidence, not proof of spoken tone production. This original character demonstration is not official HSK material.",
+            "conceptIds": []
+          },
+          {
+            "id": "zh-p18-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "zh-p18-copula",
+              "zh-p18-teacher",
+              "zh-p18-negative"
+            ]
+          },
+          {
+            "id": "zh-p18-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "zh-p18-also",
+              "zh-p18-link",
+              "zh-p18-pinyin",
+              "zh-p18-write"
+            ]
+          },
+          {
+            "id": "zh-p18-reflect",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "是 can link an identity; 不是 negates and 也是 adds 'also'. This source remains non-official and editorially unapproved."
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "id": "zh-p18-copula",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Which source character is used to link a subject to a noun identity?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-shi-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-shi-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "The original row defines 是 as 'to be' in a noun identity statement.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "是"
+          ],
+          "normalization": "literal",
+          "options": [
+            "是",
+            "不是",
+            "也是"
+          ]
+        },
+        {
+          "id": "zh-p18-teacher",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Read the original teacher-identity example.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-shi-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-shi-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "The original sentence 他是老师。 links a subject and noun identity.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "He is a teacher."
+          ],
+          "normalization": "literal",
+          "options": [
+            "He is a teacher.",
+            "He is not a teacher.",
+            "He is also a student."
+          ],
+          "passage": "他是老师。",
+          "question": "Which meaning matches this exact source sentence?",
+          "reading": "Tā shì lǎoshī."
+        },
+        {
+          "id": "zh-p18-negative",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Which source compound explicitly means 'is not'?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-shi-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-shi-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "不是 negates; 也是 signals 'also'.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "不是"
+          ],
+          "normalization": "literal",
+          "options": [
+            "不是",
+            "也是",
+            "是"
+          ]
+        },
+        {
+          "id": "zh-p18-also",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Which original source compound means 'also is' rather than 'is not'?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-shi-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-shi-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "The original row gives 也是 as 'also is'.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "也是"
+          ],
+          "normalization": "literal",
+          "options": [
+            "也是",
+            "不是",
+            "是"
+          ]
+        },
+        {
+          "id": "zh-p18-link",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Complete the original positive noun-identity sentence.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-shi-demo"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "zh-shi-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "explanation": "The original source text is 他是老师。",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "是"
+          ],
+          "normalization": "pinyin-tone-marked",
+          "before": "他",
+          "after": "老师。"
+        },
+        {
+          "id": "zh-p18-pinyin",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Write the original tone-marked Pinyin for the standalone source character 是.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-shi-demo"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "zh-shi-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "explanation": "The source lexical Pinyin shì has a fourth-tone mark.",
+          "grading": "exact",
+          "acceptedAnswers": [
+            "shì"
+          ],
+          "normalization": "pinyin-tone-marked"
+        },
+        {
+          "id": "zh-p18-write",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Write an original short noun-identity statement modeled on 他是老师。. Explain how 不是 changes a statement to negation, while 也是 adds 'also'. Mark any new vocabulary for review.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-shi-demo"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "zh-shi-demo"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "explanation": "This independent composition is ungraded and requires original-language review.",
+          "grading": "ungraded",
+          "rubric": [
+            "Use 是 to link a person to a noun identity.",
+            "Do not confuse 不是 with 也是.",
+            "Explain that 不是 marks negation and 也是 addition.",
+            "Written Hanzi/Pinyin does not establish spoken tone accuracy."
+          ]
+        }
+      ],
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "mandarin-simplified",
+        "languageId": "zh",
+        "writingSystems": [
+          "Hans"
+        ],
+        "capabilities": [
+          "hanzi",
+          "pinyin",
+          "lexical-tones",
+          "contextual-reading",
+          "cloze",
+          "ordering"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "pinyin-tone-marked"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      }
+    }
+  ]
+}

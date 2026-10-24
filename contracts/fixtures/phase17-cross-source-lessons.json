@@ -1,0 +1,1399 @@
+{
+  "schema": "thiepn.languages.phase02.source-lesson-fixtures",
+  "schemaVersion": 1,
+  "purpose": "internal-contract-testing-only",
+  "status": "phase13-source-pinned-role-daypart-pronoun-transfer-internal",
+  "sourceBoundary": "Phase 13 adds two independently answerable contextual transfers per language from pinned French role/name examples, Japanese time-of-day shop context, and original Mandarin Pinyin plus tea/apple sentences. All authored tasks remain internal, editorialReview pending and redistribution unverified; no new persistent grade or native history authority.",
+  "bundles": [
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "fr:a1-01-02:cross-transfer",
+        "languageId": "fr",
+        "contentVersion": "cross-source-p17-original-v1",
+        "title": "First meeting: name and identity",
+        "level": "A1",
+        "objective": {
+          "statement": "Distinguish greeting, name, role, and departure in an independent first meeting.",
+          "skillDimension": "spoken_interaction"
+        },
+        "prerequisiteLessonIds": [
+          "fr:a1-01:shared-pilot",
+          "fr:a1-02:shared-pilot"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "fr-a1-01-original",
+          "fr-a1-02-original"
+        ],
+        "sources": [
+          {
+            "id": "fr-a1-01-original",
+            "repository": "thiepn/french",
+            "revision": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+            "path": "app/src/core/unified/u6-a1-01-04.ts",
+            "originalEntityId": "a1-01",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          },
+          {
+            "id": "fr-a1-02-original",
+            "repository": "thiepn/french",
+            "revision": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+            "path": "app/src/core/unified/u6-a1-01-04.ts",
+            "originalEntityId": "a1-02",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "fr-p17-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "Bonsoir, monsieur.",
+                "meaning": "Good evening, sir."
+              },
+              {
+                "targetText": "Bonjour ! Je m’appelle Inès.",
+                "meaning": "Hello! My name is Inès."
+              },
+              {
+                "targetText": "Je m’appelle Inès.",
+                "meaning": "My name is Inès."
+              },
+              {
+                "targetText": "Au revoir, à demain.",
+                "meaning": "Goodbye, see you tomorrow."
+              },
+              {
+                "targetText": "Je suis professeur.",
+                "meaning": "I am a teacher."
+              },
+              {
+                "targetText": "Nous sommes à Lyon.",
+                "meaning": "We are in Lyon."
+              }
+            ]
+          },
+          {
+            "id": "fr-p17-teach-contrast",
+            "type": "explain",
+            "heading": "Name versus role",
+            "explanation": "The first source uses Je m’appelle Inès. to introduce a name, Bonsoir, monsieur. to greet in the evening, and Au revoir, à demain. to leave. The second uses Je suis professeur. for a role and Nous sommes à Lyon. for location. These were authored independently; combining them as a model is not an original recorded dialogue.",
+            "conceptIds": []
+          },
+          {
+            "id": "fr-p17-teach-use",
+            "type": "explain",
+            "heading": "Transfer to a first meeting",
+            "explanation": "Select an opening suitable for the time and register; introduce your own name with je m’appelle; optionally describe a role with the correct form of être; close when leaving. Free writing is not linguistically graded.",
+            "conceptIds": []
+          },
+          {
+            "id": "fr-p17-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "fr-p17-opening",
+              "fr-p17-identify",
+              "fr-p17-order"
+            ]
+          },
+          {
+            "id": "fr-p17-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "fr-p17-name",
+              "fr-p17-farewell",
+              "fr-p17-etre",
+              "fr-p17-compose"
+            ]
+          },
+          {
+            "id": "fr-p17-reflect",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "An appropriate greeting, your name, your profession, and a departure each serve different functions. Separate source quotations are not one original dialogue."
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "id": "fr-p17-opening",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "At an evening first meeting, before giving your name or profession, which original source expression opens politely?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original",
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "Bonsoir is an evening greeting, unlike a profession statement or farewell.",
+          "options": [
+            "Bonsoir, monsieur.",
+            "Je suis professeur.",
+            "Au revoir, à demain."
+          ],
+          "acceptedAnswers": [
+            "Bonsoir, monsieur."
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "Bonsoir, monsieur.",
+              "meaning": "Good evening, sir."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "fr-p17-identify",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Compare source examples for name and profession.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original",
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "Je suis professeur. states a profession, whereas je m’appelle introduces a name.",
+          "options": [
+            "Je suis professeur.",
+            "Bonjour ! Je m’appelle Inès.",
+            "Au revoir, à demain."
+          ],
+          "passage": "Je m’appelle Inès. / Je suis professeur.",
+          "question": "Which original statement gives a role rather than a name?",
+          "acceptedAnswers": [
+            "Je suis professeur."
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "Je m’appelle Inès.",
+              "meaning": "My name is Inès."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "fr-p17-order",
+          "languageId": "fr",
+          "purpose": "guided",
+          "instruction": "Arrange original source statements as a possible evening greeting followed by a profession.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original",
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "ordering",
+          "explanation": "Greet first, then describe a role; do not mistake separate source quotations for one transcript.",
+          "tokens": [
+            "Je suis professeur.",
+            "Bonsoir, monsieur."
+          ],
+          "acceptedAnswers": [
+            "1,0"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "Bonsoir, monsieur.",
+              "meaning": "Good evening, sir."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "fr-p17-name",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Read two original introductions, one giving a name and one a profession.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original",
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "Je m’appelle introduces a name, not an occupation.",
+          "options": [
+            "Bonjour ! Je m’appelle Inès.",
+            "Je suis professeur.",
+            "Nous sommes à Lyon."
+          ],
+          "passage": "Bonjour ! Je m’appelle Inès. / Je suis professeur.",
+          "question": "Which of these source statements gives a person's name?",
+          "acceptedAnswers": [
+            "Bonjour ! Je m’appelle Inès."
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "Bonjour ! Je m’appelle Inès.",
+              "meaning": "Hello! My name is Inès."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "fr-p17-farewell",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "After an evening greeting and an identity statement, which original expression is a departure?",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "fr-a1-01-original",
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "Au revoir, à demain. closes an encounter.",
+          "options": [
+            "Au revoir, à demain.",
+            "Bonsoir, monsieur.",
+            "Je suis professeur."
+          ],
+          "acceptedAnswers": [
+            "Au revoir, à demain."
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "Au revoir, à demain.",
+              "meaning": "Goodbye, see you tomorrow."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "fr-p17-etre",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Complete the original role statement after introducing your name.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "fr-a1-01-original",
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "cloze",
+          "explanation": "Je suis professeur. uses être. It is not a name introduction with je m’appelle.",
+          "before": "Je ",
+          "after": " professeur.",
+          "acceptedAnswers": [
+            "suis"
+          ],
+          "normalization": "french-apostrophe",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "Je m’appelle Inès.",
+              "meaning": "My name is Inès."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "fr-p17-compose",
+          "languageId": "fr",
+          "purpose": "independent",
+          "instruction": "Write an original four-part first meeting: evening greeting, your own name, an occupation with être, and farewell. Explain why name and occupation need different verbs.",
+          "primaryTarget": {
+            "languageId": "fr",
+            "kind": "curriculum_unit",
+            "id": "fr-a1-01-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "fr-a1-01-original",
+            "fr-a1-02-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "explanation": "Writing remains ungraded and requires independent linguistic feedback.",
+          "rubric": [
+            "Use an evening greeting such as bonsoir.",
+            "Introduce a name with je m’appelle.",
+            "Use je suis for your occupation.",
+            "Close with a departure expression rather than another greeting."
+          ],
+          "grading": "ungraded",
+          "sourceComparison": {
+            "first": {
+              "targetText": "Je m’appelle Inès.",
+              "meaning": "My name is Inès."
+            },
+            "second": {
+              "targetText": "Je suis professeur.",
+              "meaning": "I am a teacher."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        }
+      ],
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "french",
+        "languageId": "fr",
+        "writingSystems": [
+          "Latn"
+        ],
+        "capabilities": [
+          "latin-orthography",
+          "morphology",
+          "cloze",
+          "ordering",
+          "contextual-reading"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace",
+          "french-apostrophe"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      }
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "ja:cf-a1-01-01-02:cross-transfer",
+        "languageId": "ja",
+        "contentVersion": "cross-source-p17-original-v1",
+        "title": "From greeting to polite help",
+        "level": "A1",
+        "objective": {
+          "statement": "Select a daytime greeting, request attention, thank a helper, and acknowledge a possible reply.",
+          "skillDimension": "spoken_interaction"
+        },
+        "prerequisiteLessonIds": [
+          "ja:cf-a1-01-01:shared-pilot",
+          "ja:cf-a1-01-02:shared-pilot"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "ja-cf-a1-01-01-original",
+          "ja-cf-a1-01-02-original"
+        ],
+        "sources": [
+          {
+            "id": "ja-cf-a1-01-01-original",
+            "repository": "thiepn/japanese",
+            "revision": "1e3667ebdcb0cd50491c126b948c11f47414decb",
+            "path": "apps/web/src/study/courseFirstA1.ts",
+            "originalEntityId": "cf-a1-01-01",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          },
+          {
+            "id": "ja-cf-a1-01-02-original",
+            "repository": "thiepn/japanese",
+            "revision": "1e3667ebdcb0cd50491c126b948c11f47414decb",
+            "path": "apps/web/src/study/courseFirstA1.ts",
+            "originalEntityId": "cf-a1-01-02",
+            "rights": "original-owned",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "ja-p17-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "昼：こんにちは。",
+                "meaning": "Daytime: Hello."
+              },
+              {
+                "targetText": "朝：おはようございます。",
+                "meaning": "Morning: Good morning (polite)."
+              },
+              {
+                "targetText": "夜：こんばんは。",
+                "meaning": "Evening: Good evening."
+              },
+              {
+                "targetText": "すみません。",
+                "meaning": "Excuse me / Sorry."
+              },
+              {
+                "targetText": "ありがとうございます。",
+                "meaning": "Thank you (polite)."
+              },
+              {
+                "targetText": "どういたしまして。",
+                "meaning": "You're welcome."
+              },
+              {
+                "targetText": "はい、どうぞ。",
+                "meaning": "Yes, here you go."
+              }
+            ]
+          },
+          {
+            "id": "ja-p17-teach-contrast",
+            "type": "explain",
+            "heading": "Arrival versus attention",
+            "explanation": "The first lesson distinguishes 昼：こんにちは。 from morning and evening greetings. The next teaches すみません。 to request attention or apologize lightly. A greeting does not replace an attention request.",
+            "conceptIds": []
+          },
+          {
+            "id": "ja-p17-teach-use",
+            "type": "explain",
+            "heading": "After assistance",
+            "explanation": "ありがとうございます。 thanks someone after help; どういたしまして。 is one possible acknowledgment. The examples come from separate sources, not one obligatory scripted exchange.",
+            "conceptIds": []
+          },
+          {
+            "id": "ja-p17-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "ja-p17-attention",
+              "ja-p17-function",
+              "ja-p17-sequence"
+            ]
+          },
+          {
+            "id": "ja-p17-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "ja-p17-thank",
+              "ja-p17-reply",
+              "ja-p17-typed",
+              "ja-p17-compose"
+            ]
+          },
+          {
+            "id": "ja-p17-reflect",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "An arrival greeting, attention request and thanks are different social acts; written exercises cannot prove natural speech."
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "id": "ja-p17-attention",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "After greeting someone at a daytime shop, which source expression can politely get staff attention?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original",
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "すみません attracts attention; こんにちは is a daytime greeting.",
+          "options": [
+            "すみません。",
+            "昼：こんにちは。",
+            "ありがとうございます。"
+          ],
+          "acceptedAnswers": [
+            "すみません。"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "すみません。",
+              "meaning": "Excuse me / Sorry."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "ja-p17-function",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Compare the original daytime greeting and polite attention request.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original",
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "すみません can politely request attention after an arrival greeting.",
+          "options": [
+            "すみません。",
+            "こんにちは。",
+            "こんばんは。"
+          ],
+          "passage": "昼：こんにちは。 / すみません。",
+          "question": "Which expression asks for attention rather than identifying daytime?",
+          "acceptedAnswers": [
+            "すみません。"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "すみません。",
+              "meaning": "Excuse me / Sorry."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "ja-p17-sequence",
+          "languageId": "ja",
+          "purpose": "guided",
+          "instruction": "Order original examples as daytime greeting, attention request and thanks.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original",
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "ordering",
+          "explanation": "Match daypart greeting, request and thanks to their distinct functions.",
+          "tokens": [
+            "ありがとうございます。",
+            "すみません。",
+            "昼：こんにちは。"
+          ],
+          "acceptedAnswers": [
+            "2,1,0"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "ja-p17-thank",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "You greeted someone in the daytime and were helped. Which source expression thanks the helper?",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original",
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "ありがとうございます thanks a helper rather than calling for attention.",
+          "options": [
+            "ありがとうございます。",
+            "すみません。",
+            "昼：こんにちは。"
+          ],
+          "acceptedAnswers": [
+            "ありがとうございます。"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "ja-p17-reply",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Read source greetings, thanks and a possible reply.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original",
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "どういたしまして is one possible response to thanks, not required in all situations.",
+          "options": [
+            "どういたしまして。",
+            "こんにちは。",
+            "すみません。"
+          ],
+          "passage": "昼：こんにちは。 / ありがとうございます。 / どういたしまして。",
+          "question": "Which expression could reply to ありがとうございます。?",
+          "acceptedAnswers": [
+            "どういたしまして。"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "どういたしまして。",
+              "meaning": "You're welcome."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "ja-p17-typed",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Following a daytime greeting and assistance, type the original polite Japanese expression for thanks.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original",
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "explanation": "Thanks follow help; the daytime greeting has a different function.",
+          "acceptedAnswers": [
+            "ありがとうございます。"
+          ],
+          "normalization": "japanese-terminal-punctuation",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "ありがとうございます。",
+              "meaning": "Thank you (polite)."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "ja-p17-compose",
+          "languageId": "ja",
+          "purpose": "independent",
+          "instruction": "Create an original brief Japanese shop interaction: daytime greeting, attention request, thanks and a possible reply. Identify which line is a greeting.",
+          "primaryTarget": {
+            "languageId": "ja",
+            "kind": "curriculum_unit",
+            "id": "ja-cf-a1-01-01-original"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "ja-cf-a1-01-01-original",
+            "ja-cf-a1-01-02-original"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "explanation": "Free production is not automatically graded or evidence of spoken politeness.",
+          "rubric": [
+            "Choose こんにちは for daytime, not こんばんは.",
+            "Use すみません to attract attention.",
+            "Use ありがとうございます after receiving help.",
+            "Treat どういたしまして as a possible acknowledgment, not obligatory."
+          ],
+          "grading": "ungraded",
+          "sourceComparison": {
+            "first": {
+              "targetText": "昼：こんにちは。",
+              "meaning": "Daytime: Hello."
+            },
+            "second": {
+              "targetText": "すみません。",
+              "meaning": "Excuse me / Sorry."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        }
+      ],
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "japanese",
+        "languageId": "ja",
+        "writingSystems": [
+          "Jpan"
+        ],
+        "capabilities": [
+          "kana",
+          "kanji",
+          "furigana",
+          "contextual-reading",
+          "cloze",
+          "ordering"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "trim-whitespace",
+          "japanese-terminal-punctuation"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      }
+    },
+    {
+      "lesson": {
+        "schemaVersion": 1,
+        "id": "zh:ni-hao-wo:cross-transfer",
+        "languageId": "zh",
+        "contentVersion": "cross-source-p17-original-v1",
+        "title": "Greeting and first-person identity",
+        "level": "beginner-original",
+        "objective": {
+          "statement": "Distinguish 你好, 我, 我是学生。 and 好吃 in different communicative situations.",
+          "skillDimension": "meaning_recognition"
+        },
+        "prerequisiteLessonIds": [
+          "zh:ni-hao:shared-pilot",
+          "zh:wo:shared-pilot"
+        ],
+        "publication": "internal-fixture",
+        "sourceIds": [
+          "zh-ni-demo",
+          "zh-hao-demo",
+          "zh-wo-demo"
+        ],
+        "sources": [
+          {
+            "id": "zh-ni-demo",
+            "repository": "thiepn/chinese",
+            "revision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+            "path": "src/demo-lessons.mjs",
+            "originalEntityId": "你",
+            "rights": "review-required",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          },
+          {
+            "id": "zh-hao-demo",
+            "repository": "thiepn/chinese",
+            "revision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+            "path": "src/demo-lessons.mjs",
+            "originalEntityId": "好",
+            "rights": "review-required",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          },
+          {
+            "id": "zh-wo-demo",
+            "repository": "thiepn/chinese",
+            "revision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+            "path": "src/demo-lessons.mjs",
+            "originalEntityId": "我",
+            "rights": "review-required",
+            "redistributionVerified": false,
+            "editorialReview": "pending"
+          }
+        ],
+        "steps": [
+          {
+            "id": "zh-p17-encounter",
+            "type": "encounter",
+            "examples": [
+              {
+                "targetText": "你好",
+                "meaning": "hello"
+              },
+              {
+                "targetText": "你们",
+                "meaning": "you (plural)"
+              },
+              {
+                "targetText": "好吃",
+                "meaning": "tasty; delicious"
+              },
+              {
+                "targetText": "这个苹果很好吃。",
+                "meaning": "This apple is delicious."
+              },
+              {
+                "targetText": "我",
+                "meaning": "I; me"
+              },
+              {
+                "targetText": "我们",
+                "meaning": "we; us"
+              },
+              {
+                "targetText": "我的",
+                "meaning": "my; mine"
+              },
+              {
+                "targetText": "我是学生。",
+                "meaning": "I am a student."
+              }
+            ]
+          },
+          {
+            "id": "zh-p17-teach-contrast",
+            "type": "explain",
+            "heading": "Address another person or yourself",
+            "explanation": "你好 uses 你 to greet someone else, while 我 is first-person singular. 我是学生。 identifies the speaker as a student. The original character entries are distinct records, not one dialogue.",
+            "conceptIds": []
+          },
+          {
+            "id": "zh-p17-teach-use",
+            "type": "explain",
+            "heading": "Greeting, identity, taste",
+            "explanation": "好 can occur in the greeting 你好 or in 好吃 for good-tasting food. 我们 means we/us and 你们 means you plural. The original tone-marked citation Pinyin is a reading reference, not a speaking test. This demo is not an official HSK inventory.",
+            "conceptIds": []
+          },
+          {
+            "id": "zh-p17-guided",
+            "type": "guided",
+            "exerciseIds": [
+              "zh-p17-identity",
+              "zh-p17-greet",
+              "zh-p17-order"
+            ]
+          },
+          {
+            "id": "zh-p17-independent",
+            "type": "independent",
+            "exerciseIds": [
+              "zh-p17-speaker",
+              "zh-p17-taste",
+              "zh-p17-pinyin",
+              "zh-p17-compose"
+            ]
+          },
+          {
+            "id": "zh-p17-reflect",
+            "type": "reflect",
+            "heading": "What to remember",
+            "feedback": "你好 greets another person; 我 refers to the speaker; 我是学生。 describes identity; 好吃 describes food. These do not certify HSK or pronunciation."
+          }
+        ]
+      },
+      "exercises": [
+        {
+          "id": "zh-p17-identity",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Read the original greeting, student identity and tasty apple sentence.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo",
+            "zh-hao-demo",
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "我是学生。 identifies the speaker, whereas 你好 greets and 好吃 describes food.",
+          "options": [
+            "我是学生。",
+            "你好",
+            "这个苹果很好吃。"
+          ],
+          "passage": "你好 / 我是学生。 / 这个苹果很好吃。",
+          "question": "Which source sentence identifies the speaker as a student?",
+          "acceptedAnswers": [
+            "我是学生。"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "你好",
+              "meaning": "hello"
+            },
+            "second": {
+              "targetText": "我是学生。",
+              "meaning": "I am a student."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "zh-p17-greet",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Before a self-introduction, choose the original expression greeting another person.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo",
+            "zh-hao-demo",
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "你好 greets a person, while 我 means I and 好吃 describes food.",
+          "options": [
+            "你好",
+            "我",
+            "好吃"
+          ],
+          "acceptedAnswers": [
+            "你好"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "你好",
+              "meaning": "hello"
+            },
+            "second": {
+              "targetText": "我",
+              "meaning": "I; me"
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "zh-p17-order",
+          "languageId": "zh",
+          "purpose": "guided",
+          "instruction": "Order original expressions as a greeting followed by a first-person statement.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo",
+            "zh-hao-demo",
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": false,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "ordering",
+          "explanation": "A greeting can precede a self-description; these were separate source examples.",
+          "tokens": [
+            "我是学生。",
+            "你好"
+          ],
+          "acceptedAnswers": [
+            "1,0"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "你好",
+              "meaning": "hello"
+            },
+            "second": {
+              "targetText": "我是学生。",
+              "meaning": "I am a student."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "zh-p17-speaker",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "After reading 你好 and 我是学生。, which original character means I/me?",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo",
+            "zh-hao-demo",
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "choice",
+          "explanation": "我 denotes the speaker. 你们 addresses several people; 好吃 describes taste.",
+          "options": [
+            "我",
+            "你们",
+            "好吃"
+          ],
+          "acceptedAnswers": [
+            "我"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "你们",
+              "meaning": "you (plural)"
+            },
+            "second": {
+              "targetText": "我",
+              "meaning": "I; me"
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "zh-p17-taste",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Contrast the original greeting, identity and apple expressions.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "comprehension",
+          "sourceIds": [
+            "zh-ni-demo",
+            "zh-hao-demo",
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recognition",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "reading",
+          "explanation": "The apple sentence describes taste, not identity or a greeting.",
+          "options": [
+            "这个苹果很好吃。",
+            "我是学生。",
+            "你好"
+          ],
+          "passage": "你好 / 我是学生。 / 这个苹果很好吃。",
+          "question": "Which source sentence says an apple tastes good?",
+          "acceptedAnswers": [
+            "这个苹果很好吃。"
+          ],
+          "normalization": "literal",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "这个苹果很好吃。",
+              "meaning": "This apple is delicious."
+            },
+            "second": {
+              "targetText": "我是学生。",
+              "meaning": "I am a student."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "zh-p17-pinyin",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "After comparing 你好 with 我是学生。, write the original tone-marked Pinyin for 我.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "form_recall",
+          "sourceIds": [
+            "zh-ni-demo",
+            "zh-hao-demo",
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "formative-recall",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "typed",
+          "explanation": "The original written Pinyin for 我 is wǒ; connected pronunciation is not evaluated.",
+          "acceptedAnswers": [
+            "wǒ"
+          ],
+          "normalization": "pinyin-tone-marked",
+          "grading": "exact",
+          "sourceComparison": {
+            "first": {
+              "targetText": "你好",
+              "meaning": "hello"
+            },
+            "second": {
+              "targetText": "我",
+              "meaning": "I; me"
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        },
+        {
+          "id": "zh-p17-compose",
+          "languageId": "zh",
+          "purpose": "independent",
+          "instruction": "Compose a short original introduction with 你好 and 我, and a separate taste expression with 好吃. Explain who is addressed and who speaks.",
+          "primaryTarget": {
+            "languageId": "zh",
+            "kind": "curriculum_unit",
+            "id": "zh-ni-demo"
+          },
+          "skillDimension": "writing",
+          "sourceIds": [
+            "zh-ni-demo",
+            "zh-hao-demo",
+            "zh-wo-demo"
+          ],
+          "evidence": {
+            "classification": "ungraded-production",
+            "independent": true,
+            "mayScheduleReview": false,
+            "mayAssertProficiency": false
+          },
+          "kind": "free-production",
+          "explanation": "Hanzi composition is ungraded and cannot certify spoken tones.",
+          "rubric": [
+            "Use 你好 to greet a person.",
+            "Use 我 for the speaker, distinct from plural 你们.",
+            "Use 好吃 for taste, not a greeting.",
+            "Do not claim speech certification from text."
+          ],
+          "grading": "ungraded",
+          "sourceComparison": {
+            "first": {
+              "targetText": "你好",
+              "meaning": "hello"
+            },
+            "second": {
+              "targetText": "我是学生。",
+              "meaning": "I am a student."
+            },
+            "cue": "Compare the function of these distinct original examples before answering."
+          }
+        }
+      ],
+      "plugin": {
+        "schemaVersion": 1,
+        "id": "mandarin-simplified",
+        "languageId": "zh",
+        "writingSystems": [
+          "Hans"
+        ],
+        "capabilities": [
+          "hanzi",
+          "pinyin",
+          "lexical-tones",
+          "contextual-reading",
+          "cloze",
+          "ordering"
+        ],
+        "answerNormalizations": [
+          "literal",
+          "unicode-nfc",
+          "pinyin-tone-marked"
+        ],
+        "recordedAudio": "none",
+        "speechSynthesis": "device-optional",
+        "nativeAssessmentAuthority": false
+      }
+    }
+  ]
+}
