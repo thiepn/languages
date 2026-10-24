@@ -1,5 +1,5 @@
 import {test,expect} from "@playwright/test";
-import {COURSE_BUNDLES} from "../src/catalog";
+
 import {APPLICATION_PATHS} from "../src/application-paths";
 import {LESSON_FOLLOW_UPS,APPLICATION_FOLLOW_UPS} from "../src/source-followups";
 
@@ -8,11 +8,10 @@ for(const followUp of LESSON_FOLLOW_UPS){
   await page.goto("/");
   if(followUp.languageId!=="fr")await page.getByRole("combobox",{name:"Study language"}).selectOption(followUp.languageId);
   await page.getByRole("button",{name:"Course",exact:true}).click();
-  const lesson=COURSE_BUNDLES[followUp.languageId].find(b=>b.lesson.id===followUp.ownerId)!;
-  const writing=lesson.exercises.find(e=>e.kind==="free-production")!;
-  await page.getByRole("button",{name:"Open "+lesson.lesson.title}).click();
+  const sequenceIndex=LESSON_FOLLOW_UPS.filter(item=>item.languageId===followUp.languageId).findIndex(item=>item.ownerId===followUp.ownerId);
+  await page.locator(".course-sequence button").nth(sequenceIndex).click();
   await page.getByRole("button",{name:"← Course"}).click();
-  await page.locator(".source-practice button").filter({hasText:"Practice: "+writing.instruction}).first().click();
+  await page.locator(".source-practice button").filter({hasText:"Ungraded writing"}).first().click();
   const first="Original attempt for "+followUp.languageId;
   const next="Rewritten response in the changed situation for "+followUp.languageId;
   await page.getByRole("textbox",{name:"Your response"}).fill(first);
@@ -59,8 +58,7 @@ test("320px correction remains readable and volatile under reload",async({page})
  await page.setViewportSize({width:320,height:568});
  await page.goto("/");
  await page.getByRole("button",{name:"Course",exact:true}).click();
- const lesson=COURSE_BUNDLES.fr[0]!;
- await page.locator(".source-practice button").filter({hasText:"Practice: "+lesson.exercises.find(e=>e.kind==="free-production")!.instruction}).first().click();
+ await page.locator(".source-practice button").filter({hasText:"Ungraded writing"}).first().click();
  await page.getByRole("textbox",{name:"Your response"}).fill("Initial draft");
  await page.getByRole("button",{name:"Review writing"}).click();
  await page.getByRole("button",{name:"Explore source correction"}).click();
