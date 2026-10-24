@@ -3,6 +3,7 @@ import {validateLessonBundleV1} from "../../../packages/content-schema/src/lesso
 import {admitInternalPilot} from "./source-coverage.ts";
 import ownership from "../../../contracts/phase01-source-ownership.json" with {type:"json"};
 import evidence from "../../../contracts/phase16-source-evidence.json" with {type:"json"};
+import chineseReadings from "../../../contracts/phase25-chinese-readings.json" with {type:"json"};
 
 export interface PinnedSourceQuote {
   readonly lessonId:string;
@@ -19,6 +20,11 @@ export interface FrenchExpansionV1 {
   };
   readonly situationalChoice:{readonly question:string;readonly correctQuote:string};
   readonly dialogueBrief:string;
+}
+export interface ChineseExpansionV1 extends FrenchExpansionV1 {
+  /** Original source-owned written reading, not TTS, speaking score, or HSK status. */
+  readonly tone:{readonly question:string;readonly quote:string;readonly reading:string;readonly sourceId:string};
+  readonly toneCue:string;
 }
 export interface SourceAuthoredIntake {
   readonly id:string;
@@ -38,6 +44,7 @@ export interface SourceAuthoredIntake {
   readonly frenchExpansion?:FrenchExpansionV1;
   /** Same evidence-checked exercise forms, without a separate Japanese player or grader. */
   readonly japaneseExpansion?:FrenchExpansionV1;
+  readonly chineseExpansion?:ChineseExpansionV1;
 }
 const ref=(lessonId:string,sourceId:string,quote:string):PinnedSourceQuote=>({lessonId,sourceId,quote});
 /** New authorial situations and tasks reference *existing* verified original encounters, not newly invented source text. */
@@ -153,6 +160,15 @@ export function compilePinnedSourceIntake(
        !sourceQuotes[entry.sourceId]?.includes(entry.quote)){
     fail("SOURCE_QUOTE_RIGHTS_OR_REVISION_DRIFT");failed=true;break;
    }
+   if(spec.chineseExpansion){
+    const verified=(chineseReadings.readings as Record<string,Record<string,string>>)[entry.sourceId]?.[entry.quote];
+    if(!verified||example.reading!==verified||
+       source.revision!==chineseReadings.sourceRevision||
+       source.repository!==chineseReadings.sourceRepository||
+       source.path!==chineseReadings.sourcePath){
+     fail("UNVERIFIED_CHINESE_SOURCE_READING");failed=true;break;
+    }
+   }
    const duplicate=provenance.find(s=>s.id===source.id);
    if(duplicate&&!sameSource(duplicate,source)){fail("CONFLICTING_SOURCE_RECORD");failed=true;break;}
    if(!duplicate)provenance.push({...source});
@@ -162,36 +178,50 @@ export function compilePinnedSourceIntake(
   if(failed)continue;
   const originals=Object.values(exerciseRefs);
   const sources=Array.from(new Set(originals));
-  if(new Set(examples.map(x=>x.targetText)).size!==3||sources.length<(spec.frenchExpansion||spec.japaneseExpansion?1:2)){
+  if(new Set(examples.map(x=>x.targetText)).size!==3||sources.length<(spec.frenchExpansion||spec.japaneseExpansion||spec.chineseExpansion?1:2)){
    fail("NO_DISTINCT_SOURCE_CONTEXTS");continue;
   }
   const french=spec.frenchExpansion;
   const japanese=spec.japaneseExpansion;
-  const expansion=french??japanese;
+  const chinese=spec.chineseExpansion;
+  const expansion=french??japanese??chinese;
   if(expansion){
    const cloze=expansion.cloze;
    const situ=expansion.situationalChoice;
    if((french&&spec.languageId!=="fr")||(japanese&&spec.languageId!=="ja")||
-      (french!==undefined&&japanese!==undefined)||
+      (chinese&&spec.languageId!=="zh")||
+      Number(french!==undefined)+Number(japanese!==undefined)+Number(chinese!==undefined)!==1||
       [expansion.grammarHeading,expansion.grammarExplanation,expansion.contrastCue,expansion.dialogueBrief,
        cloze.instruction,situ.question].some(t=>typeof t!=="string"||t.trim().length<20)||
-      !cloze.before?.trim()||!cloze.after?.trim()||!cloze.answer?.trim()||
+      (!cloze.before?.trim()&&!cloze.after?.trim())||(!chinese&&(!cloze.before?.trim()||!cloze.after?.trim()))||!cloze.answer?.trim()||
       cloze.before+cloze.answer+cloze.after!==cloze.quote||
       !examples.some(e=>e.targetText===cloze.quote)||
       exerciseRefs[cloze.quote]!==cloze.sourceId||
       !examples.some(e=>e.targetText===situ.correctQuote)){
-    fail(japanese?"INVALID_JAPANESE_SOURCE_EXERCISES":"INVALID_FRENCH_SOURCE_EXERCISES");continue;
+    fail(chinese?"INVALID_CHINESE_SOURCE_EXERCISES":japanese?"INVALID_JAPANESE_SOURCE_EXERCISES":"INVALID_FRENCH_SOURCE_EXERCISES");continue;
+   }
+  }
+  if(chinese){
+   const tone=chinese.tone;
+   const attested=examples.find(e=>e.targetText===tone.quote);
+   if(!chinese.toneCue?.trim()||chinese.toneCue.length<24||
+      !tone.question?.trim()||tone.question.length<24||
+      !tone.reading?.trim()||!/[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]/iu.test(tone.reading)||
+      !attested?.reading||attested.reading!==tone.reading||
+      exerciseRefs[tone.quote]!==tone.sourceId||
+      !examples.every(e=>e.reading?.trim())){
+    fail("INVALID_CHINESE_TONE_SOURCE");continue;
    }
   }
   const original=bundles.find(b=>b.lesson.id===spec.encounters[0].lessonId)!;
   if(original.plugin.languageId!==spec.languageId){fail("PLUGIN_LANGUAGE_DRIFT");continue;}
   const suffix=["guided-choice","independent-reading","independent-writing",
-    ...(expansion?["guided-cloze","independent-situation"]:[])] as const;
+    ...(expansion?["guided-cloze","independent-situation"]:[]),...(chinese?["independent-tone"]:[])] as const;
   const guidedId=spec.id+":guided-choice";
   const readingId=spec.id+":independent-reading";
   const writingId=spec.id+":independent-writing";
   if(suffix.some(part=>usedExerciseIds.has(spec.id+":"+part))) {fail("EXERCISE_ID_COLLISION");continue;}
-  const eBase=(id:string,purpose:"guided"|"independent",instruction:string,sourceIds:string[],classification:"formative-recognition"|"ungraded-production",skillDimension:"comprehension"|"writing")=>({
+  const eBase=(id:string,purpose:"guided"|"independent",instruction:string,sourceIds:string[],classification:"formative-recognition"|"formative-recall"|"ungraded-production",skillDimension:"comprehension"|"writing")=>({
    id,languageId:spec.languageId,purpose,instruction,
    primaryTarget:{languageId:spec.languageId,kind:"curriculum_unit" as const,id:sourceIds[0]!},
    skillDimension,sourceIds,evidence:{classification,independent:purpose==="independent",
@@ -204,6 +234,7 @@ export function compilePinnedSourceIntake(
    ...(expansion?{sourceComparison:{first:examples[0]!,second:examples[1]!,cue:expansion.contrastCue}}:{})};
   const reading:ExerciseV1={...eBase(readingId,"independent",spec.independentQuestion,[exerciseRefs[spec.independentAnswer]!],"formative-recognition","comprehension"),
    kind:"reading",passage:expansion?"Original source excerpts:\n"+allQuotes.join("\n"):allQuotes.join("\n"),question:spec.independentQuestion,options:allQuotes,
+   ...(chinese?{reading:examples.map(e=>e.reading!).join(" · ")}:{}),
    acceptedAnswers:[spec.independentAnswer],normalization:"literal",grading:"exact",
    explanation:"Select only the original expression matching the requested communicative situation."};
   const writing:ExerciseV1={...eBase(writingId,"independent",expansion?spec.writingInstruction+" "+expansion.dialogueBrief:spec.writingInstruction,sources,"ungraded-production","writing"),
@@ -213,7 +244,7 @@ export function compilePinnedSourceIntake(
     ...eBase(spec.id+":guided-cloze","guided",expansion.cloze.instruction,[expansion.cloze.sourceId],
       "formative-recognition","comprehension"),
     kind:"cloze",before:expansion.cloze.before,after:expansion.cloze.after,
-    acceptedAnswers:[expansion.cloze.answer],normalization:japanese?"japanese-terminal-punctuation":"french-apostrophe",
+    acceptedAnswers:[expansion.cloze.answer],normalization:japanese?"japanese-terminal-punctuation":chinese?"unicode-nfc":"french-apostrophe",
     grading:"exact",
     explanation:"Restore the attested original expression in this context.",
     sourceAid:{targetText:expansion.cloze.quote,
@@ -227,8 +258,20 @@ export function compilePinnedSourceIntake(
     normalization:"literal",grading:"exact",
     explanation:"Choose the attested original expression appropriate to the changed context."
   }]:[];
+  const extraTone:ExerciseV1[]=chinese?[{
+    ...eBase(spec.id+":independent-tone","independent",chinese.tone.question,
+       [chinese.tone.sourceId],"formative-recall","writing"),
+    kind:"typed",normalization:"pinyin-tone-marked",grading:"exact",
+    acceptedAnswers:[chinese.tone.reading],
+    explanation:"Compare your written Pinyin with the unchanged tone-marked reading from the original source. This is not a spoken evaluation.",
+    sourceAid:{
+      targetText:chinese.tone.quote,
+      meaning:examples.find(e=>e.targetText===chinese.tone.quote)!.meaning,
+      cue:chinese.toneCue
+    }
+  }]:[];
   const candidate:LessonBundleV1={
-   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
+   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":chinese?"phase25-chinese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
     title:spec.title,objective:{statement:spec.objective,skillDimension:"comprehension"},
     prerequisiteLessonIds:[...new Set(spec.encounters.map(x=>x.lessonId))],publication:"internal-fixture",
     sourceIds:sources,sources:provenance,steps:[
@@ -239,10 +282,10 @@ export function compilePinnedSourceIntake(
       ...(expansion?[{id:spec.id+":grammar",type:"explain" as const,heading:expansion.grammarHeading,
         explanation:expansion.grammarExplanation,conceptIds:[]}]:[]),
      {id:spec.id+":guided",type:"guided",exerciseIds:[guidedId,...extraGuided.map(e=>e.id)]},
-     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...extraIndependent.map(e=>e.id),writingId]},
+     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...extraIndependent.map(e=>e.id),...extraTone.map(e=>e.id),writingId]},
      {id:spec.id+":reflection",type:"reflect",feedback:spec.reflection}
     ]},
-   plugin:original.plugin,exercises:[guided,...extraGuided,reading,...extraIndependent,writing]
+   plugin:original.plugin,exercises:[guided,...extraGuided,reading,...extraIndependent,...extraTone,writing]
   };
   const validation=validateLessonBundleV1(candidate);
   if(validation.length){fail("LESSON_SCHEMA_INVALID:"+validation[0]?.code);continue;}

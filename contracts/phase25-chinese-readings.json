@@ -1,0 +1,30 @@
+{
+  "purpose": "Internal original-source reading evidence only; not official HSK, publication, redistribution, audio or proficiency approval",
+  "sourceRepository": "thiepn/chinese",
+  "sourcePath": "src/demo-lessons.mjs",
+  "sourceRevision": "9688e7354142b7127fd5f6eb69b03b595a437008",
+  "readings": {
+    "zh-ni-demo": {
+      "你好": "nǐ hǎo",
+      "你们": "nǐmen",
+      "你喜欢喝茶吗？": "Nǐ xǐhuan hē chá ma?"
+    },
+    "zh-hao-demo": {
+      "你好": "nǐ hǎo",
+      "好吃": "hǎochī",
+      "这个苹果很好吃。": "Zhège píngguǒ hěn hǎochī."
+    },
+    "zh-wo-demo": {
+      "我": "wǒ",
+      "我们": "wǒmen",
+      "我的": "wǒ de",
+      "我是学生。": "Wǒ shì xuésheng."
+    },
+    "zh-shi-demo": {
+      "是": "shì",
+      "不是": "bú shì",
+      "也是": "yě shì",
+      "他是老师。": "Tā shì lǎoshī."
+    }
+  }
+}
