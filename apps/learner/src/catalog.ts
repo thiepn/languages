@@ -3,7 +3,8 @@ import nextRaw from "../../../contracts/fixtures/phase15-source-lessons.json";
 import bridgeRaw from "../../../contracts/fixtures/phase17-cross-source-lessons.json";
 import continuationRaw from "../../../contracts/fixtures/phase18-next-source-lessons.json";
 import {admitInternalPilot,sourceCoverage,type SourceCoverage} from "./source-coverage";
-import {compilePinnedSourceIntake} from "./source-intake";
+import {compilePinnedSourceIntake,PHASE22_AUTHORING} from "./source-intake";
+import {PHASE23_FRENCH_AUTHORING} from "./phase23-french-authoring";
 import {
   validateLessonBundleV1,
   type LessonBundleV1
@@ -67,6 +68,6 @@ export const SOURCE_COVERAGE_BY_LESSON:Readonly<Record<string,readonly SourceCov
   Object.freeze(Object.fromEntries(bundles.map(bundle=>[bundle.lesson.id,sourceCoverage(bundle)])));
 
 /** Explicitly separate, unpublished authoring candidates; excluded from source-app history and saved checkpoints. */
-const intake=compilePinnedSourceIntake(bundles);
-if(intake.issues.length||intake.candidates.length!==3)throw new Error("Phase 22 source intake requires three verified original candidates");
+const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING]);
+if(intake.issues.length||intake.candidates.length!==9)throw new Error("Internal source intake requires nine verified candidate lessons");
 export const INTAKE_CANDIDATES:readonly LessonBundleV1[]=Object.freeze(intake.candidates);

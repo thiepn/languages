@@ -210,6 +210,7 @@ export function App(){
     pathId:string;exerciseId:string;firstDraft:string;checked:readonly boolean[];revised:boolean;
   }|null>(null);
   const [sourceRepair,setSourceRepair]=useState<{key:string;firstDraft:string;focusIndex:number|null;revised:boolean}|null>(null);
+  const [suspendedCourse,setSuspendedCourse]=useState<{bundle:LessonBundleV1;index:number}|null>(null);
   const titleRef=useRef<HTMLHeadingElement>(null);
   const activityHeadingRef=useRef<HTMLHeadingElement>(null);
   const bundle=player.bundle;
@@ -265,14 +266,29 @@ export function App(){
     setActiveApplication(null);
     setWritingReview(null);
     setSourceRepair(null);
+    setSuspendedCourse(null);
     setLessonOpen(false);
     setDestination("course");
   }
   function navigate(id:Destination){
+    if(suspendedCourse&&!confirmWritingDiscard())return;
+    if(suspendedCourse){
+      dispatch({type:"load",bundle:suspendedCourse.bundle,restoredIndex:suspendedCourse.index});
+      setSuspendedCourse(null);
+    }
     setActiveApplication(null);
     setWritingReview(null);
     setLessonOpen(false);
     setDestination(id);
+  }
+  function returnToCourse(){
+    if(suspendedCourse&&!confirmWritingDiscard())return;
+    if(suspendedCourse){
+      dispatch({type:"load",bundle:suspendedCourse.bundle,restoredIndex:suspendedCourse.index});
+      setSuspendedCourse(null);
+    }
+    setLessonOpen(false);
+    setDestination("course");
   }
   function startLesson(){
     setDestination("course");
@@ -293,6 +309,7 @@ export function App(){
     setWritingReview(null);
     setSourceRepair(null);
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
+    setSuspendedCourse(null);
     startLesson();
   }
   function startApplication(path:ApplicationPath,stepIndex=0){
@@ -304,6 +321,7 @@ export function App(){
     setWritingReview(null);
     setSourceRepair(null);
     dispatch({type:"load",bundle:found.bundle,restoredIndex:found.frameIndex});
+    setSuspendedCourse(null);
     startLesson();
   }
   function openIntakeDraft(candidate:LessonBundleV1){
@@ -311,6 +329,8 @@ export function App(){
     setActiveApplication(null);
     setWritingReview(null);
     setSourceRepair(null);
+    const current=courseSequence.find(item=>item.lesson.id===bundle.lesson.id)??courseSequence[0]!;
+    setSuspendedCourse({bundle:current,index:current.lesson.id===bundle.lesson.id?player.index:positions[checkpointId(current)]??0});
     dispatch({type:"load",bundle:candidate,restoredIndex:0});
     setDestination("course");
     setLessonOpen(true);
@@ -360,6 +380,7 @@ export function App(){
     setSourceRepair(null);
     setPositions({});
     dispatch({type:"load",bundle:DEMO_BUNDLES.fr,restoredIndex:0});
+    setSuspendedCourse(null);
     setLessonOpen(false);
     try{window.sessionStorage.removeItem(DEMO_LANGUAGE_KEY);window.sessionStorage.removeItem(DEMO_CHECKPOINT_KEY);}catch{/* No storage access. */}
   }
@@ -385,7 +406,7 @@ export function App(){
       <main className={"content "+(lessonOpen?"in-lesson":"")} id="main-content">
         {lessonOpen?<>
           <div className="lesson-bar">
-            <button className="text-button" type="button" onClick={()=>setLessonOpen(false)}>← Course</button>
+            <button className="text-button" type="button" onClick={returnToCourse}>← Course</button>
             <span>{languageLabel(selected)} · Internal fixture</span>
           </div>
           <div className="lesson-layout">
@@ -403,7 +424,7 @@ export function App(){
               <div className="completion-actions">
                 {nextLesson&&<button type="button" className="primary-action" onClick={()=>openCourseLesson(nextLesson)}>Next lesson: {nextLesson.lesson.title}</button>}
                 <button type="button" className={nextLesson?"secondary-action":"primary-action"} onClick={restart}>Repeat lesson</button>
-                <button type="button" className="secondary-action" onClick={()=>setLessonOpen(false)}>Back to Course</button>
+                <button type="button" className="secondary-action" onClick={returnToCourse}>Back to Course</button>
               </div>
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult} headingRef={activityHeadingRef}

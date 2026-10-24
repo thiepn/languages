@@ -16,7 +16,7 @@ for(const lang of [
   await page.getByRole("button",{name:"Continue"}).click();
   await page.getByRole("radio",{name:lang.other,exact:true}).check();
   await page.getByRole("button",{name:"Check answer"}).click();
-  await expect(page.getByText("Not quite",{exact:false}).or(page.locator(".feedback.incorrect"))).toBeVisible();
+  await expect(page.locator(".feedback.incorrect")).toBeVisible();
   await page.getByRole("button",{name:"Try again"}).click();
   await page.getByRole("radio",{name:lang.guided,exact:true}).check();
   await page.getByRole("button",{name:"Check answer"}).click();
