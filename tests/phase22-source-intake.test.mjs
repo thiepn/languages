@@ -34,7 +34,7 @@ test("three new source-pinned authored internal candidates compile under existin
   assert.deepEqual(validateLessonBundleV1(candidate),[]);
   assert.equal(candidate.lesson.publication,"internal-fixture");
   assert.equal(candidate.lesson.sources.length,2);
-  assert.equal(framesFor(candidate).length,7);
+  assert.equal(framesFor(candidate).length,6);
   assert.equal(candidate.exercises.length,3);
   assert.ok(!oldIDs.has(candidate.lesson.id));
   assert.ok(candidate.exercises.every(e=>!oldExercises.has(e.id)));

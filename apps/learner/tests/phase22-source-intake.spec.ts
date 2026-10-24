@@ -14,11 +14,11 @@ for(const lang of [
   await page.getByRole("button",{name:"Continue"}).click();
   await expect(page.getByRole("heading",{name:"Use the source in context"})).toBeVisible();
   await page.getByRole("button",{name:"Continue"}).click();
-  await page.getByRole("button",{name:lang.other,exact:true}).click();
+  await page.getByRole("radio",{name:lang.other,exact:true}).check();
   await page.getByRole("button",{name:"Check answer"}).click();
   await expect(page.getByText("Not quite",{exact:false}).or(page.locator(".feedback.incorrect"))).toBeVisible();
   await page.getByRole("button",{name:"Try again"}).click();
-  await page.getByRole("button",{name:lang.guided,exact:true}).click();
+  await page.getByRole("radio",{name:lang.guided,exact:true}).check();
   await page.getByRole("button",{name:"Check answer"}).click();
   await page.getByRole("button",{name:"Continue"}).click();
   await expect(page.getByRole("heading",{name:/Which original|Which source/})).toBeVisible();
@@ -34,10 +34,10 @@ test("source-authoring preview writing remains ungraded and unsaved on reload at
  await page.getByRole("button",{name:"Preview editorial draft: Meeting someone: name or role?"}).click();
  await page.getByRole("button",{name:"Continue"}).click();
  await page.getByRole("button",{name:"Continue"}).click();
- await page.getByRole("button",{name:"Je m’appelle Inès.",exact:true}).click();
+ await page.getByRole("radio",{name:"Je m’appelle Inès.",exact:true}).check();
  await page.getByRole("button",{name:"Check answer"}).click();
  await page.getByRole("button",{name:"Continue"}).click();
- await page.getByRole("button",{name:"Je suis professeur.",exact:true}).click();
+ await page.getByRole("radio",{name:"Je suis professeur.",exact:true}).check();
  await page.getByRole("button",{name:"Check answer"}).click();
  await page.getByRole("button",{name:"Continue"}).click();
  const written=page.getByRole("textbox",{name:"Your response"});
