@@ -35,6 +35,8 @@ export interface SourceAuthoredIntake {
   readonly independentQuestion:string;
   readonly independentAnswer:string;
   readonly frenchExpansion?:FrenchExpansionV1;
+  /** Same evidence-checked exercise forms, without a separate Japanese player or grader. */
+  readonly japaneseExpansion?:FrenchExpansionV1;
 }
 const ref=(lessonId:string,sourceId:string,quote:string):PinnedSourceQuote=>({lessonId,sourceId,quote});
 /** New authorial situations and tasks reference *existing* verified original encounters, not newly invented source text. */
@@ -151,28 +153,31 @@ export function compilePinnedSourceIntake(
   if(failed)continue;
   const originals=Object.values(exerciseRefs);
   const sources=Array.from(new Set(originals));
-  if(new Set(examples.map(x=>x.targetText)).size!==3||sources.length<(spec.frenchExpansion?1:2)){
+  if(new Set(examples.map(x=>x.targetText)).size!==3||sources.length<(spec.frenchExpansion||spec.japaneseExpansion?1:2)){
    fail("NO_DISTINCT_SOURCE_CONTEXTS");continue;
   }
   const french=spec.frenchExpansion;
-  if(french){
-   const cloze=french.cloze;
-   const situ=french.situationalChoice;
-   if(spec.languageId!=="fr"||
-      [french.grammarHeading,french.grammarExplanation,french.contrastCue,french.dialogueBrief,
+  const japanese=spec.japaneseExpansion;
+  const expansion=french??japanese;
+  if(expansion){
+   const cloze=expansion.cloze;
+   const situ=expansion.situationalChoice;
+   if((french&&spec.languageId!=="fr")||(japanese&&spec.languageId!=="ja")||
+      (french!==undefined&&japanese!==undefined)||
+      [expansion.grammarHeading,expansion.grammarExplanation,expansion.contrastCue,expansion.dialogueBrief,
        cloze.instruction,situ.question].some(t=>typeof t!=="string"||t.trim().length<20)||
       !cloze.before?.trim()||!cloze.after?.trim()||!cloze.answer?.trim()||
       cloze.before+cloze.answer+cloze.after!==cloze.quote||
       !examples.some(e=>e.targetText===cloze.quote)||
       exerciseRefs[cloze.quote]!==cloze.sourceId||
       !examples.some(e=>e.targetText===situ.correctQuote)){
-    fail("INVALID_FRENCH_SOURCE_EXERCISES");continue;
+    fail(japanese?"INVALID_JAPANESE_SOURCE_EXERCISES":"INVALID_FRENCH_SOURCE_EXERCISES");continue;
    }
   }
   const original=bundles.find(b=>b.lesson.id===spec.encounters[0].lessonId)!;
   if(original.plugin.languageId!==spec.languageId){fail("PLUGIN_LANGUAGE_DRIFT");continue;}
   const suffix=["guided-choice","independent-reading","independent-writing",
-    ...(french?["guided-cloze","independent-situation"]:[])] as const;
+    ...(expansion?["guided-cloze","independent-situation"]:[])] as const;
   const guidedId=spec.id+":guided-choice";
   const readingId=spec.id+":independent-reading";
   const writingId=spec.id+":independent-writing";
@@ -187,43 +192,43 @@ export function compilePinnedSourceIntake(
   const guided:ExerciseV1={...eBase(guidedId,"guided",spec.guidedQuestion,[exerciseRefs[spec.guidedAnswer]!],"formative-recognition","comprehension"),
    kind:"choice",options:allQuotes,acceptedAnswers:[spec.guidedAnswer],normalization:"literal",grading:"exact",
    explanation:"Compare the distinct meanings and purposes of the original encountered expressions.",
-   ...(french?{sourceComparison:{first:examples[0]!,second:examples[1]!,cue:french.contrastCue}}:{})};
+   ...(expansion?{sourceComparison:{first:examples[0]!,second:examples[1]!,cue:expansion.contrastCue}}:{})};
   const reading:ExerciseV1={...eBase(readingId,"independent",spec.independentQuestion,[exerciseRefs[spec.independentAnswer]!],"formative-recognition","comprehension"),
-   kind:"reading",passage:french?"Original source excerpts:\n"+allQuotes.join("\n"):allQuotes.join("\n"),question:spec.independentQuestion,options:allQuotes,
+   kind:"reading",passage:expansion?"Original source excerpts:\n"+allQuotes.join("\n"):allQuotes.join("\n"),question:spec.independentQuestion,options:allQuotes,
    acceptedAnswers:[spec.independentAnswer],normalization:"literal",grading:"exact",
    explanation:"Select only the original expression matching the requested communicative situation."};
-  const writing:ExerciseV1={...eBase(writingId,"independent",french?spec.writingInstruction+" "+french.dialogueBrief:spec.writingInstruction,sources,"ungraded-production","writing"),
+  const writing:ExerciseV1={...eBase(writingId,"independent",expansion?spec.writingInstruction+" "+expansion.dialogueBrief:spec.writingInstruction,sources,"ungraded-production","writing"),
    kind:"free-production",grading:"ungraded",explanation:"No automatic grammar, speaking or proficiency grade is assigned.",
    rubric:[...spec.writingChecks]};
-  const extraGuided:ExerciseV1[]=french?[{
-    ...eBase(spec.id+":guided-cloze","guided",french.cloze.instruction,[french.cloze.sourceId],
+  const extraGuided:ExerciseV1[]=expansion?[{
+    ...eBase(spec.id+":guided-cloze","guided",expansion.cloze.instruction,[expansion.cloze.sourceId],
       "formative-recognition","comprehension"),
-    kind:"cloze",before:french.cloze.before,after:french.cloze.after,
-    acceptedAnswers:[french.cloze.answer],normalization:"french-apostrophe",
+    kind:"cloze",before:expansion.cloze.before,after:expansion.cloze.after,
+    acceptedAnswers:[expansion.cloze.answer],normalization:japanese?"japanese-terminal-punctuation":"french-apostrophe",
     grading:"exact",
     explanation:"Restore the attested original expression in this context.",
-    sourceAid:{targetText:french.cloze.quote,
-      meaning:examples.find(e=>e.targetText===french.cloze.quote)!.meaning,
-      cue:french.contrastCue}
+    sourceAid:{targetText:expansion.cloze.quote,
+      meaning:examples.find(e=>e.targetText===expansion.cloze.quote)!.meaning,
+      cue:expansion.contrastCue}
   }]:[];
-  const extraIndependent:ExerciseV1[]=french?[{
-    ...eBase(spec.id+":independent-situation","independent",french.situationalChoice.question,
-      [exerciseRefs[french.situationalChoice.correctQuote]!],"formative-recognition","comprehension"),
-    kind:"choice",options:allQuotes,acceptedAnswers:[french.situationalChoice.correctQuote],
+  const extraIndependent:ExerciseV1[]=expansion?[{
+    ...eBase(spec.id+":independent-situation","independent",expansion.situationalChoice.question,
+      [exerciseRefs[expansion.situationalChoice.correctQuote]!],"formative-recognition","comprehension"),
+    kind:"choice",options:allQuotes,acceptedAnswers:[expansion.situationalChoice.correctQuote],
     normalization:"literal",grading:"exact",
     explanation:"Choose the attested original expression appropriate to the changed context."
   }]:[];
   const candidate:LessonBundleV1={
-   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":"phase22-source-authored-internal-v1",
+   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
     title:spec.title,objective:{statement:spec.objective,skillDimension:"comprehension"},
     prerequisiteLessonIds:[...new Set(spec.encounters.map(x=>x.lessonId))],publication:"internal-fixture",
     sourceIds:sources,sources:provenance,steps:[
      {id:spec.id+":encounter",type:"encounter",examples},
      {id:spec.id+":explanation",type:"explain",heading:"Use the source in context",explanation:spec.explanation,conceptIds:[]},
-      ...(french?[{id:spec.id+":situation",type:"explain" as const,heading:"Practice the new situation",
+      ...(expansion?[{id:spec.id+":situation",type:"explain" as const,heading:"Practice the new situation",
         explanation:spec.transferSituation,conceptIds:[]}]:[]),
-      ...(french?[{id:spec.id+":grammar",type:"explain" as const,heading:french.grammarHeading,
-        explanation:french.grammarExplanation,conceptIds:[]}]:[]),
+      ...(expansion?[{id:spec.id+":grammar",type:"explain" as const,heading:expansion.grammarHeading,
+        explanation:expansion.grammarExplanation,conceptIds:[]}]:[]),
      {id:spec.id+":guided",type:"guided",exerciseIds:[guidedId,...extraGuided.map(e=>e.id)]},
      {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...extraIndependent.map(e=>e.id),writingId]},
      {id:spec.id+":reflection",type:"reflect",feedback:spec.reflection}
