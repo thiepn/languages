@@ -261,3 +261,19 @@ progress::-moz-progress-bar{background:#dadadd}
 .review-operations{display:flex;gap:12px;flex-wrap:wrap}
 .review-operations button{min-height:46px}
 @media(max-width:520px){.review-operations{flex-direction:column}.review-operations button{width:100%}.applied-writing-review h3{font-size:19px}}
+
+.source-repair{margin:20px 0 24px;border:1px solid var(--line);padding:20px;background:var(--panel);min-width:0}
+.source-repair h3{font-size:21px;margin:0 0 14px}
+.source-repair p{font-size:16px;line-height:1.55;margin:10px 0}
+.source-repair fieldset{min-width:0;border:0;padding:8px 0;margin:0}
+.source-repair legend{font-size:17px;font-weight:650;padding:0 0 8px}
+.repair-open{margin-top:14px;min-height:46px}
+.repair-choices{display:flex;gap:10px;flex-wrap:wrap}
+.repair-choices button{min-height:44px;padding:10px 14px;max-width:100%;text-align:left;border:1px solid var(--line);background:var(--raised);color:var(--text);cursor:pointer}
+.repair-choices button[aria-pressed="true"]{outline:2px solid var(--accent);outline-offset:1px}
+.repair-evidence{border-left:3px solid var(--accent);padding-left:14px;margin:12px 0;overflow-wrap:anywhere}
+.repair-evidence blockquote,.repair-drafts blockquote{font-size:18px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0 0;padding:12px;border:1px solid var(--line);background:var(--raised)}
+.repair-drafts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:14px;margin:16px 0}
+.repair-drafts strong{font-size:16px}
+.repair-actions button{min-height:46px}
+@media(max-width:520px){.source-repair{padding:14px}.repair-choices{flex-direction:column}.repair-choices button,.repair-actions button{width:100%}}

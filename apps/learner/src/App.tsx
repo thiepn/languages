@@ -9,6 +9,7 @@ import {
 import {DEMO_BUNDLES,COURSE_BUNDLES,SOURCE_COVERAGE_BY_LESSON,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
 import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
 import {APPLICATION_PATHS,APPLICATION_REVIEWS,resolveApplicationStep,auditApplicationPaths,type ApplicationPath} from "./application-paths";
+import {LESSON_FOLLOW_UPS,APPLICATION_FOLLOW_UPS,auditSourceFollowUps,type SourceFollowUp} from "./source-followups";
 
 type Destination = "home" | "course" | "review" | "profile";
 const NAV: readonly {id:Destination;label:string}[] = [
@@ -16,7 +17,8 @@ const NAV: readonly {id:Destination;label:string}[] = [
   {id:"review",label:"Review"},{id:"profile",label:"Profile"}
 ];
 const ALL_BUNDLES=Object.values(COURSE_BUNDLES).flat();
-if(auditApplicationPaths(ALL_BUNDLES).length)throw new Error("Unreviewed application path or original source attribution");
+if(auditApplicationPaths(ALL_BUNDLES).length||auditSourceFollowUps(ALL_BUNDLES,APPLICATION_PATHS).length)
+  throw new Error("Unreviewed application path, correction, or original source attribution");
 
 const DEMO_LANGUAGE_KEY="thiepn-languages-phase04-active-language";
 function readSelected():LanguageChoice{
@@ -207,6 +209,7 @@ export function App(){
   const [writingReview,setWritingReview]=useState<{
     pathId:string;exerciseId:string;firstDraft:string;checked:readonly boolean[];revised:boolean;
   }|null>(null);
+  const [sourceRepair,setSourceRepair]=useState<{key:string;firstDraft:string;focusIndex:number|null;revised:boolean}|null>(null);
   const titleRef=useRef<HTMLHeadingElement>(null);
   const activityHeadingRef=useRef<HTMLHeadingElement>(null);
   const bundle=player.bundle;
@@ -227,6 +230,11 @@ export function App(){
   const reviewGuide=currentPath?APPLICATION_REVIEWS[currentPath.id]:undefined;
   const currentReview=applicationWriting&&writingReview?.pathId===currentPath?.id&&writingReview?.exerciseId===frame?.exercise?.id?writingReview:null;
   const reviewedWriting=currentReview?.checked.every(Boolean)===true&&currentResult?.kind==="ungraded";
+  const repairKey=bundle.lesson.id+"|"+(frame?.exercise?.id??"")+"|"+(currentPath?.id??"lesson");
+  const repairSource:SourceFollowUp|undefined=frame?.exercise?.kind==="free-production"
+    ?(currentPath&&isAppliedFrame?APPLICATION_FOLLOW_UPS.find(entry=>entry.ownerId===currentPath.id)
+      :LESSON_FOLLOW_UPS.find(entry=>entry.ownerId===bundle.lesson.id)):undefined;
+  const currentRepair=sourceRepair?.key===repairKey?sourceRepair:null;
 
   useEffect(()=>{
     try{window.sessionStorage.setItem(DEMO_LANGUAGE_KEY,selected);}catch{/* Optional tab-only language choice. */}
@@ -255,6 +263,7 @@ export function App(){
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
     setActiveApplication(null);
     setWritingReview(null);
+    setSourceRepair(null);
     setLessonOpen(false);
     setDestination("course");
   }
@@ -272,6 +281,7 @@ export function App(){
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
     setWritingReview(null);
+    setSourceRepair(null);
     dispatch({type:"load",bundle,restoredIndex:frameIndex});
     startLesson();
   }
@@ -280,6 +290,7 @@ export function App(){
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
     setWritingReview(null);
+    setSourceRepair(null);
     dispatch({type:"load",bundle:next,restoredIndex:positions[checkpointId(next)]??0});
     startLesson();
   }
@@ -290,6 +301,7 @@ export function App(){
     if(!found)return;
     setActiveApplication({id:path.id,step:stepIndex});
     setWritingReview(null);
+    setSourceRepair(null);
     dispatch({type:"load",bundle:found.bundle,restoredIndex:found.frameIndex});
     startLesson();
   }
@@ -299,6 +311,17 @@ export function App(){
     const next=(activeApplication?.step??0)+1;
     if(next>=currentPath.steps.length){setActiveApplication(null);setLessonOpen(false);setDestination("course");return;}
     startApplication(currentPath,next);
+  }
+  function openSourceRepair(){
+    if(!repairSource||!frame?.exercise||currentResult?.kind!=="ungraded"||!currentDraft.trim())return;
+    setSourceRepair(previous=>previous?.key===repairKey?previous
+      :{key:repairKey,firstDraft:currentDraft,focusIndex:null,revised:false});
+  }
+  function reviseSourceRepair(){
+    if(!currentRepair||currentRepair.focusIndex===null||currentResult?.kind!=="ungraded")return;
+    setSourceRepair({...currentRepair,revised:true});
+    if(applicationWriting)reviseApplicationWriting();
+    else dispatch({type:"revise"});
   }
   function openWritingReview(revised=false){
     if(!applicationWriting||!currentPath||!frame?.exercise||!reviewGuide||!currentDraft.trim())return;
@@ -316,6 +339,7 @@ export function App(){
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
     setWritingReview(null);
+    setSourceRepair(null);
     dispatch({type:"reset"});
     startLesson();
   }
@@ -323,6 +347,7 @@ export function App(){
     if(!confirmWritingDiscard())return;
     setActiveApplication(null);
     setWritingReview(null);
+    setSourceRepair(null);
     setPositions({});
     dispatch({type:"load",bundle:DEMO_BUNDLES.fr,restoredIndex:0});
     setLessonOpen(false);
@@ -372,7 +397,41 @@ export function App(){
               </div>
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult} headingRef={activityHeadingRef}
-                onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>applicationWriting?reviseApplicationWriting():dispatch({type:"revise"})}/>:null}
+                onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>{
+                  if(currentRepair)setSourceRepair({...currentRepair,revised:true});
+                  if(applicationWriting)reviseApplicationWriting();else dispatch({type:"revise"});
+                }}/>:null}
+            {repairSource&&currentResult?.kind==="ungraded"&&!currentRepair&&
+              <button type="button" className="secondary-action repair-open" onClick={openSourceRepair}>Explore source correction</button>}
+            {repairSource&&currentRepair&&<section className="source-repair" aria-label="Source-guided correction">
+              <h3>Correct for a new situation</h3>
+              <p>{repairSource.newSituation}</p>
+              <p>{repairSource.revisionTask}</p>
+              <fieldset>
+                <legend>Choose what to correct</legend>
+                <div className="repair-choices">{repairSource.focuses.map((focus,i)=>
+                  <button key={focus.sourceId+"|"+focus.quote} type="button"
+                    aria-pressed={currentRepair.focusIndex===i}
+                    onClick={()=>setSourceRepair({...currentRepair,focusIndex:i})}>{focus.label}</button>)}</div>
+              </fieldset>
+              {currentRepair.focusIndex!==null&&<div className="repair-evidence">
+                <p>{repairSource.focuses[currentRepair.focusIndex]!.explanation}</p>
+                <blockquote lang={selected}>{repairSource.focuses[currentRepair.focusIndex]!.quote}</blockquote>
+              </div>}
+              <p>{repairSource.reflection}</p>
+              <div className="repair-drafts">
+                <div><strong>First response</strong><blockquote lang={selected}>{currentRepair.firstDraft}</blockquote></div>
+                {currentRepair.revised&&currentResult?.kind==="ungraded"&&
+                  <div><strong>Revised response</strong><blockquote lang={selected}>{currentDraft}</blockquote></div>}
+              </div>
+              <div className="repair-actions">
+                <button type="button" className="secondary-action"
+                  disabled={currentRepair.focusIndex===null||currentResult?.kind!=="ungraded"}
+                  onClick={reviseSourceRepair}>Revise in this situation</button>
+                {currentRepair.revised&&currentResult===undefined&&<p role="status">Write your revised response above, then select Review writing.</p>}
+              </div>
+              <p className="review-boundary">No automatic correctness or proficiency decision is made.</p>
+            </section>}
             {applicationWriting&&currentResult?.kind==="ungraded"&&!currentReview&&
               <button type="button" className="secondary-action applied-review-launch" onClick={()=>openWritingReview()}>Review sources before finishing</button>}
             {applicationWriting&&currentPath&&currentReview&&reviewGuide&&<section className="applied-writing-review" aria-label="Source-backed writing review">
