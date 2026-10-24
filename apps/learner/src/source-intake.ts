@@ -240,16 +240,28 @@ export function compilePinnedSourceIntake(
   const writing:ExerciseV1={...eBase(writingId,"independent",expansion?spec.writingInstruction+" "+expansion.dialogueBrief:spec.writingInstruction,sources,"ungraded-production","writing"),
    kind:"free-production",grading:"ungraded",explanation:"No automatic grammar, speaking or proficiency grade is assigned.",
    rubric:[...spec.writingChecks]};
-  const extraGuided:ExerciseV1[]=expansion?[{
+  const shortChineseSource=Boolean(chinese&&expansion&&
+    (!expansion.cloze.before.trim()||!expansion.cloze.after.trim()));
+  const sourceAid=expansion?{
+    targetText:expansion.cloze.quote,
+    meaning:examples.find(e=>e.targetText===expansion.cloze.quote)!.meaning,
+    cue:expansion.contrastCue
+  }:undefined;
+  const extraGuided:ExerciseV1[]=expansion?shortChineseSource?[{
+    ...eBase(spec.id+":guided-cloze","guided",expansion.cloze.instruction,[expansion.cloze.sourceId],
+      "formative-recognition","comprehension"),
+    kind:"typed",normalization:"unicode-nfc",grading:"exact",
+    acceptedAnswers:[expansion.cloze.quote],
+    explanation:"Type the complete original Hanzi expression and compare it with the attested source.",
+    sourceAid:sourceAid!
+  }]:[{
     ...eBase(spec.id+":guided-cloze","guided",expansion.cloze.instruction,[expansion.cloze.sourceId],
       "formative-recognition","comprehension"),
     kind:"cloze",before:expansion.cloze.before,after:expansion.cloze.after,
     acceptedAnswers:[expansion.cloze.answer],normalization:japanese?"japanese-terminal-punctuation":chinese?"unicode-nfc":"french-apostrophe",
     grading:"exact",
     explanation:"Restore the attested original expression in this context.",
-    sourceAid:{targetText:expansion.cloze.quote,
-      meaning:examples.find(e=>e.targetText===expansion.cloze.quote)!.meaning,
-      cue:expansion.contrastCue}
+    sourceAid:sourceAid!
   }]:[];
   const extraIndependent:ExerciseV1[]=expansion?[{
     ...eBase(spec.id+":independent-situation","independent",expansion.situationalChoice.question,

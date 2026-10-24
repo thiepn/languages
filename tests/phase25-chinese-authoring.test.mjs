@@ -30,7 +30,7 @@ test("six new substantive source-pinned Chinese lessons compile beside all 15 pr
   assert.equal(bundle.lesson.languageId,"zh");
   assert.equal(bundle.lesson.steps.filter(s=>s.type==="explain").length,3);
   assert.equal(framesFor(bundle).length,11);
-  assert.deepEqual(bundle.exercises.map(e=>e.kind),["choice","cloze","reading","choice","typed","free-production"]);
+  assert.deepEqual(bundle.exercises.map(e=>e.kind),["choice",bundle.lesson.id.match(/greeting-addressee|possession-and-role|affirm-negate-also/)?"typed":"cloze","reading","choice","typed","free-production"]);
   assert.ok(bundle.lesson.sources.every(s=>s.repository==="thiepn/chinese"&&
     s.revision==="9688e7354142b7127fd5f6eb69b03b595a437008"&&
     s.rights==="review-required"&&s.editorialReview==="pending"&&!s.redistributionVerified));
@@ -69,7 +69,12 @@ test("every Chinese encounter retains its original Hanzi, original tone-marked r
    assert.equal(inserted.reading,original.reading);
   }
   const [{},cloze,reading,,tone]=bundle.exercises;
-  assert.equal(cloze.before+cloze.acceptedAnswers[0]+cloze.after,spec.chineseExpansion.cloze.quote);
+  if(cloze.kind==="cloze")assert.equal(cloze.before+cloze.acceptedAnswers[0]+cloze.after,spec.chineseExpansion.cloze.quote);
+  else{
+   assert.equal(cloze.kind,"typed");
+   assert.deepEqual(cloze.acceptedAnswers,[spec.chineseExpansion.cloze.quote]);
+  }
+  assert.equal(cloze.sourceAid.targetText,spec.chineseExpansion.cloze.quote);
   assert.equal(tone.sourceAid.targetText,spec.chineseExpansion.tone.quote);
   assert.equal(tone.acceptedAnswers[0],spec.chineseExpansion.tone.reading);
   assert.ok(reading.reading.includes(" · "));

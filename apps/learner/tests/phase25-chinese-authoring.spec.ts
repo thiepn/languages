@@ -1,9 +1,9 @@
 import {test,expect} from "@playwright/test";
 const lessons=[
- {title:"Greeting one person or addressing a group",guided:"你好",wrong:"我",cloze:"好",read:"你们",situation:"你们",tone:"nǐ hǎo"},
+ {title:"Greeting one person or addressing a group",guided:"你好",wrong:"我",cloze:"你好",read:"你们",situation:"你们",tone:"nǐ hǎo"},
  {title:"Introducing the speaker and the study group",guided:"我们",wrong:"我",cloze:"是",read:"我是学生。",situation:"我是学生。",tone:"wǒmen"},
- {title:"Possession and identifying a teacher",guided:"我的",wrong:"我是学生。",cloze:"的",read:"他是老师。",situation:"他是老师。",tone:"wǒ de"},
- {title:"Identity, negation and also",guided:"不是",wrong:"也是",cloze:"是",read:"也是",situation:"也是",tone:"bú shì"},
+ {title:"Possession and identifying a teacher",guided:"我的",wrong:"我是学生。",cloze:"我的",read:"他是老师。",situation:"他是老师。",tone:"wǒ de"},
+ {title:"Identity, negation and also",guided:"不是",wrong:"也是",cloze:"不是",read:"也是",situation:"也是",tone:"bú shì"},
  {title:"Greeting and asking about tea",guided:"你好",wrong:"好吃",cloze:"吗",read:"你喜欢喝茶吗？",situation:"你喜欢喝茶吗？",tone:"Nǐ xǐhuan hē chá ma?"},
  {title:"Greeting and describing a tasty apple",guided:"好吃",wrong:"你好",cloze:"好吃",read:"这个苹果很好吃。",situation:"这个苹果很好吃。",tone:"Zhège píngguǒ hěn hǎochī."}
 ] as const;
