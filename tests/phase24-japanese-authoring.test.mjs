@@ -92,6 +92,9 @@ test("Japanese source/rights drift, fabricated kana, cloze tampering, duplicate 
   items=>{items.find(b=>b.lesson.id==="ja:cf-a1-01-01:shared-pilot").lesson.sources[0].revision="0".repeat(40);},
   items=>{items.find(b=>b.lesson.id==="ja:cf-a1-01-02:shared-pilot").lesson.sources[0].redistributionVerified=true;},
   items=>{items.find(b=>b.lesson.id==="ja:cf-a1-01-03:shared-pilot").lesson.sources[0].editorialReview="approved";},
+  items=>{items.find(b=>b.lesson.id==="ja:cf-a1-01-03:shared-pilot").lesson.sources[0].rights="review-required";},
+  items=>{items.find(b=>b.lesson.id==="ja:cf-a1-01-02:shared-pilot").lesson.sources[0].originalEntityId="fabricated-entity";},
+  items=>{items.find(b=>b.lesson.id==="ja:cf-a1-01-01:shared-pilot").lesson.sources[0].path="apps/web/src/study/fabricated.ts";},
   items=>{items.find(b=>b.lesson.id==="ja:cf-a1-01-01:shared-pilot").lesson.steps.find(s=>s.type==="encounter").examples[0].targetText="朝：架空の挨拶。";}
  ];
  for(const mutate of mutations){

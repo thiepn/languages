@@ -1,5 +1,6 @@
 import type {LessonBundleV1,LessonExampleV1,LessonSourceV1,ExerciseV1} from "../../../packages/content-schema/src/lesson-v1.js";
 import {validateLessonBundleV1} from "../../../packages/content-schema/src/lesson-v1.ts";
+import {admitInternalPilot} from "./source-coverage.ts";
 import ownership from "../../../contracts/phase01-source-ownership.json" with {type:"json"};
 import evidence from "../../../contracts/phase16-source-evidence.json" with {type:"json"};
 
@@ -119,6 +120,14 @@ export function compilePinnedSourceIntake(
  const usedLessonIds=new Set(bundles.map(b=>b.lesson.id));
  const usedExerciseIds=new Set(bundles.flatMap(b=>b.exercises.map(e=>e.id)));
  const seenSpecs=new Set<string>();
+ const admitted=new Map<string,boolean>();
+ const isAdmitted=(bundle:LessonBundleV1):boolean=>{
+  const key=bundle.lesson.id;
+  const cached=admitted.get(key);
+  if(cached!==undefined)return cached;
+  try{admitInternalPilot(bundle);admitted.set(key,true);return true;}
+  catch{admitted.set(key,false);return false;}
+ };
  for(const spec of specs){
   const fail=(issue:string)=>issues.push({id:spec.id,issue});
   if(seenSpecs.has(spec.id)||usedLessonIds.has(spec.id)) {fail("DUPLICATE_OR_EXISTING_LESSON");continue;}
@@ -139,7 +148,7 @@ export function compilePinnedSourceIntake(
    const example=original?.lesson.steps.flatMap(s=>s.type==="encounter"?s.examples:[])
      .find(e=>e.targetText===entry.quote);
    if(!original||!source||!example||original.lesson.languageId!==spec.languageId||
-       original.lesson.publication!=="internal-fixture"||source.editorialReview!=="pending"||
+       original.lesson.publication!=="internal-fixture"||!isAdmitted(original)||source.editorialReview!=="pending"||
        source.redistributionVerified||!approvedPin(source)||
        !sourceQuotes[entry.sourceId]?.includes(entry.quote)){
     fail("SOURCE_QUOTE_RIGHTS_OR_REVISION_DRIFT");failed=true;break;
