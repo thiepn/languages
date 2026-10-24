@@ -6,7 +6,7 @@ import {
   checkpointId, DEMO_CHECKPOINT_KEY,
   framesFor, parseOrderingDraft, parseDemoCheckpoint, serializeDemoCheckpoint
 } from "./lesson-model";
-import {DEMO_BUNDLES,COURSE_BUNDLES,SOURCE_COVERAGE_BY_LESSON,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
+import {DEMO_BUNDLES,COURSE_BUNDLES,SOURCE_COVERAGE_BY_LESSON,INTAKE_CANDIDATES,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
 import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
 import {APPLICATION_PATHS,APPLICATION_REVIEWS,resolveApplicationStep,auditApplicationPaths,type ApplicationPath} from "./application-paths";
 import {LESSON_FOLLOW_UPS,APPLICATION_FOLLOW_UPS,auditSourceFollowUps,type SourceFollowUp} from "./source-followups";
@@ -240,6 +240,7 @@ export function App(){
     try{window.sessionStorage.setItem(DEMO_LANGUAGE_KEY,selected);}catch{/* Optional tab-only language choice. */}
   },[selected]);
   useEffect(()=>{
+    if(INTAKE_CANDIDATES.some(candidate=>candidate.lesson.id===player.bundle.lesson.id))return;
     setPositions(old=>{
       if(old[player.key]===player.index||(old[player.key]===undefined&&player.index===0))return old;
       return {...old,[player.key]:player.index};
@@ -304,6 +305,15 @@ export function App(){
     setSourceRepair(null);
     dispatch({type:"load",bundle:found.bundle,restoredIndex:found.frameIndex});
     startLesson();
+  }
+  function openIntakeDraft(candidate:LessonBundleV1){
+    if(!confirmWritingDiscard()||candidate.lesson.languageId!==selected)return;
+    setActiveApplication(null);
+    setWritingReview(null);
+    setSourceRepair(null);
+    dispatch({type:"load",bundle:candidate,restoredIndex:0});
+    setDestination("course");
+    setLessonOpen(true);
   }
   function completeApplicationStep(){
     if(!currentPath||!isAppliedFrame||!currentResult||currentResult.kind==="incorrect"||
@@ -521,6 +531,19 @@ export function App(){
               </li>)}</ol>
               <button type="button" className="secondary-action" onClick={()=>startApplication(path)}>Start application</button>
             </article>)}
+          </section>
+          <section className="intake-preview" aria-label="Editorial study drafts">
+            <h2 className="section-title">Editorial study drafts</h2>
+            {INTAKE_CANDIDATES.filter(candidate=>candidate.lesson.languageId===selected).map(candidate=>
+              <article key={candidate.lesson.id} className="intake-draft">
+                <div><h3>{candidate.lesson.title}</h3>
+                  <p>{candidate.lesson.objective.statement}</p>
+                  <p className="source-practice-status">Internal source-pinned draft · No progress or grades saved</p>
+                </div>
+                <button type="button" className="secondary-action"
+                  onClick={()=>openIntakeDraft(candidate)}
+                  aria-label={"Preview editorial draft: "+candidate.lesson.title}>Preview draft</button>
+              </article>)}
           </section>
           <section className="source-practice" aria-label="Original source practice">
             <h2 className="section-title">Practice by original source</h2>
