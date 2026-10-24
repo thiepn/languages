@@ -124,7 +124,7 @@ export function compilePinnedSourceIntake(
    const source=original?.lesson.sources.find(s=>s.id===entry.sourceId);
    const example=original?.lesson.steps.flatMap(s=>s.type==="encounter"?s.examples:[])
      .find(e=>e.targetText===entry.quote);
-   if(!source||!example||original?.lesson.languageId!==spec.languageId||
+   if(!original||!source||!example||original.lesson.languageId!==spec.languageId||
        original.lesson.publication!=="internal-fixture"||source.editorialReview!=="pending"||
        source.redistributionVerified||!approvedPin(source)||
        !sourceQuotes[entry.sourceId]?.includes(entry.quote)){
@@ -143,7 +143,9 @@ export function compilePinnedSourceIntake(
   const original=bundles.find(b=>b.lesson.id===spec.encounters[0].lessonId)!;
   if(original.plugin.languageId!==spec.languageId){fail("PLUGIN_LANGUAGE_DRIFT");continue;}
   const suffix=["guided-choice","independent-reading","independent-writing"] as const;
-  const [guidedId,readingId,writingId]=suffix.map(s=>spec.id+":"+s);
+  const guidedId=spec.id+":guided-choice";
+  const readingId=spec.id+":independent-reading";
+  const writingId=spec.id+":independent-writing";
   if([guidedId,readingId,writingId].some(id=>usedExerciseIds.has(id))) {fail("EXERCISE_ID_COLLISION");continue;}
   const eBase=(id:string,purpose:"guided"|"independent",instruction:string,sourceIds:string[],classification:"formative-recognition"|"ungraded-production",skillDimension:"comprehension"|"writing")=>({
    id,languageId:spec.languageId,purpose,instruction,
