@@ -152,6 +152,11 @@ export const PHASE28_CHINESE_SEQUENCES:readonly SourceAuthoredIntake[]=[
  {
   ...parents[1]!,
   id:"zh:phase28-student-teacher-repair-order",
+  encounters:[
+   parents[1]!.encounters[0],
+   parents[1]!.encounters[1],
+   {lessonId:"zh:shi:shared-pilot",sourceId:"zh-shi-demo",quote:"不是"}
+  ],
   title:"Ordering identity statements before a role correction",
   objective:"Use exact first-person and third-person identity statements to reconstruct a new orientation sequence and correct a mistaken role without inventing source content.",
   explanation:"我是学生。 (Wǒ shì xuésheng.) is a statement about the speaker. 他是老师。 (Tā shì lǎoshī.) describes another person as teacher. 不是 (bú shì) denies an identity claim. Their sequence below is an original practice construction, not a copied Chinese conversation.",
