@@ -21,6 +21,20 @@ const samples=[
   oldOrder:["我的","不是","也是"],shift:"也是",
   newOrder:["也是","我的","不是"],final:"我的",situation:"也是",tone:"bú shì",nextRepair:"也是",nextWrong:"不是",nextReading:"我的",nextTone:"wǒ de"}
 ] as const;
+const thirdContext={
+ "The moderator switches teams twice":{
+  reading:"你们",wrong:"我们",source:"我们",wrongSource:"你们",
+  order:["我","你们","我们"]},
+ "The vendor switches from fruit to tea":{
+  reading:"你喜欢喝茶吗？",wrong:"你好",source:"这个苹果很好吃。",wrongSource:"你喜欢喝茶吗？",
+  order:["你喜欢喝茶吗？","这个苹果很好吃。","你好"]},
+ "School registration changes who is mistaken":{
+  reading:"不是",wrong:"我是学生。",source:"我是学生。",wrongSource:"不是",
+  order:["不是","我是学生。","他是老师。"]},
+ "A badge changes hands but roles do not":{
+  reading:"我的",wrong:"不是",source:"也是",wrongSource:"不是",
+  order:["不是","也是","我的"]}
+} as const;
 type C=typeof samples[number];
 async function choice(page:Page,answer:string){
  await page.getByRole("radio",{name:answer,exact:true}).check();
@@ -106,6 +120,35 @@ async function journey(page:Page,c:C){
   await expect(page.getByText("Ungraded practice")).toBeVisible();
   await page.getByRole("button",{name:"Continue"}).click();
  }
+
+ // Source-pinned third-context extension on the SAME four original Phase 30 lessons.
+ const extra=thirdContext[c.title];
+ await expect(page.locator(".reading-passage")).toContainText("Third authored scenario (not an original source dialogue):");
+ await page.getByRole("radio",{name:extra.wrong,exact:true}).check();
+ await page.getByRole("button",{name:"Check answer"}).click();
+ await expect(page.locator(".feedback.incorrect")).toBeVisible();
+ await expect(page.locator(".source-aid")).toBeVisible();
+ await page.getByRole("button",{name:"Try again"}).click();
+ await choice(page,extra.reading);
+ await page.getByRole("textbox",{name:"Your answer"}).fill(extra.wrongSource);
+ await page.getByRole("button",{name:"Check answer"}).click();
+ await expect(page.locator(".feedback.incorrect")).toBeVisible();
+ await expect(page.locator(".source-aid")).toBeVisible();
+ await page.getByRole("button",{name:"Try again"}).click();
+ await fill(page,extra.source);
+ for(const prior of [c.oldOrder,c.newOrder]){
+  await order(page,prior);
+  await expect(page.locator(".feedback.incorrect")).toBeVisible();
+  await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
+  await page.getByRole("button",{name:"Try again"}).click();
+ }
+ await order(page,extra.order);
+ await expect(page.locator(".feedback.correct")).toBeVisible();
+ await page.getByRole("button",{name:"Continue"}).click();
+ await page.getByRole("textbox",{name:"Your response"}).fill("第七次独立修订：新的说话者与听者，原文和新编内容清楚区分。");
+ await page.getByRole("button",{name:"Review writing"}).click();
+ await expect(page.getByText("Ungraded practice")).toBeVisible();
+ await page.getByRole("button",{name:"Continue"}).click();
  await page.getByRole("button",{name:"Finish preview"}).click();
  await expect(page.getByRole("heading",{name:"Preview complete"})).toBeVisible();
  await page.getByRole("button",{name:"Back to Course"}).click();

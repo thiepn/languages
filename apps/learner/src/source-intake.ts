@@ -105,6 +105,27 @@ export interface ChinesePerspectiveV1 {
     readonly instruction:string;readonly criteria:readonly [string,string,string];
   };
 }
+export interface ChineseRevisionV1 {
+  /** Source text is the three already-admitted Hanzi encounter examples only. */
+  readonly revisedReading:{
+    readonly context:string;readonly question:string;
+    readonly correctQuote:string;readonly firstWrong:string;readonly firstFeedback:string;
+    readonly secondWrong:string;readonly secondFeedback:string;
+  };
+  readonly sourceReconstruction:{
+    readonly instruction:string;readonly correctQuote:string;readonly sourceId:string;
+    readonly firstWrong:string;readonly firstFeedback:string;
+    readonly secondWrong:string;readonly secondFeedback:string;
+  };
+  /** A third new situation requiring a different order from both earlier accepted orders. */
+  readonly thirdSequence:{
+    readonly instruction:string;readonly expected:readonly [string,string,string];
+    readonly firstFeedback:string;readonly secondFeedback:string;
+  };
+  readonly independentRevision:{
+    readonly instruction:string;readonly criteria:readonly [string,string,string];
+  };
+}
 export interface SourceAuthoredIntake {
   readonly id:string;
   readonly languageId:"fr"|"ja"|"zh";
@@ -129,6 +150,7 @@ export interface SourceAuthoredIntake {
   readonly chineseSequence?:ChineseSequenceV1;
   readonly chineseConversation?:ChineseConversationV1;
   readonly chinesePerspective?:ChinesePerspectiveV1;
+  readonly chineseRevision?:ChineseRevisionV1;
 }
 const ref=(lessonId:string,sourceId:string,quote:string):PinnedSourceQuote=>({lessonId,sourceId,quote});
 /** New authorial situations and tasks reference *existing* verified original encounters, not newly invented source text. */
@@ -383,6 +405,32 @@ export function compilePinnedSourceIntake(
     fail("INVALID_CHINESE_PERSPECTIVE_SOURCE");continue;
    }
   }
+  const revision=spec.chineseRevision;
+  if(revision){
+   const a=revision.revisedReading,b=revision.sourceReconstruction,
+     c=revision.thirdSequence,d=revision.independentRevision;
+   const recognized=(quote:string)=>examples.some(e=>e.targetText===quote);
+   const tokens=sequence?.order.tokens;
+   const firstOrder=sequence?.order.expected;
+   const secondOrder=conversation?.reversedSequence.expected;
+   const threeDifferent=(a:string,b:string,c:string)=>new Set([a,b,c]).size===3&&
+      [a,b,c].every(recognized);
+   if(!chinese||!depth||!reconstruction||!sequence||!conversation||!perspective||spec.languageId!=="zh"||
+      !threeDifferent(a.correctQuote,a.firstWrong,a.secondWrong)||
+      !threeDifferent(b.correctQuote,b.firstWrong,b.secondWrong)||
+      exerciseRefs[b.correctQuote]!==b.sourceId||
+      !Array.isArray(c.expected)||c.expected.length!==3||new Set(c.expected).size!==3||
+      !c.expected.every(q=>recognized(q)&&tokens!.includes(q))||
+      c.expected.every((q,i)=>q===firstOrder![i])||
+      c.expected.every((q,i)=>q===secondOrder![i])||
+      !Array.isArray(d.criteria)||d.criteria.length!==3||
+      [a.context,a.question,a.firstFeedback,a.secondFeedback,
+       b.instruction,b.firstFeedback,b.secondFeedback,
+       c.instruction,c.firstFeedback,c.secondFeedback,d.instruction,...d.criteria]
+         .some(t=>typeof t!=="string"||t.trim().length<36)){
+    fail("INVALID_CHINESE_REVISION_SOURCE");continue;
+   }
+  }
   const original=bundles.find(b=>b.lesson.id===spec.encounters[0].lessonId)!;
   if(original.plugin.languageId!==spec.languageId){fail("PLUGIN_LANGUAGE_DRIFT");continue;}
   const suffix=["guided-choice","independent-reading","independent-writing",
@@ -391,7 +439,8 @@ export function compilePinnedSourceIntake(
     ...(reconstruction?["guided-reconstruct","independent-role-switch","independent-new-dialogue"]:[]),
     ...(sequence?["independent-sequence","independent-shifted-reading","independent-fourth-dialogue"]:[]),
     ...(conversation?["guided-turn-repair","independent-reordered-roles","independent-final-reading","independent-fifth-dialogue"]:[]),
-    ...(perspective?["guided-final-repair","independent-after-switch-reading","independent-second-pinyin","independent-sixth-dialogue"]:[])] as const;
+    ...(perspective?["guided-final-repair","independent-after-switch-reading","independent-second-pinyin","independent-sixth-dialogue"]:[]),
+    ...(revision?["independent-role-reading","independent-source-reconstruction","independent-third-sequence","independent-seventh-dialogue"]:[])] as const;
   const guidedId=spec.id+":guided-choice";
   const readingId=spec.id+":independent-reading";
   const writingId=spec.id+":independent-writing";
@@ -692,6 +741,70 @@ export function compilePinnedSourceIntake(
     explanation:"Final independent changed-listener writing and self-review, without automatic proficiency credit.",
     rubric:[...perspective.sixthDialogue.criteria]
   }]:[];
+  const revisionReading:ExerciseV1[]=revision?[{
+    ...eBase(spec.id+":independent-role-reading","independent",revision.revisedReading.question,
+       [exerciseRefs[revision.revisedReading.correctQuote]!],"formative-recognition","comprehension"),
+    kind:"reading",
+    passage:"Third authored scenario (not an original source dialogue): "+
+      revision.revisedReading.context+"\nOriginal Hanzi with unchanged, source-verified written Pinyin:\n"+
+      examples.map(e=>e.targetText+" — "+e.reading).join("\n"),
+    question:revision.revisedReading.question,options:allQuotes,
+    acceptedAnswers:[revision.revisedReading.correctQuote],normalization:"literal",grading:"exact",
+    explanation:"Separate the new role, addressee or sentence purpose from both earlier cases.",
+    misconceptions:[
+      {answer:revision.revisedReading.firstWrong,feedback:revision.revisedReading.firstFeedback},
+      {answer:revision.revisedReading.secondWrong,feedback:revision.revisedReading.secondFeedback}
+    ],
+    sourceAid:{
+      targetText:revision.revisedReading.correctQuote,
+      meaning:examples.find(e=>e.targetText===revision.revisedReading.correctQuote)!.meaning,
+      cue:revision.revisedReading.firstFeedback
+    }
+  }]:[];
+  const revisionReconstruction:ExerciseV1[]=revision?[{
+    ...eBase(spec.id+":independent-source-reconstruction","independent",
+      revision.sourceReconstruction.instruction,[revision.sourceReconstruction.sourceId],
+      "formative-recall","writing"),
+    kind:"typed",normalization:"unicode-nfc",grading:"exact",
+    acceptedAnswers:[revision.sourceReconstruction.correctQuote],
+    explanation:"Reproduce only the exact pinned original Hanzi text, retaining its punctuation.",
+    misconceptions:[
+      {answer:revision.sourceReconstruction.firstWrong,
+        feedback:revision.sourceReconstruction.firstFeedback},
+      {answer:revision.sourceReconstruction.secondWrong,
+        feedback:revision.sourceReconstruction.secondFeedback}
+    ],
+    sourceAid:{
+      targetText:revision.sourceReconstruction.correctQuote,
+      meaning:examples.find(e=>e.targetText===revision.sourceReconstruction.correctQuote)!.meaning,
+      cue:revision.sourceReconstruction.firstFeedback
+    }
+  }]:[];
+  const revisionSequence:ExerciseV1[]=revision&&sequence&&conversation?[{
+    ...eBase(spec.id+":independent-third-sequence","independent",
+      revision.thirdSequence.instruction,sources,"formative-recall","comprehension"),
+    kind:"ordering",tokens:[...sequence.order.tokens],normalization:"literal",grading:"exact",
+    acceptedAnswers:[revision.thirdSequence.expected.map(q=>sequence.order.tokens.indexOf(q)).join(",")],
+    explanation:"Only this third independently authored scenario determines the correct sequence of three authentic excerpts.",
+    misconceptions:[
+      {answer:sequence.order.expected.map(q=>sequence.order.tokens.indexOf(q)).join(","),
+        feedback:revision.thirdSequence.firstFeedback},
+      {answer:conversation.reversedSequence.expected.map(q=>sequence.order.tokens.indexOf(q)).join(","),
+        feedback:revision.thirdSequence.secondFeedback}
+    ],
+    sourceAid:{
+      targetText:revision.thirdSequence.expected[0],
+      meaning:examples.find(e=>e.targetText===revision.thirdSequence.expected[0])!.meaning,
+      cue:revision.thirdSequence.firstFeedback
+    }
+  }]:[];
+  const revisionDialogue:ExerciseV1[]=revision?[{
+    ...eBase(spec.id+":independent-seventh-dialogue","independent",
+      revision.independentRevision.instruction,sources,"ungraded-production","writing"),
+    kind:"free-production",grading:"ungraded",
+    explanation:"Independent authored dialogue revision and self-review; no grade, HSK, audio or native scheduler result.",
+    rubric:[...revision.independentRevision.criteria]
+  }]:[];
   const candidate:LessonBundleV1={
    lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":perspective?"phase30-chinese-source-authored-internal-v1":conversation?"phase29-chinese-source-authored-internal-v1":sequence?"phase28-chinese-source-authored-internal-v1":reconstruction?"phase27-chinese-source-authored-internal-v1":depth?"phase26-chinese-source-authored-internal-v1":chinese?"phase25-chinese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
     title:spec.title,objective:{statement:spec.objective,skillDimension:"comprehension"},
@@ -704,10 +817,10 @@ export function compilePinnedSourceIntake(
       ...(expansion?[{id:spec.id+":grammar",type:"explain" as const,heading:expansion.grammarHeading,
         explanation:expansion.grammarExplanation,conceptIds:[]}]:[]),
      {id:spec.id+":guided",type:"guided",exerciseIds:[guidedId,...extraGuided.map(e=>e.id),...depthGuided.map(e=>e.id),...reconstructedGuided.map(e=>e.id),...conversationRepair.map(e=>e.id),...perspectiveGuided.map(e=>e.id)]},
-     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...depthReading.map(e=>e.id),...reconstructedReading.map(e=>e.id),...orderedEvidence.map(e=>e.id),...shiftedReading.map(e=>e.id),...conversationOrder.map(e=>e.id),...conversationReading.map(e=>e.id),...perspectiveReading.map(e=>e.id),...extraIndependent.map(e=>e.id),...extraTone.map(e=>e.id),...perspectivePinyin.map(e=>e.id),writingId,...depthWriting.map(e=>e.id),...reconstructedWriting.map(e=>e.id),...fourthDialogue.map(e=>e.id),...fifthDialogue.map(e=>e.id),...perspectiveWriting.map(e=>e.id)]},
+     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...depthReading.map(e=>e.id),...reconstructedReading.map(e=>e.id),...orderedEvidence.map(e=>e.id),...shiftedReading.map(e=>e.id),...conversationOrder.map(e=>e.id),...conversationReading.map(e=>e.id),...perspectiveReading.map(e=>e.id),...extraIndependent.map(e=>e.id),...extraTone.map(e=>e.id),...perspectivePinyin.map(e=>e.id),writingId,...depthWriting.map(e=>e.id),...reconstructedWriting.map(e=>e.id),...fourthDialogue.map(e=>e.id),...fifthDialogue.map(e=>e.id),...perspectiveWriting.map(e=>e.id),...revisionReading.map(e=>e.id),...revisionReconstruction.map(e=>e.id),...revisionSequence.map(e=>e.id),...revisionDialogue.map(e=>e.id)]},
      {id:spec.id+":reflection",type:"reflect",feedback:spec.reflection}
     ]},
-   plugin:original.plugin,exercises:[guided,...extraGuided,...depthGuided,...reconstructedGuided,...conversationRepair,...perspectiveGuided,reading,...depthReading,...reconstructedReading,...orderedEvidence,...shiftedReading,...conversationOrder,...conversationReading,...perspectiveReading,...extraIndependent,...extraTone,...perspectivePinyin,writing,...depthWriting,...reconstructedWriting,...fourthDialogue,...fifthDialogue,...perspectiveWriting]
+   plugin:original.plugin,exercises:[guided,...extraGuided,...depthGuided,...reconstructedGuided,...conversationRepair,...perspectiveGuided,reading,...depthReading,...reconstructedReading,...orderedEvidence,...shiftedReading,...conversationOrder,...conversationReading,...perspectiveReading,...extraIndependent,...extraTone,...perspectivePinyin,writing,...depthWriting,...reconstructedWriting,...fourthDialogue,...fifthDialogue,...perspectiveWriting,...revisionReading,...revisionReconstruction,...revisionSequence,...revisionDialogue]
   };
   const validation=validateLessonBundleV1(candidate);
   if(validation.length){fail("LESSON_SCHEMA_INVALID:"+validation[0]?.code);continue;}

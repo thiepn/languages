@@ -11,7 +11,7 @@ import {PHASE26_CHINESE_DEPTH} from "./phase26-chinese-depth";
 import {PHASE27_CHINESE_TRANSFER} from "./phase27-chinese-transfer";
 import {PHASE28_CHINESE_SEQUENCES} from "./phase28-chinese-sequences";
 import {PHASE29_CHINESE_CONVERSATIONS} from "./phase29-chinese-conversations";
-import {PHASE30_CHINESE_PERSPECTIVES} from "./phase30-chinese-perspectives";
+import {PHASE30_ENRICHED_PERSPECTIVES} from "./phase30-revision-overlay";
 import {
   validateLessonBundleV1,
   type LessonBundleV1
@@ -75,6 +75,6 @@ export const SOURCE_COVERAGE_BY_LESSON:Readonly<Record<string,readonly SourceCov
   Object.freeze(Object.fromEntries(bundles.map(bundle=>[bundle.lesson.id,sourceCoverage(bundle)])));
 
 /** Explicitly separate, unpublished authoring candidates; excluded from source-app history and saved checkpoints. */
-const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH,...PHASE27_CHINESE_TRANSFER,...PHASE28_CHINESE_SEQUENCES,...PHASE29_CHINESE_CONVERSATIONS,...PHASE30_CHINESE_PERSPECTIVES]);
+const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH,...PHASE27_CHINESE_TRANSFER,...PHASE28_CHINESE_SEQUENCES,...PHASE29_CHINESE_CONVERSATIONS,...PHASE30_ENRICHED_PERSPECTIVES]);
 if(intake.issues.length||intake.candidates.length!==41)throw new Error("Internal source intake requires forty-one verified candidate lessons");
 export const INTAKE_CANDIDATES:readonly LessonBundleV1[]=Object.freeze(intake.candidates);
