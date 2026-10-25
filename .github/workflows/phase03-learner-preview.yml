@@ -1,4 +1,4 @@
-name: Phases 03-26 learner qualification
+name: Phases 03-27 learner qualification
 
 on:
   pull_request:
@@ -27,6 +27,8 @@ on:
       - "tests/phase24-japanese-authoring.test.mjs"
       - "tests/phase25-chinese-authoring.test.mjs"
       - "tests/phase26-chinese-depth.test.mjs"
+      - "tests/phase27-chinese-transfer.test.mjs"
+      - "apps/learner/src/phase27-chinese-transfer.ts"
       - "apps/learner/src/phase26-chinese-depth.ts"
       - "apps/learner/src/phase25-chinese-authoring.ts"
       - "apps/learner/src/phase24-japanese-authoring.ts"
@@ -65,7 +67,7 @@ jobs:
         with:
           node-version: "24"
       - name: Shared lesson model tests without dependencies
-        run: node --experimental-strip-types --test tests/phase03-learner-model.test.mjs tests/phase04-teaching.test.mjs tests/phase05-player-state.test.mjs tests/phase06-exercises.test.mjs tests/phase07-practice.test.mjs tests/phase08-independent-transfer.test.mjs tests/phase09-writing-revision.test.mjs tests/phase11-draft-guard.test.mjs tests/phase12-source-contrast.test.mjs tests/phase13-independent-depth.test.mjs tests/phase14-source-coverage.test.mjs tests/phase15-multi-lesson.test.mjs tests/phase16-source-evidence.test.mjs tests/phase17-cross-source.test.mjs tests/phase18-next-source.test.mjs tests/phase19-application-paths.test.mjs tests/phase20-writing-review.test.mjs tests/phase21-source-followups.test.mjs tests/phase22-source-intake.test.mjs tests/phase23-french-authoring.test.mjs tests/phase24-japanese-authoring.test.mjs tests/phase25-chinese-authoring.test.mjs tests/phase26-chinese-depth.test.mjs tests/phase02-lesson-contract.test.mjs
+        run: node --experimental-strip-types --test tests/phase03-learner-model.test.mjs tests/phase04-teaching.test.mjs tests/phase05-player-state.test.mjs tests/phase06-exercises.test.mjs tests/phase07-practice.test.mjs tests/phase08-independent-transfer.test.mjs tests/phase09-writing-revision.test.mjs tests/phase11-draft-guard.test.mjs tests/phase12-source-contrast.test.mjs tests/phase13-independent-depth.test.mjs tests/phase14-source-coverage.test.mjs tests/phase15-multi-lesson.test.mjs tests/phase16-source-evidence.test.mjs tests/phase17-cross-source.test.mjs tests/phase18-next-source.test.mjs tests/phase19-application-paths.test.mjs tests/phase20-writing-review.test.mjs tests/phase21-source-followups.test.mjs tests/phase22-source-intake.test.mjs tests/phase23-french-authoring.test.mjs tests/phase24-japanese-authoring.test.mjs tests/phase25-chinese-authoring.test.mjs tests/phase26-chinese-depth.test.mjs tests/phase27-chinese-transfer.test.mjs tests/phase02-lesson-contract.test.mjs
       - name: Install only public preview dependencies, not the Hub's private Account package
         working-directory: apps/learner
         run: npm install --ignore-scripts --no-audit --no-fund --no-package-lock
