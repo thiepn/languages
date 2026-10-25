@@ -51,6 +51,23 @@ export interface ChineseReconstructionV1 {
     readonly instruction:string;readonly criteria:readonly [string,string,string];
   };
 }
+export interface ChineseSequenceV1 {
+  /** A newly authored practical context, never a claim of a source conversation. */
+  readonly order:{
+    readonly instruction:string;
+    readonly tokens:readonly [string,string,string];
+    readonly expected:readonly [string,string,string];
+    readonly misconception:readonly [string,string,string];
+    readonly feedback:string;
+  };
+  readonly shiftedReading:{
+    readonly context:string;readonly question:string;
+    readonly correctQuote:string;readonly wrongQuote:string;readonly feedback:string;
+  };
+  readonly independentDialogue:{
+    readonly instruction:string;readonly criteria:readonly [string,string,string];
+  };
+}
 export interface SourceAuthoredIntake {
   readonly id:string;
   readonly languageId:"fr"|"ja"|"zh";
@@ -72,6 +89,7 @@ export interface SourceAuthoredIntake {
   readonly chineseExpansion?:ChineseExpansionV1;
   readonly chineseDepth?:ChineseDepthV1;
   readonly chineseReconstruction?:ChineseReconstructionV1;
+  readonly chineseSequence?:ChineseSequenceV1;
 }
 const ref=(lessonId:string,sourceId:string,quote:string):PinnedSourceQuote=>({lessonId,sourceId,quote});
 /** New authorial situations and tasks reference *existing* verified original encounters, not newly invented source text. */
@@ -269,12 +287,32 @@ export function compilePinnedSourceIntake(
     fail("INVALID_CHINESE_RECONSTRUCTION_SOURCE");continue;
    }
   }
+  const sequence=spec.chineseSequence;
+  if(sequence){
+   const a=sequence.order,b=sequence.shiftedReading,c=sequence.independentDialogue;
+   const recognized=(quote:string)=>examples.some(e=>e.targetText===quote);
+   const permutes=(items:readonly string[])=>items.length===3&&
+     new Set(items).size===3&&items.every(recognized);
+   if(!chinese||!depth||!reconstruction||spec.languageId!=="zh"||
+      !permutes(a.tokens)||!permutes(a.expected)||!permutes(a.misconception)||
+      !a.expected.every(q=>a.tokens.includes(q))||
+      !a.misconception.every(q=>a.tokens.includes(q))||
+      a.expected.every((q,i)=>q===a.misconception[i])||
+      !recognized(b.correctQuote)||!recognized(b.wrongQuote)||
+      b.correctQuote===b.wrongQuote||
+      !Array.isArray(c.criteria)||c.criteria.length!==3||
+      [a.instruction,a.feedback,b.context,b.question,b.feedback,c.instruction,...c.criteria]
+        .some(t=>typeof t!=="string"||t.trim().length<36)){
+    fail("INVALID_CHINESE_SOURCE_SEQUENCE");continue;
+   }
+  }
   const original=bundles.find(b=>b.lesson.id===spec.encounters[0].lessonId)!;
   if(original.plugin.languageId!==spec.languageId){fail("PLUGIN_LANGUAGE_DRIFT");continue;}
   const suffix=["guided-choice","independent-reading","independent-writing",
     ...(expansion?["guided-cloze","independent-situation"]:[]),...(chinese?["independent-tone"]:[]),
     ...(depth?["guided-repair","independent-context-reading","independent-rewrite"]:[]),
-    ...(reconstruction?["guided-reconstruct","independent-role-switch","independent-new-dialogue"]:[])] as const;
+    ...(reconstruction?["guided-reconstruct","independent-role-switch","independent-new-dialogue"]:[]),
+    ...(sequence?["independent-sequence","independent-shifted-reading","independent-fourth-dialogue"]:[])] as const;
   const guidedId=spec.id+":guided-choice";
   const readingId=spec.id+":independent-reading";
   const writingId=spec.id+":independent-writing";
@@ -419,8 +457,54 @@ export function compilePinnedSourceIntake(
     explanation:"Third original learner-authored dialogue. No automatic grammar, pronunciation, HSK or proficiency grade.",
     rubric:[...reconstruction.independentDialogue.criteria]
   }]:[];
+  const orderedEvidence:ExerciseV1[]=sequence?[{
+    ...eBase(spec.id+":independent-sequence","independent",
+      sequence.order.instruction,sources,"formative-recall","comprehension"),
+    kind:"ordering",tokens:[...sequence.order.tokens],normalization:"literal",grading:"exact",
+    acceptedAnswers:[sequence.order.expected.map(q=>sequence.order.tokens.indexOf(q)).join(",")],
+    explanation:"Compare the intended new scenario order with each unmodified, originally attested source excerpt.",
+    misconceptions:[{
+      answer:sequence.order.misconception.map(q=>sequence.order.tokens.indexOf(q)).join(","),
+      feedback:sequence.order.feedback
+    }],
+    sourceAid:{
+      targetText:sequence.order.expected[0],
+      meaning:examples.find(e=>e.targetText===sequence.order.expected[0])!.meaning,
+      cue:sequence.order.feedback
+    }
+  }]:[];
+  const shiftedReading:ExerciseV1[]=sequence?[{
+    ...eBase(spec.id+":independent-shifted-reading","independent",
+      sequence.shiftedReading.question,
+      [exerciseRefs[sequence.shiftedReading.correctQuote]!],
+      "formative-recognition","comprehension"),
+    kind:"reading",passage:"New authored follow-up, not a source dialogue: "+
+      sequence.shiftedReading.context+"\nThree original Chinese snippets with verified written Pinyin:\n"+
+      examples.map(e=>e.targetText+" — "+e.reading).join("\n"),
+    question:sequence.shiftedReading.question,
+    options:allQuotes,acceptedAnswers:[sequence.shiftedReading.correctQuote],
+    normalization:"literal",grading:"exact",
+    explanation:"Use the original source expressions for a changed communicative purpose.",
+    misconceptions:[{
+      answer:sequence.shiftedReading.wrongQuote,
+      feedback:sequence.shiftedReading.feedback
+    }],
+    sourceAid:{
+      targetText:sequence.shiftedReading.correctQuote,
+      meaning:examples.find(e=>e.targetText===sequence.shiftedReading.correctQuote)!.meaning,
+      cue:sequence.shiftedReading.feedback
+    }
+  }]:[];
+  const fourthDialogue:ExerciseV1[]=sequence?[{
+    ...eBase(spec.id+":independent-fourth-dialogue","independent",
+      sequence.independentDialogue.instruction,sources,
+      "ungraded-production","writing"),
+    kind:"free-production",grading:"ungraded",
+    explanation:"Original learner-authored dialogue for the new situation; no proficiency, speaking or review grade.",
+    rubric:[...sequence.independentDialogue.criteria]
+  }]:[];
   const candidate:LessonBundleV1={
-   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":reconstruction?"phase27-chinese-source-authored-internal-v1":depth?"phase26-chinese-source-authored-internal-v1":chinese?"phase25-chinese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
+   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":sequence?"phase28-chinese-source-authored-internal-v1":reconstruction?"phase27-chinese-source-authored-internal-v1":depth?"phase26-chinese-source-authored-internal-v1":chinese?"phase25-chinese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
     title:spec.title,objective:{statement:spec.objective,skillDimension:"comprehension"},
     prerequisiteLessonIds:[...new Set(spec.encounters.map(x=>x.lessonId))],publication:"internal-fixture",
     sourceIds:sources,sources:provenance,steps:[
@@ -431,10 +515,10 @@ export function compilePinnedSourceIntake(
       ...(expansion?[{id:spec.id+":grammar",type:"explain" as const,heading:expansion.grammarHeading,
         explanation:expansion.grammarExplanation,conceptIds:[]}]:[]),
      {id:spec.id+":guided",type:"guided",exerciseIds:[guidedId,...extraGuided.map(e=>e.id),...depthGuided.map(e=>e.id),...reconstructedGuided.map(e=>e.id)]},
-     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...depthReading.map(e=>e.id),...reconstructedReading.map(e=>e.id),...extraIndependent.map(e=>e.id),...extraTone.map(e=>e.id),writingId,...depthWriting.map(e=>e.id),...reconstructedWriting.map(e=>e.id)]},
+     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...depthReading.map(e=>e.id),...reconstructedReading.map(e=>e.id),...orderedEvidence.map(e=>e.id),...shiftedReading.map(e=>e.id),...extraIndependent.map(e=>e.id),...extraTone.map(e=>e.id),writingId,...depthWriting.map(e=>e.id),...reconstructedWriting.map(e=>e.id),...fourthDialogue.map(e=>e.id)]},
      {id:spec.id+":reflection",type:"reflect",feedback:spec.reflection}
     ]},
-   plugin:original.plugin,exercises:[guided,...extraGuided,...depthGuided,...reconstructedGuided,reading,...depthReading,...reconstructedReading,...extraIndependent,...extraTone,writing,...depthWriting,...reconstructedWriting]
+   plugin:original.plugin,exercises:[guided,...extraGuided,...depthGuided,...reconstructedGuided,reading,...depthReading,...reconstructedReading,...orderedEvidence,...shiftedReading,...extraIndependent,...extraTone,writing,...depthWriting,...reconstructedWriting,...fourthDialogue]
   };
   const validation=validateLessonBundleV1(candidate);
   if(validation.length){fail("LESSON_SCHEMA_INVALID:"+validation[0]?.code);continue;}
