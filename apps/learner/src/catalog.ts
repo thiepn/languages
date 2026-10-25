@@ -7,6 +7,7 @@ import {compilePinnedSourceIntake,PHASE22_AUTHORING} from "./source-intake";
 import {PHASE23_FRENCH_AUTHORING} from "./phase23-french-authoring";
 import {PHASE24_JAPANESE_AUTHORING} from "./phase24-japanese-authoring";
 import {PHASE25_CHINESE_AUTHORING} from "./phase25-chinese-authoring";
+import {PHASE26_CHINESE_DEPTH} from "./phase26-chinese-depth";
 import {
   validateLessonBundleV1,
   type LessonBundleV1
@@ -70,6 +71,6 @@ export const SOURCE_COVERAGE_BY_LESSON:Readonly<Record<string,readonly SourceCov
   Object.freeze(Object.fromEntries(bundles.map(bundle=>[bundle.lesson.id,sourceCoverage(bundle)])));
 
 /** Explicitly separate, unpublished authoring candidates; excluded from source-app history and saved checkpoints. */
-const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING]);
-if(intake.issues.length||intake.candidates.length!==21)throw new Error("Internal source intake requires twenty-one verified candidate lessons");
+const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH]);
+if(intake.issues.length||intake.candidates.length!==25)throw new Error("Internal source intake requires twenty-five verified candidate lessons");
 export const INTAKE_CANDIDATES:readonly LessonBundleV1[]=Object.freeze(intake.candidates);
