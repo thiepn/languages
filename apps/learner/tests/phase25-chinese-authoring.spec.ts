@@ -74,6 +74,11 @@ test("320px Chinese self/other identity lesson remains in-memory and does not is
  await page.getByRole("button",{name:"Continue"}).click();
  await page.getByRole("textbox",{name:"Your answer"}).fill("的");
  await page.getByRole("button",{name:"Check answer"}).click();
+ await expect(page.locator(".feedback.incorrect")).toBeVisible();
+ await page.getByRole("button",{name:"Try again"}).click();
+ await page.getByRole("textbox",{name:"Your answer"}).fill("我的");
+ await page.getByRole("button",{name:"Check answer"}).click();
+ await expect(page.locator(".feedback.correct")).toBeVisible();
  await page.getByRole("button",{name:"Continue"}).click();
  await page.getByRole("radio",{name:"他是老师。",exact:true}).check();
  await page.getByRole("button",{name:"Check answer"}).click();
