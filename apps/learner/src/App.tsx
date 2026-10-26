@@ -54,11 +54,13 @@ function SourceComparisonView({comparison,languageId}:{
   </details>;
 }
 function ExerciseView({
-  frame,draft,result,onDraft,onSubmit,onRetry,onReveal,onRevise,headingRef
+  frame,draft,result,firstSubmittedDraft,submissionCount,onDraft,onSubmit,onRetry,onReveal,onRevise,headingRef
 }:{
   frame:LearningFrame;
   draft:string;
   result:AnswerResult|undefined;
+  firstSubmittedDraft?:string;
+  submissionCount:number;
   onDraft:(value:string)=>void;
   onSubmit:()=>void;
   onRetry:()=>void;
@@ -168,6 +170,11 @@ function ExerciseView({
     </div>:<p className="scoring-note">
       {exercise.kind==="free-production"?"This response is not automatically graded.":"Practice feedback only — no review grade is recorded."}
     </p>}
+    {exercise.kind==="free-production"&&result?.kind==="ungraded"&&submissionCount>1&&firstSubmittedDraft!==undefined&&
+      <details className="writing-draft-comparison">
+        <summary>Compare first draft</summary>
+        <blockquote lang={exercise.languageId}>{firstSubmittedDraft}</blockquote>
+      </details>}
     {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>}
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
     {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>{exercise.kind==="free-production"?"Review writing":"Check answer"}</button>}
@@ -427,7 +434,9 @@ export function App(){
                 <button type="button" className="secondary-action" onClick={returnToCourse}>Back to Course</button>
               </div>
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
-              <ExerciseView frame={frame} draft={currentDraft} result={currentResult} headingRef={activityHeadingRef}
+              <ExerciseView frame={frame} draft={currentDraft} result={currentResult}
+                firstSubmittedDraft={activeAttempt(player).firstSubmittedDraft}
+                submissionCount={activeAttempt(player).submissions} headingRef={activityHeadingRef}
                 onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>{
                   if(currentRepair)setSourceRepair({...currentRepair,revised:true});
                   if(applicationWriting)reviseApplicationWriting();else dispatch({type:"revise"});

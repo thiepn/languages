@@ -1,0 +1,84 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {fileURLToPath} from "node:url";
+import {createLessonPlayerState,reduceLessonPlayer,activeAttempt} from "../apps/learner/src/lesson-player.ts";
+import {framesFor,serializeDemoCheckpoint,parseDemoCheckpoint,checkpointId} from "../apps/learner/src/lesson-model.ts";
+import {compilePinnedSourceIntake} from "../apps/learner/src/source-intake.ts";
+import {PHASE31_CHINESE_HANDOFFS} from "../apps/learner/src/phase31-chinese-handoffs.ts";
+const load=p=>JSON.parse(readFileSync(fileURLToPath(new URL("../contracts/"+p,import.meta.url)),"utf8"));
+const originals=["phase02-source-lessons","phase15-source-lessons","phase17-cross-source-lessons","phase18-next-source-lessons"].flatMap(p=>load("fixtures/"+p+".json").bundles);
+const {candidates,issues}=compilePinnedSourceIntake(originals,PHASE31_CHINESE_HANDOFFS);
+test("first submitted learner-owned draft is retained only in volatile player memory across multiple revisions",()=>{
+ assert.deepEqual(issues,[]);
+ for(const bundle of candidates){
+  const frames=framesFor(bundle);
+  const i=frames.findIndex(f=>f.exercise?.id.endsWith(":independent-eighth-dialogue"));
+  assert.ok(i>0);
+  let p=createLessonPlayerState(bundle,i);
+  const first="第一稿：学生交流。",second="第二稿：更换主语与听者。",third="第三稿：添加另一位来访者。";
+  p=reduceLessonPlayer(p,{type:"draft",value:first});
+  assert.equal(activeAttempt(p).firstSubmittedDraft,undefined);
+  p=reduceLessonPlayer(p,{type:"submit"});
+  assert.equal(activeAttempt(p).outcome?.kind,"ungraded");
+  assert.equal(activeAttempt(p).firstSubmittedDraft,first);
+  assert.equal(activeAttempt(p).submissions,1);
+  p=reduceLessonPlayer(p,{type:"revise"});
+  assert.equal(activeAttempt(p).outcome,undefined);
+  assert.equal(activeAttempt(p).firstSubmittedDraft,first);
+  p=reduceLessonPlayer(p,{type:"draft",value:second});
+  p=reduceLessonPlayer(p,{type:"submit"});
+  assert.equal(activeAttempt(p).firstSubmittedDraft,first);
+  assert.equal(activeAttempt(p).draft,second);
+  assert.equal(activeAttempt(p).outcome?.kind,"ungraded");
+  assert.equal(activeAttempt(p).submissions,2);
+  p=reduceLessonPlayer(p,{type:"revise"});
+  p=reduceLessonPlayer(p,{type:"draft",value:third});
+  p=reduceLessonPlayer(p,{type:"submit"});
+  assert.equal(activeAttempt(p).firstSubmittedDraft,first);
+  assert.equal(activeAttempt(p).draft,third);
+  assert.equal(activeAttempt(p).submissions,3);
+  assert.equal(activeAttempt(p).outcome?.rubric.length,3);
+  const earlier=reduceLessonPlayer(p,{type:"previous"});
+  assert.equal(reduceLessonPlayer(earlier,{type:"next"}).attempts[frames[i].id].firstSubmittedDraft,first);
+  assert.deepEqual(reduceLessonPlayer(p,{type:"reset"}).attempts,{});
+  assert.deepEqual(reduceLessonPlayer(p,{type:"load",bundle,restoredIndex:i}).attempts,{});
+ }
+});
+
+test("first-draft comparison never captures multiple-choice wrong guesses or fabricated proficiency",()=>{
+ assert.deepEqual(issues,[]);
+ const b=candidates[0];
+ const frames=framesFor(b),i=frames.findIndex(f=>f.exercise?.kind==="reading");
+ let p=createLessonPlayerState(b,i);
+ p=reduceLessonPlayer(p,{type:"draft",value:"fake answer"});
+ p=reduceLessonPlayer(p,{type:"submit"});
+ assert.equal(activeAttempt(p).outcome?.kind,"incorrect");
+ assert.equal(activeAttempt(p).firstSubmittedDraft,undefined);
+ p=reduceLessonPlayer(p,{type:"retry"});
+ assert.equal(activeAttempt(p).firstSubmittedDraft,undefined);
+ const initial=JSON.stringify({version:1,positions:{[checkpointId(originals[0])]:0}});
+ const parsed=parseDemoCheckpoint(initial,originals);
+ assert.deepEqual(parsed,{[checkpointId(originals[0])]:0});
+ const snapshot=serializeDemoCheckpoint(parsed,originals);
+ assert.doesNotMatch(snapshot,/firstSubmittedDraft|draft|submissions|progress|reviewGrade|fsrs/);
+});
+
+test("unsubmitted writing remains protected during revision and max-length constraints apply without changing saved first draft",()=>{
+ assert.deepEqual(issues,[]);
+ const b=candidates[0],frames=framesFor(b);
+ const idx=frames.findIndex(f=>f.exercise?.kind==="free-production");
+ let p=createLessonPlayerState(b,idx);
+ p=reduceLessonPlayer(p,{type:"draft",value:"我写自己的对话"});
+ p=reduceLessonPlayer(p,{type:"submit"});
+ p=reduceLessonPlayer(p,{type:"revise"});
+ p=reduceLessonPlayer(p,{type:"draft",value:"修改，但还没有提交"});
+ assert.equal(activeAttempt(p).outcome,undefined);
+ assert.equal(activeAttempt(p).firstSubmittedDraft,"我写自己的对话");
+ const frozen=p;
+ p=reduceLessonPlayer(p,{type:"draft",value:"中".repeat(8193)});
+ assert.equal(p,frozen);
+ p=reduceLessonPlayer(p,{type:"submit"});
+ assert.equal(activeAttempt(p).outcome?.kind,"ungraded");
+ assert.equal(activeAttempt(p).firstSubmittedDraft,"我写自己的对话");
+});

@@ -16,6 +16,8 @@ export interface FrameAttempt {
   readonly draft: string;
   readonly outcome?: AnswerResult;
   readonly submissions: number;
+  /** Volatile initial submitted writing, only used to compare a later independent revision. */
+  readonly firstSubmittedDraft?: string;
 }
 export interface LessonPlayerState {
   readonly bundle: LessonBundleV1;
@@ -95,12 +97,14 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
     return updateAttempt(state,frame,{
       ...attempt,
       outcome:evaluateExercise(exercise,attempt.draft),
-      submissions:attempt.submissions+1
+      submissions:attempt.submissions+1,
+      ...(exercise.kind==="free-production"&&!attempt.firstSubmittedDraft?
+        {firstSubmittedDraft:attempt.draft}:{})
     });
   }
   if(action.type==="revise"){
     if(exercise.kind!=="free-production"||attempt.outcome?.kind!=="ungraded")return state;
-    return updateAttempt(state,frame,{draft:attempt.draft,submissions:attempt.submissions});
+    return updateAttempt(state,frame,{...attempt,draft:attempt.draft,outcome:undefined});
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
