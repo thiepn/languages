@@ -167,6 +167,28 @@ export interface ChineseNegotiationV1 {
     readonly instruction:string;readonly criteria:readonly [string,string,string];
   };
 }
+export interface ChineseClarificationV1 {
+  /** A listener diagnoses an attribution or speech-act error without inventing source text. */
+  readonly misunderstood:{
+    readonly context:string;readonly question:string;readonly correctQuote:string;
+    readonly wrongQuotes:readonly [string,string];
+    readonly feedback:readonly [string,string];
+  };
+  /** Independently reconstruct the attested correction in original Hanzi. */
+  readonly writtenRepair:{
+    readonly instruction:string;readonly quote:string;readonly sourceId:string;
+    readonly firstWrong:string;readonly firstFeedback:string;
+    readonly secondWrong:string;readonly secondFeedback:string;
+  };
+  /** Changed addressee makes the first misleading answer genuinely correct. */
+  readonly changedConsequence:{
+    readonly context:string;readonly question:string;readonly correctQuote:string;
+    readonly wrongQuote:string;readonly feedback:string;
+  };
+  readonly independentDialogue:{
+    readonly instruction:string;readonly criteria:readonly [string,string,string];
+  };
+}
 export interface SourceAuthoredIntake {
   readonly id:string;
   readonly languageId:"fr"|"ja"|"zh";
@@ -194,6 +216,7 @@ export interface SourceAuthoredIntake {
   readonly chineseRevision?:ChineseRevisionV1;
   readonly chineseRoleHandoff?:ChineseRoleHandoffV1;
   readonly chineseNegotiation?:ChineseNegotiationV1;
+  readonly chineseClarification?:ChineseClarificationV1;
 }
 const ref=(lessonId:string,sourceId:string,quote:string):PinnedSourceQuote=>({lessonId,sourceId,quote});
 /** New authorial situations and tasks reference *existing* verified original encounters, not newly invented source text. */
@@ -526,6 +549,27 @@ export function compilePinnedSourceIntake(
     fail("INVALID_CHINESE_NEGOTIATION");continue;
    }
   }
+  const clarification=spec.chineseClarification;
+  if(clarification){
+   const a=clarification.misunderstood,b=clarification.writtenRepair,
+     c=clarification.changedConsequence,d=clarification.independentDialogue;
+   const attested=(q:string)=>examples.some(e=>e.targetText===q);
+   const three=(a:string,b:string,c:string)=>[a,b,c].every(attested)&&new Set([a,b,c]).size===3;
+   const prose=[a.context,a.question,...a.feedback,b.instruction,b.firstFeedback,b.secondFeedback,
+     c.context,c.question,c.feedback,d.instruction,...d.criteria];
+   if(!chinese||!depth||!reconstruction||!sequence||!conversation||!perspective||!revision||
+      !handoff||!negotiation||spec.languageId!=="zh"||
+      !Array.isArray(a.wrongQuotes)||a.wrongQuotes.length!==2||
+      !Array.isArray(a.feedback)||a.feedback.length!==2||
+      !three(a.correctQuote,...a.wrongQuotes)||
+      !three(b.quote,b.firstWrong,b.secondWrong)||
+      exerciseRefs[b.quote]!==b.sourceId||
+      c.correctQuote!==a.wrongQuotes[0]||c.wrongQuote!==a.correctQuote||
+      !Array.isArray(d.criteria)||d.criteria.length!==3||
+      prose.some(x=>typeof x!=="string"||x.trim().length<36)){
+    fail("INVALID_CHINESE_CLARIFICATION");continue;
+   }
+  }
   const original=bundles.find(b=>b.lesson.id===spec.encounters[0].lessonId)!;
   if(original.plugin.languageId!==spec.languageId){fail("PLUGIN_LANGUAGE_DRIFT");continue;}
   const suffix=["guided-choice","independent-reading","independent-writing",
@@ -537,7 +581,8 @@ export function compilePinnedSourceIntake(
     ...(perspective?["guided-final-repair","independent-after-switch-reading","independent-second-pinyin","independent-sixth-dialogue"]:[]),
     ...(revision?["independent-role-reading","independent-source-reconstruction","independent-third-sequence","independent-seventh-dialogue"]:[]),
     ...(handoff?["independent-intent-before","independent-intent-after","independent-fourth-sequence","independent-eighth-dialogue"]:[]),
-    ...(negotiation?["independent-opening","independent-interruption","independent-third-speaker","independent-fifth-sequence","independent-ninth-dialogue"]:[])] as const;
+    ...(negotiation?["independent-opening","independent-interruption","independent-third-speaker","independent-fifth-sequence","independent-ninth-dialogue"]:[]),
+    ...(clarification?["independent-listener-diagnosis","independent-attested-repair","independent-changed-addressee","independent-tenth-dialogue"]:[])] as const;
   const guidedId=spec.id+":guided-choice";
   const readingId=spec.id+":independent-reading";
   const writingId=spec.id+":independent-writing";
@@ -1019,8 +1064,78 @@ export function compilePinnedSourceIntake(
     explanation:"Third-party conversation repair and independent revision; no automatic HSK or native review grade.",
     rubric:[...negotiation.independentDialogue.criteria]
   }]:[];
+  const clarificationDiagnosis:ExerciseV1[]=clarification?[{
+    ...eBase(spec.id+":independent-listener-diagnosis","independent",
+      clarification.misunderstood.question,[exerciseRefs[clarification.misunderstood.correctQuote]!],
+      "formative-recognition","comprehension"),
+    kind:"reading",normalization:"literal",grading:"exact",
+    passage:"A listener detects an error in newly authored dialogue (not a source transcript): "+
+      clarification.misunderstood.context+
+      "\nSeparate attested Hanzi and exact original written Pinyin:\n"+
+      examples.map(e=>e.targetText+" — "+e.reading).join("\n"),
+    question:clarification.misunderstood.question,options:allQuotes,
+    acceptedAnswers:[clarification.misunderstood.correctQuote],
+    explanation:"Resolve the listener's explicit communicative need before choosing a source excerpt.",
+    misconceptions:clarification.misunderstood.wrongQuotes.map((answer,i)=>({
+      answer,feedback:clarification.misunderstood.feedback[i]!
+    })),
+    sourceAid:{
+      targetText:clarification.misunderstood.correctQuote,
+      meaning:examples.find(e=>e.targetText===clarification.misunderstood.correctQuote)!.meaning,
+      cue:clarification.misunderstood.feedback[0]
+    }
+  }]:[];
+  const clarificationWritten:ExerciseV1[]=clarification?[{
+    ...eBase(spec.id+":independent-attested-repair","independent",
+      clarification.writtenRepair.instruction,
+      [clarification.writtenRepair.sourceId],"formative-recall","writing"),
+    kind:"typed",normalization:"unicode-nfc",grading:"exact",
+    acceptedAnswers:[clarification.writtenRepair.quote],
+    explanation:"Reconstruct the unchanged source-attested Hanzi precisely, including its punctuation if present.",
+    misconceptions:[
+      {answer:clarification.writtenRepair.firstWrong,
+        feedback:clarification.writtenRepair.firstFeedback},
+      {answer:clarification.writtenRepair.secondWrong,
+        feedback:clarification.writtenRepair.secondFeedback}
+    ],
+    sourceAid:{
+      targetText:clarification.writtenRepair.quote,
+      meaning:examples.find(e=>e.targetText===clarification.writtenRepair.quote)!.meaning,
+      cue:clarification.writtenRepair.firstFeedback
+    }
+  }]:[];
+  const clarificationConsequence:ExerciseV1[]=clarification?[{
+    ...eBase(spec.id+":independent-changed-addressee","independent",
+      clarification.changedConsequence.question,
+      [exerciseRefs[clarification.changedConsequence.correctQuote]!],
+      "formative-recognition","comprehension"),
+    kind:"reading",normalization:"literal",grading:"exact",
+    passage:"Following the correction, the listener and purpose change in this newly authored scene (not an original dialogue): "+
+      clarification.changedConsequence.context+
+      "\nExact source expressions and their original tone-marked Pinyin:\n"+
+      examples.map(e=>e.targetText+" — "+e.reading).join("\n"),
+    question:clarification.changedConsequence.question,options:allQuotes,
+    acceptedAnswers:[clarification.changedConsequence.correctQuote],
+    explanation:"The previously incorrect excerpt now fits the newly stated addressee and intention.",
+    misconceptions:[{
+      answer:clarification.changedConsequence.wrongQuote,
+      feedback:clarification.changedConsequence.feedback
+    }],
+    sourceAid:{
+      targetText:clarification.changedConsequence.correctQuote,
+      meaning:examples.find(e=>e.targetText===clarification.changedConsequence.correctQuote)!.meaning,
+      cue:clarification.changedConsequence.feedback
+    }
+  }]:[];
+  const clarificationDialogue:ExerciseV1[]=clarification?[{
+    ...eBase(spec.id+":independent-tenth-dialogue","independent",
+      clarification.independentDialogue.instruction,sources,"ungraded-production","writing"),
+    kind:"free-production",grading:"ungraded",
+    explanation:"Independent listener-initiated correction with first-draft comparison and re-authoring, never a proficiency or review grade.",
+    rubric:[...clarification.independentDialogue.criteria]
+  }]:[];
   const candidate:LessonBundleV1={
-   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":negotiation?"phase32-chinese-source-authored-internal-v1":handoff?"phase31-chinese-source-authored-internal-v1":perspective?"phase30-chinese-source-authored-internal-v1":conversation?"phase29-chinese-source-authored-internal-v1":sequence?"phase28-chinese-source-authored-internal-v1":reconstruction?"phase27-chinese-source-authored-internal-v1":depth?"phase26-chinese-source-authored-internal-v1":chinese?"phase25-chinese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
+   lesson:{schemaVersion:1,id:spec.id,languageId:spec.languageId,contentVersion:french?"phase23-french-source-authored-internal-v1":japanese?"phase24-japanese-source-authored-internal-v1":clarification?"phase33-chinese-source-authored-internal-v1":negotiation?"phase32-chinese-source-authored-internal-v1":handoff?"phase31-chinese-source-authored-internal-v1":perspective?"phase30-chinese-source-authored-internal-v1":conversation?"phase29-chinese-source-authored-internal-v1":sequence?"phase28-chinese-source-authored-internal-v1":reconstruction?"phase27-chinese-source-authored-internal-v1":depth?"phase26-chinese-source-authored-internal-v1":chinese?"phase25-chinese-source-authored-internal-v1":"phase22-source-authored-internal-v1",
     title:spec.title,objective:{statement:spec.objective,skillDimension:"comprehension"},
     prerequisiteLessonIds:[...new Set(spec.encounters.map(x=>x.lessonId))],publication:"internal-fixture",
     sourceIds:sources,sources:provenance,steps:[
@@ -1031,10 +1146,10 @@ export function compilePinnedSourceIntake(
       ...(expansion?[{id:spec.id+":grammar",type:"explain" as const,heading:expansion.grammarHeading,
         explanation:expansion.grammarExplanation,conceptIds:[]}]:[]),
      {id:spec.id+":guided",type:"guided",exerciseIds:[guidedId,...extraGuided.map(e=>e.id),...depthGuided.map(e=>e.id),...reconstructedGuided.map(e=>e.id),...conversationRepair.map(e=>e.id),...perspectiveGuided.map(e=>e.id)]},
-     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...depthReading.map(e=>e.id),...reconstructedReading.map(e=>e.id),...orderedEvidence.map(e=>e.id),...shiftedReading.map(e=>e.id),...conversationOrder.map(e=>e.id),...conversationReading.map(e=>e.id),...perspectiveReading.map(e=>e.id),...extraIndependent.map(e=>e.id),...extraTone.map(e=>e.id),...perspectivePinyin.map(e=>e.id),writingId,...depthWriting.map(e=>e.id),...reconstructedWriting.map(e=>e.id),...fourthDialogue.map(e=>e.id),...fifthDialogue.map(e=>e.id),...perspectiveWriting.map(e=>e.id),...revisionReading.map(e=>e.id),...revisionReconstruction.map(e=>e.id),...revisionSequence.map(e=>e.id),...revisionDialogue.map(e=>e.id),...handoffReading.map(e=>e.id),...handoffOrder.map(e=>e.id),...handoffWriting.map(e=>e.id),...negotiatedReadings.map(e=>e.id),...negotiatedObserver.map(e=>e.id),...negotiatedOrder.map(e=>e.id),...negotiatedWriting.map(e=>e.id)]},
+     {id:spec.id+":independent",type:"independent",exerciseIds:[readingId,...depthReading.map(e=>e.id),...reconstructedReading.map(e=>e.id),...orderedEvidence.map(e=>e.id),...shiftedReading.map(e=>e.id),...conversationOrder.map(e=>e.id),...conversationReading.map(e=>e.id),...perspectiveReading.map(e=>e.id),...extraIndependent.map(e=>e.id),...extraTone.map(e=>e.id),...perspectivePinyin.map(e=>e.id),writingId,...depthWriting.map(e=>e.id),...reconstructedWriting.map(e=>e.id),...fourthDialogue.map(e=>e.id),...fifthDialogue.map(e=>e.id),...perspectiveWriting.map(e=>e.id),...revisionReading.map(e=>e.id),...revisionReconstruction.map(e=>e.id),...revisionSequence.map(e=>e.id),...revisionDialogue.map(e=>e.id),...handoffReading.map(e=>e.id),...handoffOrder.map(e=>e.id),...handoffWriting.map(e=>e.id),...negotiatedReadings.map(e=>e.id),...negotiatedObserver.map(e=>e.id),...negotiatedOrder.map(e=>e.id),...negotiatedWriting.map(e=>e.id),...clarificationDiagnosis.map(e=>e.id),...clarificationWritten.map(e=>e.id),...clarificationConsequence.map(e=>e.id),...clarificationDialogue.map(e=>e.id)]},
      {id:spec.id+":reflection",type:"reflect",feedback:spec.reflection}
     ]},
-   plugin:original.plugin,exercises:[guided,...extraGuided,...depthGuided,...reconstructedGuided,...conversationRepair,...perspectiveGuided,reading,...depthReading,...reconstructedReading,...orderedEvidence,...shiftedReading,...conversationOrder,...conversationReading,...perspectiveReading,...extraIndependent,...extraTone,...perspectivePinyin,writing,...depthWriting,...reconstructedWriting,...fourthDialogue,...fifthDialogue,...perspectiveWriting,...revisionReading,...revisionReconstruction,...revisionSequence,...revisionDialogue,...handoffReading,...handoffOrder,...handoffWriting,...negotiatedReadings,...negotiatedObserver,...negotiatedOrder,...negotiatedWriting]
+   plugin:original.plugin,exercises:[guided,...extraGuided,...depthGuided,...reconstructedGuided,...conversationRepair,...perspectiveGuided,reading,...depthReading,...reconstructedReading,...orderedEvidence,...shiftedReading,...conversationOrder,...conversationReading,...perspectiveReading,...extraIndependent,...extraTone,...perspectivePinyin,writing,...depthWriting,...reconstructedWriting,...fourthDialogue,...fifthDialogue,...perspectiveWriting,...revisionReading,...revisionReconstruction,...revisionSequence,...revisionDialogue,...handoffReading,...handoffOrder,...handoffWriting,...negotiatedReadings,...negotiatedObserver,...negotiatedOrder,...negotiatedWriting,...clarificationDiagnosis,...clarificationWritten,...clarificationConsequence,...clarificationDialogue]
   };
   const validation=validateLessonBundleV1(candidate);
   if(validation.length){fail("LESSON_SCHEMA_INVALID:"+validation[0]?.code);continue;}

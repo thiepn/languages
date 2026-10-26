@@ -1,0 +1,35 @@
+# Phase 33 — listener-led Chinese clarification (unpublished)
+
+## Source and existing product boundary
+
+The final Phase 32 branch head before this work, `731e754e8280538f3e2306169f1065eb9e8cd71f`, is a fast-forward descendant of the user-specified `4768b434e27d60680bf026f830df72d4e436bdd2`. It already includes the original Phase 32 three-speaker scenarios, usable writing restoration and in-place original token ordering. Phase 32 isolated browser suites were **cancelled**, not valid proof of failure or success; root compatibility was blocked independently by the existing private Account SSH dependency. The Phase 31 isolated suite did pass 169 Node, TypeScript/Vite and 845 browser cases. Preserve all newer descendants and never rewrite the branch.
+
+The only sources for the new Chinese lessons are three **separately attested** original DEMO_ONLY Chinese expressions per lesson from `thiepn/chinese@9688e7354142b7127fd5f6eb69b03b595a437008:src/demo-lessons.mjs`, already admitted under the Phase 16 original quotation whitelist and Phase 25 exact original Hanzi/tone-marked written Pinyin. These original snippets remain independent of the **newly authored conversation contexts**, speaker turns, questions, correction scenarios and learner-produced writing. No claim of a source transcript, recorded fluent conversation, licensed HSK content, audio recognition, official proficiency, native Chinese FSRS score or grade is made. Rights remain `review-required`, `editorialReview:pending`, `redistributionVerified:false` (internal editorial fixtures, no public release).
+
+## Substantive four-scenario learning batch
+
+1. **The listener challenges the moderator's group:** A seminar attendee mistakenly interprets a coordinator's report about the coordinator's own group as an address to the visitors. The correct source quotation is `我们`, not `你们` or singular `我`. The attendee then changes the purpose to addressing the visitors, making the previously incorrect `你们` correct.
+2. **A customer corrects the vendor's question:** After greeting an existing customer, a vendor is asked about the customer's preference for tea. Another `你好` or the declarative `这个苹果很好吃。` is wrong; the exact source `你喜欢喝茶吗？` with its original question particle fits. When a genuinely new person enters, `你好` becomes correct instead.
+3. **A student challenges a mistaken identity:** A clerk's explicit but false teacher-role assumption requires the original short negation `不是`, not the positive student or third-person teacher statements. After the denial, registration requires the affirmative source `我是学生。`.
+4. **An owner corrects a badge-role misunderstanding:** An owner challenges a clerk who mistakes badge possession for a matching professional identity. The correct source claim is `我的`, not `也是` or `不是`; once the clerk asks about a colleague's actual shared job, `也是` becomes appropriate.
+
+Four new original-source-pinned `ChineseClarificationV1` editorial lessons are compiled through the same Phase 22–32 original `compilePinnedSourceIntake`, `LessonV1`/`ExerciseV1`/`LanguagePluginV1` and Phase 05 player. Each inherits the 36 proven original-engine activities and adds **four genuinely different learner tasks**:
+
+- A listener-diagnosis `reading` with the exact original Hanzi and Pinyin in the evidence passage, **two distinct incorrect source expressions**, independent precise feedback for each and the correct meaning of the original source.
+- A `typed` exact-source Hanzi reconstruction with two independently corrected authentic wrong-source alternatives, including preservation of original punctuation.
+- A changed-addressee `reading` where the first scenario's previously wrong source expression is **now correct**, with an explicit explanation for why the earlier correct source excerpt is no longer appropriate.
+- A **tenth** learner-authored ungraded multi-speaker clarification and genuinely independent revision prompt. The existing page-memory-first-draft comparison, restore, writing criteria, revise and resubmit controls remain available. No automatic writing score is asserted or emitted.
+
+The 4 new lessons contain **40 original-engine exercise IDs, 45 player frames and 10 ungraded written tasks each**, for **160 additional unique editorial-only exercises**. The internal catalog grows from **49 to 53**, with all preceding 49 bundles and original 12 canonical lessons/126 exercises **unmodified**. No duplicate existing candidate, original Chinese native learner state, storage key, FSRS/review scheduler, Account/Core/Hub authority, login, data migration, rights approval or release mechanism.
+
+## Source compiler and adversarial protection
+
+`ChineseClarificationV1` is a **fail-closed optional section** requiring existing Phase 25–32 Chinese source evidence and skill contracts. All one correct and two wrong diagnosis choices must be *distinct and exactly source-attested*, and the written repair must itself be one of these original source examples with the exact matching source ID and two distinct wrong attested quotes. The subsequent change of addressee must promote exactly the first scenario's first wrong source expression into the new correct answer, making the former correct answer wrong. Authored practical contexts, questions, distinct misconception feedback and writing self-review criteria must all contain substantive text. The compiler continues to enforce source version, immutable IDs, rights and non-scheduling/non-proficiency evidence.
+
+An executable Node suite checks the identity of all 49 earlier candidates, original 12/126, four 40-exercise new bundles, verified source/Pinyin/rights, two independently wrong source choices in listening comprehension and written correction, source-answer reversal after the actual speaker switch, ten real original-player writing/revision/restore cycles, 14 hostile source/answer/rights/locale/reading mutations, and original canonical checkpoint-only storage. Existing Phase 32 Playwright full-lesson journeys are extended as *separate new Phase 33 tests* for all four source situations, desktop/mobile Chromium/Firefox/WebKit and a 320px case. The tests genuinely choose wrong attested source answers, retry, complete the original Hanzi reconstruction, repair the changed addressee and revise/restore the tenth original-player writing response.
+
+The exact-head qualification GitHub Actions job executes the Node suite, strict TypeScript/Vite, genuine browser matrix and independent root compatibility. The original private Account SSH dependency remains an upstream limitation, not a reason to weaken learner assertions or revise deployment infrastructure.
+
+## Phase 34
+
+Check the actual completed exact-head Phase 33 workflow. Repair reproduced learner defects only, then continue nonduplicative original-source Chinese pragmatic listening/reading, genuine dialog revision and precise misconception distinctions within the existing rights-held and local-first learning architecture. Same original draft PR only; no second PR, merge, rebase, rights approval, activation or deployment.
