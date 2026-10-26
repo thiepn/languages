@@ -266,6 +266,14 @@ async function journey(page:Page,c:C){
  await page.getByText("Compare first draft").click();
  await expect(page.locator(".writing-draft-comparison")).toContainText(initial);
  await expect(page.getByRole("textbox",{name:"Your response"})).toHaveValue(revisedNinth);
+ await page.getByRole("button",{name:"Restore first draft"}).click();
+ await expect(page.getByRole("textbox",{name:"Your response"})).toHaveValue(initial);
+ await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
+ await page.getByRole("textbox",{name:"Your response"}).fill(revisedNinth+" 调整后的第三稿。");
+ await page.getByRole("button",{name:"Review writing"}).click();
+ await expect(page.getByText("Ungraded practice")).toBeVisible();
+ await page.getByText("Compare first draft").click();
+ await expect(page.locator(".writing-draft-comparison")).toContainText(initial);
  await page.getByRole("button",{name:"Continue"}).click();
  await page.getByRole("button",{name:"Finish preview"}).click();
  await expect(page.getByRole("heading",{name:"Preview complete"})).toBeVisible();

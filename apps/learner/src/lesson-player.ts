@@ -32,6 +32,7 @@ export type LessonPlayerAction =
   | {readonly type:"submit"}
   | {readonly type:"retry"}
   | {readonly type:"revise"}
+  | {readonly type:"restore-first-draft"}
   | {readonly type:"reveal"}
   | {readonly type:"next"}
   | {readonly type:"previous"}
@@ -106,6 +107,13 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
     if(exercise.kind!=="free-production"||attempt.outcome?.kind!=="ungraded")return state;
     const {outcome:_previousOutcome,...unsent}=attempt;
     return updateAttempt(state,frame,unsent);
+  }
+  if(action.type==="restore-first-draft"){
+    if(exercise.kind!=="free-production"||attempt.outcome?.kind!=="ungraded"||
+      attempt.submissions<2||!attempt.firstSubmittedDraft||
+      attempt.firstSubmittedDraft===attempt.draft)return state;
+    const {outcome:_previousOutcome,...editable}=attempt;
+    return updateAttempt(state,frame,{...editable,draft:attempt.firstSubmittedDraft});
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;

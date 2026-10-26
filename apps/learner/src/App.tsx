@@ -54,7 +54,7 @@ function SourceComparisonView({comparison,languageId}:{
   </details>;
 }
 function ExerciseView({
-  frame,draft,result,firstSubmittedDraft,submissionCount,onDraft,onSubmit,onRetry,onReveal,onRevise,headingRef
+  frame,draft,result,firstSubmittedDraft,submissionCount,onDraft,onSubmit,onRetry,onReveal,onRevise,onRestoreFirstDraft,headingRef
 }:{
   frame:LearningFrame;
   draft:string;
@@ -66,6 +66,7 @@ function ExerciseView({
   onRetry:()=>void;
   onReveal:()=>void;
   onRevise:()=>void;
+  onRestoreFirstDraft:()=>void;
   headingRef:RefObject<HTMLHeadingElement|null>;
 }){
   const composing=useRef(false);
@@ -174,6 +175,7 @@ function ExerciseView({
       <details className="writing-draft-comparison">
         <summary>Compare first draft</summary>
         <blockquote lang={exercise.languageId}>{firstSubmittedDraft}</blockquote>
+        {draft!==firstSubmittedDraft&&<button className="secondary-action" type="button" onClick={onRestoreFirstDraft}>Restore first draft</button>}
       </details>}
     {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>}
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
@@ -437,6 +439,7 @@ export function App(){
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult}
                 firstSubmittedDraft={activeAttempt(player).firstSubmittedDraft}
                 submissionCount={activeAttempt(player).submissions} headingRef={activityHeadingRef}
+                onRestoreFirstDraft={()=>dispatch({type:"restore-first-draft"})}
                 onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>{
                   if(currentRepair)setSourceRepair({...currentRepair,revised:true});
                   if(applicationWriting)reviseApplicationWriting();else dispatch({type:"revise"});
