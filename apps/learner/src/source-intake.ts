@@ -561,7 +561,7 @@ export function compilePinnedSourceIntake(
       !handoff||!negotiation||spec.languageId!=="zh"||
       !Array.isArray(a.wrongQuotes)||a.wrongQuotes.length!==2||
       !Array.isArray(a.feedback)||a.feedback.length!==2||
-      !three(a.correctQuote,...a.wrongQuotes)||
+      !three(a.correctQuote,a.wrongQuotes[0]!,a.wrongQuotes[1]!)||
       !three(b.quote,b.firstWrong,b.secondWrong)||
       exerciseRefs[b.quote]!==b.sourceId||
       c.correctQuote!==a.wrongQuotes[0]||c.wrongQuote!==a.correctQuote||
