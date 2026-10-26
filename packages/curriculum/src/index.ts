@@ -101,3 +101,5 @@ export function topologicalCurriculumOrder(nodes: readonly CurriculumNode[]): re
   for (const node of nodes) visit(node);
   return ordered;
 }
+
+export * from "./level-catalog.js";
