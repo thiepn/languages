@@ -54,12 +54,13 @@ function SourceComparisonView({comparison,languageId}:{
   </details>;
 }
 function ExerciseView({
-  frame,draft,result,firstSubmittedDraft,submissionCount,onDraft,onSubmit,onRetry,onReveal,onRevise,onRestoreFirstDraft,headingRef
+  frame,draft,result,firstSubmittedDraft,latestRevisedDraft,submissionCount,onDraft,onSubmit,onRetry,onReveal,onRevise,onRestoreFirstDraft,onRestoreLastRevision,headingRef
 }:{
   frame:LearningFrame;
   draft:string;
   result:AnswerResult|undefined;
   firstSubmittedDraft?:string|undefined;
+  latestRevisedDraft?:string|undefined;
   submissionCount:number;
   onDraft:(value:string)=>void;
   onSubmit:()=>void;
@@ -67,6 +68,7 @@ function ExerciseView({
   onReveal:()=>void;
   onRevise:()=>void;
   onRestoreFirstDraft:()=>void;
+  onRestoreLastRevision:()=>void;
   headingRef:RefObject<HTMLHeadingElement|null>;
 }){
   const composing=useRef(false);
@@ -187,6 +189,10 @@ function ExerciseView({
         <blockquote lang={exercise.languageId}>{firstSubmittedDraft}</blockquote>
         {draft!==firstSubmittedDraft&&<button className="secondary-action" type="button" onClick={onRestoreFirstDraft}>Restore first draft</button>}
       </details>}
+    {exercise.kind==="free-production"&&submissionCount>1&&
+      latestRevisedDraft!==undefined&&latestRevisedDraft!==draft&&
+      (result===undefined||result.kind==="ungraded")&&
+      <button className="secondary-action" type="button" onClick={onRestoreLastRevision}>Restore last revised draft</button>}
     {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>}
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
     {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>{exercise.kind==="free-production"?"Review writing":"Check answer"}</button>}
@@ -448,8 +454,10 @@ export function App(){
             </section>:frame?.type==="teaching"?<TeachingView frame={frame} languageId={selected} headingRef={activityHeadingRef}/>:frame?
               <ExerciseView frame={frame} draft={currentDraft} result={currentResult}
                 firstSubmittedDraft={activeAttempt(player).firstSubmittedDraft}
+                latestRevisedDraft={activeAttempt(player).latestRevisedDraft}
                 submissionCount={activeAttempt(player).submissions} headingRef={activityHeadingRef}
                 onRestoreFirstDraft={()=>dispatch({type:"restore-first-draft"})}
+                onRestoreLastRevision={()=>dispatch({type:"restore-last-revision"})}
                 onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>{
                   if(currentRepair)setSourceRepair({...currentRepair,revised:true});
                   if(applicationWriting)reviseApplicationWriting();else dispatch({type:"revise"});

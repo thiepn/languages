@@ -18,6 +18,8 @@ export interface FrameAttempt {
   readonly submissions: number;
   /** Volatile initial submitted writing, only used to compare a later independent revision. */
   readonly firstSubmittedDraft?: string;
+  /** Last independently revised submission, retained only in the current tab until reset/load. */
+  readonly latestRevisedDraft?: string;
 }
 export interface LessonPlayerState {
   readonly bundle: LessonBundleV1;
@@ -33,6 +35,7 @@ export type LessonPlayerAction =
   | {readonly type:"retry"}
   | {readonly type:"revise"}
   | {readonly type:"restore-first-draft"}
+  | {readonly type:"restore-last-revision"}
   | {readonly type:"reveal"}
   | {readonly type:"next"}
   | {readonly type:"previous"}
@@ -100,7 +103,9 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
       outcome:evaluateExercise(exercise,attempt.draft),
       submissions:attempt.submissions+1,
       ...(exercise.kind==="free-production"&&!attempt.firstSubmittedDraft?
-        {firstSubmittedDraft:attempt.draft}:{})
+        {firstSubmittedDraft:attempt.draft}:{}),
+      ...(exercise.kind==="free-production"&&attempt.firstSubmittedDraft&&
+        attempt.firstSubmittedDraft!==attempt.draft?{latestRevisedDraft:attempt.draft}:{})
     });
   }
   if(action.type==="revise"){
@@ -114,6 +119,14 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
       attempt.firstSubmittedDraft===attempt.draft)return state;
     const {outcome:_previousOutcome,...editable}=attempt;
     return updateAttempt(state,frame,{...editable,draft:attempt.firstSubmittedDraft});
+  }
+  if(action.type==="restore-last-revision"){
+    if(exercise.kind!=="free-production"||
+      (attempt.outcome!==undefined&&attempt.outcome.kind!=="ungraded")||
+      attempt.submissions<2||!attempt.latestRevisedDraft||
+      attempt.latestRevisedDraft===attempt.draft)return state;
+    const {outcome:_previousOutcome,...editable}=attempt;
+    return updateAttempt(state,frame,{...editable,draft:attempt.latestRevisedDraft});
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
