@@ -251,7 +251,14 @@ async function journey(page:Page,c:C){
   await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
   await page.getByRole("button",{name:"Try again"}).click();
  }
- await order(page,negotiation.fifth);
+ // Reorder authentic source evidence in place, rather than undoing the whole answer.
+ const rearranged=[negotiation.fifth[1],negotiation.fifth[0],negotiation.fifth[2]];
+ for(const word of rearranged)await page.getByRole("button",{name:"Add "+word,exact:true}).click();
+ await expect(page.locator(".chosen-tokens li")).toHaveCount(3);
+ await page.getByRole("button",{name:"Move "+negotiation.fifth[0]+" earlier"}).click();
+ await expect(page.locator(".chosen-tokens li").first()).toContainText(negotiation.fifth[0]);
+ await expect(page.getByRole("button",{name:"Move "+negotiation.fifth[0]+" earlier"})).toBeDisabled();
+ await page.getByRole("button",{name:"Check answer"}).click();
  await expect(page.locator(".feedback.correct")).toBeVisible();
  await page.getByRole("button",{name:"Continue"}).click();
  const initial="第一次沟通：报告自己的组、回应另一组、最后由第三人澄清。";

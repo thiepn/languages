@@ -67,6 +67,21 @@ export function parseOrderingDraft(value:string,tokenCount:number):number[] {
   return indices.every(i=>i<tokenCount)&&new Set(indices).size===indices.length?indices:[];
 }
 
+/** Swap a chosen source excerpt by one position without discarding a partly built response.
+ * Reject malformed drafts, invalid indices and blocked boundary moves. */
+export function moveOrderingToken(value:string,tokenCount:number,position:number,direction:-1|1):string {
+  const order=parseOrderingDraft(value,tokenCount);
+  if(!Number.isSafeInteger(position)||position<0||position>=order.length||
+    (direction!==-1&&direction!==1)||position+direction<0||
+    position+direction>=order.length||!Number.isSafeInteger(tokenCount)||tokenCount<1||
+    (value!==""&&order.length!==value.split(",").length))return value;
+  const next=[...order];
+  const selected=next[position]!,adjacent=next[position+direction]!;
+  next[position]=adjacent;
+  next[position+direction]=selected;
+  return next.join(",");
+}
+
 /** Readable reveal, not opaque zero-based index IDs. */
 export function revealExercise(exercise: ExerciseV1):AnswerResult {
   if(exercise.kind==="free-production")return evaluateExercise(exercise,"");

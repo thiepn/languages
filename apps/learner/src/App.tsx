@@ -4,7 +4,7 @@ import type {ExerciseSourceComparisonV1} from "../../../packages/content-schema/
 import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance,hasUnsubmittedWriting} from "./lesson-player";
 import {
   checkpointId, DEMO_CHECKPOINT_KEY,
-  framesFor, parseOrderingDraft, parseDemoCheckpoint, serializeDemoCheckpoint
+  framesFor, parseOrderingDraft, moveOrderingToken, parseDemoCheckpoint, serializeDemoCheckpoint
 } from "./lesson-model";
 import {DEMO_BUNDLES,COURSE_BUNDLES,SOURCE_COVERAGE_BY_LESSON,INTAKE_CANDIDATES,LANGUAGES,languageLabel,type LanguageChoice} from "./catalog";
 import type {LessonBundleV1} from "../../../packages/content-schema/src/lesson-v1";
@@ -127,7 +127,17 @@ function ExerciseView({
       <div className="order-activity" aria-label="Arrange the parts in order">
         <p className="order-label">Selected order</p>
         <ol className="chosen-tokens" aria-live="polite">
-          {order.map(i=><li key={i} lang={exercise.languageId}>{exercise.tokens[i]}</li>)}
+          {order.map((i,position)=><li key={i} lang={exercise.languageId}>
+            <span>{exercise.tokens[i]}</span>
+            {result===undefined&&<span className="order-move-controls">
+              <button type="button" className="secondary-action" disabled={position===0}
+                aria-label={"Move "+exercise.tokens[i]+" earlier"}
+                onClick={()=>onDraft(moveOrderingToken(draft,exercise.tokens.length,position,-1))}>↑</button>
+              <button type="button" className="secondary-action" disabled={position===order.length-1}
+                aria-label={"Move "+exercise.tokens[i]+" later"}
+                onClick={()=>onDraft(moveOrderingToken(draft,exercise.tokens.length,position,1))}>↓</button>
+            </span>}
+          </li>)}
         </ol>
         <fieldset disabled={result!==undefined} className="order-options">
           <legend>Choose the next part</legend>
