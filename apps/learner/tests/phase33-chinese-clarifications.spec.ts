@@ -82,6 +82,23 @@ const clarification={
   first:"我的",wrong:["也是","不是"],typed:"我的",other:["也是","不是"],
   after:"也是",afterWrong:"我的"}
 } as const;
+const counterfactual={
+ "The listener challenges the moderator's group":{
+  third:"我",thirdWrong:["我们","你们"],back:"我们",backWrong:["我","你们"],
+  typed:"你们",typedWrong:["我","我们"]},
+ "A customer corrects the vendor's question":{
+  third:"这个苹果很好吃。",thirdWrong:["你喜欢喝茶吗？","你好"],
+  back:"你喜欢喝茶吗？",backWrong:["这个苹果很好吃。","你好"],
+  typed:"你好",typedWrong:["你喜欢喝茶吗？","这个苹果很好吃。"]},
+ "A student challenges a mistaken identity":{
+  third:"他是老师。",thirdWrong:["不是","我是学生。"],
+  back:"不是",backWrong:["他是老师。","我是学生。"],
+  typed:"我是学生。",typedWrong:["不是","他是老师。"]},
+ "An owner corrects a badge-role misunderstanding":{
+  third:"也是",thirdWrong:["我的","不是"],
+  back:"我的",backWrong:["也是","不是"],
+  typed:"不是",typedWrong:["也是","我的"]}
+} as const;
 type C=typeof samples[number];
 async function choice(page:Page,answer:string){
  await page.getByRole("radio",{name:answer,exact:true}).check();
@@ -341,6 +358,54 @@ async function journey(page:Page,c:C){
  await page.getByRole("button",{name:"Review writing"}).click();
  await expect(page.getByText("Ungraded practice")).toBeVisible();
  await page.getByRole("button",{name:"Continue"}).click();
+
+ const cf=counterfactual[c.title];
+ await expect(page.locator(".reading-passage")).toContainText("new editorial practice, not source dialogue");
+ for(const wrong of cf.thirdWrong){
+  await page.getByRole("radio",{name:wrong,exact:true}).check();
+  await page.getByRole("button",{name:"Check answer"}).click();
+  await expect(page.locator(".feedback.incorrect")).toBeVisible();
+  await expect(page.locator(".source-aid")).toBeVisible();
+  await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
+  await page.getByRole("button",{name:"Try again"}).click();
+ }
+ await choice(page,cf.third);
+ await expect(page.locator(".reading-passage")).toContainText("new editorial practice, not source dialogue");
+ for(const wrong of cf.backWrong){
+  await page.getByRole("radio",{name:wrong,exact:true}).check();
+  await page.getByRole("button",{name:"Check answer"}).click();
+  await expect(page.locator(".feedback.incorrect")).toBeVisible();
+  await page.getByRole("button",{name:"Try again"}).click();
+ }
+ await choice(page,cf.back);
+ for(const wrong of cf.typedWrong){
+  await page.getByRole("textbox",{name:"Your answer"}).fill(wrong);
+  await page.getByRole("button",{name:"Check answer"}).click();
+  await expect(page.locator(".feedback.incorrect")).toBeVisible();
+  await expect(page.locator(".source-aid")).toBeVisible();
+  await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
+  await page.getByRole("button",{name:"Try again"}).click();
+ }
+ await fill(page,cf.typed);
+ const originalEleventh="第十一段第一稿：新发言者修改了原来的听者。";
+ const revisedEleventh="第十一段第二稿：调整说话人的角色，区分三个来源原句。";
+ const responseEleventh=page.getByRole("textbox",{name:"Your response"});
+ await responseEleventh.fill(originalEleventh);
+ await page.getByRole("button",{name:"Review writing"}).click();
+ await expect(page.getByText("Ungraded practice")).toBeVisible();
+ await page.getByRole("button",{name:"Revise writing"}).click();
+ await responseEleventh.fill(revisedEleventh);
+ await page.getByRole("button",{name:"Review writing"}).click();
+ await page.getByText("Compare first draft").click();
+ await expect(page.locator(".writing-draft-comparison")).toContainText(originalEleventh);
+ await expect(responseEleventh).toHaveValue(revisedEleventh);
+ await page.getByRole("button",{name:"Restore first draft"}).click();
+ await expect(responseEleventh).toHaveValue(originalEleventh);
+ await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
+ await responseEleventh.fill(revisedEleventh+" 第三次审核。");
+ await page.getByRole("button",{name:"Review writing"}).click();
+ await expect(page.getByText("Ungraded practice")).toBeVisible();
+ await page.getByRole("button",{name:"Continue"}).click();
  await page.getByRole("button",{name:"Finish preview"}).click();
  await expect(page.getByRole("heading",{name:"Preview complete"})).toBeVisible();
  await page.getByRole("button",{name:"Back to Course"}).click();
@@ -350,11 +415,11 @@ async function journey(page:Page,c:C){
  expect(keys.some(k=>k?.includes("phase33-"))).toBe(false);
 }
 for(const c of samples){
- test("Phase 33 Chinese listener-initiated repair, source-authentic correction and ten independent dialogues: "+c.title,async({page})=>{
+ test("Phase 33 Chinese listener correction, third-voice counterfactual and eleven authored dialogues: "+c.title,async({page})=>{
   await journey(page,c);
  });
 }
-test("Phase 33 320px listener-driven Chinese corrections and independent writing revision",async({page})=>{
+test("Phase 33 320px source-authentic counterfactual reading, Hanzi and eleven-dialogue revision",async({page})=>{
  await page.setViewportSize({width:320,height:568});
  await journey(page,samples[1]);
  expect(await page.evaluate(()=>document.documentElement.scrollWidth-document.documentElement.clientWidth)).toBeLessThanOrEqual(1);
