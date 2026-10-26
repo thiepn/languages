@@ -447,11 +447,11 @@ async function journey(page:Page,c:C){
  await expect(page.locator(".feedback.incorrect")).toBeVisible();
  await expect(page.locator(".source-aid")).toBeVisible();
  await page.getByRole("button",{name:"Try again"}).click();
- const unmarkedPinyin=finalTransfer.pinyin.normalize("NFD").replace(/[\\u0300-\\u036f]/gu,"");
+ const unmarkedPinyin=finalTransfer.pinyin.normalize("NFD").replace(/\p{M}/gu,"");
  await page.getByRole("textbox",{name:"Your answer"}).fill(unmarkedPinyin);
  await page.getByRole("button",{name:"Check answer"}).click();
  await expect(page.locator(".feedback.incorrect")).toBeVisible();
- await page.getByRole("button",{name:"Continue"})).toBeDisabled();
+ await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
  await page.getByRole("button",{name:"Try again"}).click();
  await fill(page,finalTransfer.pinyin);
  const firstTwelfth="第十二段第一稿：真实原文、三位说话者、不同的听者。";
