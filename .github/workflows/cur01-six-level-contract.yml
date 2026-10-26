@@ -11,18 +11,13 @@ concurrency:
 jobs:
   curriculum:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11.19.0
       - uses: actions/setup-node@v4
         with:
           node-version: 24.15.0
-      - run: pnpm install --no-frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm exec vitest run tests/curriculum.test.ts tests/level-catalog.test.ts
-      - run: pnpm build:hub
+      - name: Run source contract against actual TypeScript without Hub private dependencies
+        run: node --experimental-strip-types --test tests/cur01-level-catalog.test.mjs

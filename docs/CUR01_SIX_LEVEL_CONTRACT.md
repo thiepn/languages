@@ -8,4 +8,4 @@ Native Japanese CUR-01 reads the same six-category contract through an app-owned
 
 For CUR-02, adapt French and Chinese with the same levels without transforming HSK or JLPT scores into CEFR claims. Existing app authority and source-rights guards remain unchanged.
 
-Validation: `pnpm exec vitest run tests/level-catalog.test.ts tests/curriculum.test.ts` and root TypeScript/build checks when dependencies are available.
+Isolated qualification: `node --experimental-strip-types --test tests/cur01-level-catalog.test.mjs`. Additional Vitest and full root TypeScript/build checks require a working full-workspace install. The existing Hub pinned private Git dependency fails via `git@github.com` without SSH access on ordinary GitHub runners; this is not evidence of a CUR-01 code defect. Do not change Hub dependencies or report full typecheck as passing without executing it.
