@@ -59,7 +59,7 @@ function ExerciseView({
   frame:LearningFrame;
   draft:string;
   result:AnswerResult|undefined;
-  firstSubmittedDraft?:string;
+  firstSubmittedDraft?:string|undefined;
   submissionCount:number;
   onDraft:(value:string)=>void;
   onSubmit:()=>void;

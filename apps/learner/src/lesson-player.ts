@@ -104,7 +104,8 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
   }
   if(action.type==="revise"){
     if(exercise.kind!=="free-production"||attempt.outcome?.kind!=="ungraded")return state;
-    return updateAttempt(state,frame,{...attempt,draft:attempt.draft,outcome:undefined});
+    const {outcome:_previousOutcome,...unsent}=attempt;
+    return updateAttempt(state,frame,unsent);
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
