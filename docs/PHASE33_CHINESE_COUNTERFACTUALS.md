@@ -11,7 +11,7 @@ The optional `ChineseCounterfactualV1` adds **four** original-player tasks to ea
 3. An independent, exact-character **typed reconstruction** of the remaining original source expression with its exact punctuation, source ID and two original-source misconception explanations.
 4. An **eleventh independently authored ungraded multi-speaker dialogue** in a changed context, with three grounded human self-review criteria. The original player continues to support compare-first-draft, explicit restore, revise, third submission and unchanged page-memory lifecycle.
 
-These are new useful learning steps, not merely more explanatory labels. The four situations are: an individual seminar objection following group/listener references; an apple question after a tea misunderstanding; identification of the actual teacher after rejecting a wrong badge; and a coworker's valid shared role before correcting a new false professional title. Each context is explicitly written as **editorial practice**, never attributed to an authentic source transcript.
+These are new useful learning steps, not merely more explanatory labels. The four situations are: an individual seminar objection following group/listener references; an apple question after a tea misunderstanding; identification of the actual teacher after rejecting a wrong badge; and a new false professional-title denial, a renewed badge-ownership claim and a colleague's valid shared job. Each context is explicitly written as **editorial practice**, never attributed to an authentic source transcript.
 
 ## Exact source, rights and identity
 
@@ -28,3 +28,7 @@ Extended full original-user-browser journeys for all four Phase 33 lessons in de
 The previous exact-head Phase 32 [workflow #40388623258](https://github.com/thiepn/languages/actions/runs/40388623258) had the isolated learner job **cancelled**, not a demonstrated learner failure. Earlier Phase 33 independent workflow [#40397511486](https://github.com/thiepn/languages/actions/runs/40397511486) was still running at the start of this supplement. The new committed exact-head workflow is authoritative for this change. Root compatibility may still fail at the pre-existing private Account SSH dependency and must not be interpreted as the isolated learner result.
 
 No new PR, merge, rebase, force push, migration, rights approval, public activation, production/staging write or deployment. Continue Phase 34 only after inspecting actual exact final-head browser failures and preserving every newer descendant.
+
+## Reproduced source-admission correction
+
+The first exact-head Node run correctly rejected counterfactual modules for the seminar, school and reception desk. Corrected source-ID attestation to the actual source-owned quotes: `你们` belongs to `zh-ni-demo`, `我是学生。` belongs to `zh-wo-demo`, and reception's `也是` belongs to `zh-shi-demo`. Reception's independently authored three-part scene was reconciled with the previously attested initial classification: the third-party error is `不是`, returning owner `我的`, and independent final reconstruction `也是`. The fail-closed `ChineseCounterfactualV1` contract was not weakened.

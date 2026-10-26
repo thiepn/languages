@@ -30,7 +30,7 @@ export const PHASE33_CHINESE_COUNTERFACTUALS:readonly SourceAuthoredIntake[]=[
       "你们 addresses visiting listeners, whereas the returning moderator now reports a decision by a team that includes the moderator. The original plural first person is 我们."
     ]},
    {instruction:"Reconstruct, using only exact original source Hanzi, the plural listener address the moderator would use if the audience were invited to respond rather than if the moderator were reporting their own team or an individual's opinion. Keep the original two-character source form unchanged.",
-    quote:"你们",sourceId:"zh-wo-demo",wrongQuotes:["我","我们"],
+    quote:"你们",sourceId:"zh-ni-demo",wrongQuotes:["我","我们"],
     feedback:[
       "我 denotes the singular speaker, but the reconstructed utterance addresses a group of listeners and so requires original source 你们.",
       "我们 includes the speaking moderator in the referenced group; the instruction asks for plural addressees other than the moderator, so the source is 你们."
@@ -92,7 +92,7 @@ export const PHASE33_CHINESE_COUNTERFACTUALS:readonly SourceAuthoredIntake[]=[
       "我是学生。 could state the student's identity later, but the immediate requested communicative act is an explicit rejection of a false teacher role: 不是."
     ]},
    {instruction:"Reproduce the complete original first-person Hanzi statement that the student can use after denying the renewed mistaken teacher role, naming their actual positive identity. Preserve the attested subject and final punctuation exactly.",
-    quote:"我是学生。",sourceId:"zh-shi-demo",wrongQuotes:["不是","他是老师。"],
+    quote:"我是学生。",sourceId:"zh-wo-demo",wrongQuotes:["不是","他是老师。"],
     feedback:[
       "不是 denies a false assumption but never names the student's true role; the requested full positive self-identification is 我是学生。.",
       "他是老师。 describes another person and cannot state that the student speaker is a student; the first-person complete source sentence is 我是学生。."
@@ -108,31 +108,31 @@ export const PHASE33_CHINESE_COUNTERFACTUALS:readonly SourceAuthoredIntake[]=[
  {
   ...original[3]!,
   chineseCounterfactual:contrast(
-   {context:"At a reception desk the badge-owner question is settled, and another employee says that they genuinely hold the same job as the earlier colleague. The current listener needs confirmation of an additional shared role, not a claim of personal badge ownership or a role denial.",
-    question:"Which original expression appropriately adds that the second employee also has the same true job, rather than expressing possession or denying a title?",
-    correctQuote:"也是",wrongQuotes:["我的","不是"],
+   {context:"After a badge is returned, an unrelated visitor is mistakenly addressed by the desk clerk as an employee with a particular job title. The visitor is not employed in that role and needs to explicitly reject the newly false professional label before ownership or shared-work questions resume.",
+    question:"Which original expression denies the clerk's new false job-title assertion rather than claiming badge possession or confirming a real matching colleague role?",
+    correctQuote:"不是",wrongQuotes:["我的","也是"],
     feedback:[
-      "我的 says something belongs to the speaker, which does not confirm that another employee shares a professional identity. The source additive identity expression is 也是.",
-      "不是 denies a false title, but this coworker truly has the same job as the earlier colleague. The correct source fragment is 也是."
+      "我的 makes a possession claim about an item, but the clerk has just attributed a false professional title. The attested explicit denial is 不是.",
+      "也是 confirms a true additionally shared role, while the visitor's claimed role is false. This requires the original negative form 不是."
     ]},
-   {context:"The receptionist then incorrectly assigns an unrelated visitor a professional title. The visitor wants to explicitly deny that false job role, while the badge and earlier true shared-role question are no longer being discussed.",
-    question:"Which original source expression corrects the clerk's newly false professional identity claim instead of reaffirming another employee's shared role or claiming a badge?",
-    correctQuote:"不是",wrongQuotes:["也是","我的"],
+   {context:"The receptionist acknowledges that denial, and the original badge owner returns to ask which badge belongs to the person now speaking. This new task concerns ownership rather than the visitor's previously rejected job title or any coworker's real shared role.",
+    question:"Which original source expression now identifies the badge as belonging to the current speaking owner, rather than discussing true or false work identity?",
+    correctQuote:"我的",wrongQuotes:["不是","也是"],
     feedback:[
-      "也是 was correct when confirming two coworkers' genuinely shared role. The new false title needs an explicit rejection using the source expression 不是.",
-      "我的 is a possessive fragment about the speaker's belonging, but the clerk has assigned a false role. The appropriate source denial is 不是."
+      "不是 was correct when the visitor denied a false role, but the returning speaker now identifies possession of an item. The first-person original possessive is 我的.",
+      "也是 confirms a matching identity and cannot mark an item as belonging to its current speaking owner; the authentic source possession expression is 我的."
     ]},
-   {instruction:"Write the exact two-character original source possessive expression that the true badge owner would use when the conversation returns from roles to ownership of an item. Do not answer with a shared-role phrase or an identity denial.",
-    quote:"我的",sourceId:"zh-wo-demo",wrongQuotes:["也是","不是"],
+   {instruction:"Reconstruct the complete original attested Hanzi expression that confirms that a different colleague also truly holds the same professional role. Do not substitute first-person badge ownership or the earlier denial of an unrelated visitor's title.",
+    quote:"也是",sourceId:"zh-shi-demo",wrongQuotes:["不是","我的"],
     feedback:[
-      "也是 confirms an additional true role, but the owner is no longer talking about a profession; the exact original badge-possession expression is 我的.",
-      "不是 denies an identity, while the requested original words state the speaker's ownership of an item: 我的."
+      "不是 denied the visitor's false role, whereas the task now asks about another colleague who genuinely shares an existing professional identity. Use original 也是.",
+      "我的 expresses what belongs to the speaker, but a colleague's genuinely shared profession requires the original additive identity form 也是."
     ]},
-   {instruction:"Write an eleventh original reception-desk exchange in which a second colleague confirms a true shared job, a visitor rejects a fresh false role and the returning badge owner claims an item. In a revised version swap who holds the item, distinguishing the speaker's current possession claim from their job role.",
+   {instruction:"Write an eleventh independently authored reception exchange where a visiting guest first rejects a newly assigned false job title, the badge owner later claims an item and a third colleague finally confirms a real shared professional role. In a revised version switch which speaker holds the badge, preserving the source distinction among negation, possession and addition.",
     criteria:[
-      "Explain when 也是 is valid for a genuinely shared professional role but not for possession or denial of a false title.",
-      "Use the source 不是 to correct a distinct false title and 我的 only for the person speaking about an item as theirs.",
-      "Compare the change of badge holder and the new speakers in the first and revised dialogues without inventing any attested source transcript."
+      "Explain why the visitor uses the source 不是 to deny the new false title before a separate badge-ownership question is asked.",
+      "Make 我的 explicitly refer to the current speaking badge owner and 也是 to a distinct colleague who actually shares a job.",
+      "Compare the changed first-person perspective between independently authored drafts without inventing an authentic Chinese source transcript."
     ]}
   )
  }

@@ -95,9 +95,9 @@ const counterfactual={
   back:"不是",backWrong:["他是老师。","我是学生。"],
   typed:"我是学生。",typedWrong:["不是","他是老师。"]},
  "An owner corrects a badge-role misunderstanding":{
-  third:"也是",thirdWrong:["我的","不是"],
-  back:"我的",backWrong:["也是","不是"],
-  typed:"不是",typedWrong:["也是","我的"]}
+  third:"不是",thirdWrong:["我的","也是"],
+  back:"我的",backWrong:["不是","也是"],
+  typed:"也是",typedWrong:["不是","我的"]}
 } as const;
 type C=typeof samples[number];
 async function choice(page:Page,answer:string){
