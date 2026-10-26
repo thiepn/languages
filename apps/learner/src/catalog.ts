@@ -15,6 +15,7 @@ import {PHASE30_ENRICHED_PERSPECTIVES} from "./phase30-revision-overlay";
 import {PHASE31_CHINESE_HANDOFFS} from "./phase31-chinese-handoffs";
 import {PHASE32_CHINESE_NEGOTIATIONS} from "./phase32-chinese-negotiations";
 import {PHASE33_CHINESE_COUNTERFACTUALS} from "./phase33-chinese-counterfactuals";
+import {PHASE34_CHINESE_FINAL_ORDERS} from "./phase34-chinese-final-orders";
 import {
   validateLessonBundleV1,
   type LessonBundleV1
@@ -78,6 +79,6 @@ export const SOURCE_COVERAGE_BY_LESSON:Readonly<Record<string,readonly SourceCov
   Object.freeze(Object.fromEntries(bundles.map(bundle=>[bundle.lesson.id,sourceCoverage(bundle)])));
 
 /** Explicitly separate, unpublished authoring candidates; excluded from source-app history and saved checkpoints. */
-const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH,...PHASE27_CHINESE_TRANSFER,...PHASE28_CHINESE_SEQUENCES,...PHASE29_CHINESE_CONVERSATIONS,...PHASE30_ENRICHED_PERSPECTIVES,...PHASE31_CHINESE_HANDOFFS,...PHASE32_CHINESE_NEGOTIATIONS,...PHASE33_CHINESE_COUNTERFACTUALS]);
-if(intake.issues.length||intake.candidates.length!==53)throw new Error("Internal source intake requires fifty-three verified candidate lessons");
+const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH,...PHASE27_CHINESE_TRANSFER,...PHASE28_CHINESE_SEQUENCES,...PHASE29_CHINESE_CONVERSATIONS,...PHASE30_ENRICHED_PERSPECTIVES,...PHASE31_CHINESE_HANDOFFS,...PHASE32_CHINESE_NEGOTIATIONS,...PHASE33_CHINESE_COUNTERFACTUALS,...PHASE34_CHINESE_FINAL_ORDERS]);
+if(intake.issues.length||intake.candidates.length!==57)throw new Error("Internal source intake requires fifty-seven verified candidate lessons");
 export const INTAKE_CANDIDATES:readonly LessonBundleV1[]=Object.freeze(intake.candidates);
