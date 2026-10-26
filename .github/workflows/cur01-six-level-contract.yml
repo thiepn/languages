@@ -1,0 +1,23 @@
+name: CUR-01 Six-Level Contract
+on:
+  push:
+    branches:
+      - feature/cur01-six-level-curriculum-20261026
+permissions:
+  contents: read
+concurrency:
+  group: cur01-languages-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  curriculum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+      - name: Run source contract against actual TypeScript without Hub private dependencies
+        run: node --experimental-strip-types --test tests/cur01-level-catalog.test.mjs
