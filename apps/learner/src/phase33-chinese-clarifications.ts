@@ -66,7 +66,7 @@ export const PHASE33_CHINESE_CLARIFICATIONS:readonly SourceAuthoredIntake[]=[
       "这个苹果很好吃。 is a declarative apple-quality report. It neither asks the customer's tea preference nor includes the required question particle 吗."
     ]},
    {instruction:"Reconstruct the complete original attested Hanzi tea-preference question addressed to the already-present shopper, retaining the final 吗？; do not use the separate greeting or the declarative apple sentence as the corrected question.",
-    quote:"你喜欢喝茶吗？",sourceId:"zh-hao-demo",
+    quote:"你喜欢喝茶吗？",sourceId:"zh-ni-demo",
     firstWrong:"你好",
     firstFeedback:"你好 greets a person and does not ask about tea. The correction explicitly needs the attested tea-preference question 你喜欢喝茶吗？.",
     secondWrong:"这个苹果很好吃。",
