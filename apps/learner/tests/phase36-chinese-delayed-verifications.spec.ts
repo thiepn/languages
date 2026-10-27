@@ -612,10 +612,10 @@ async function journey(page:Page,c:C){
   "第十四段修订二：纠正第三人对听众的误读。",
   "第十四段修订三：更改角色归属但保留原文含义。"
  ];
- const response=page.getByRole("textbox",{name:"Your response"});
+ const phase36Response=page.getByRole("textbox",{name:"Your response"});
  for(let i=0;i<drafts.length;i++){
   if(i>0)await page.getByRole("button",{name:"Revise writing"}).click();
-  await response.fill(drafts[i]);
+  await phase36Response.fill(drafts[i]);
   await page.getByRole("button",{name:"Review writing"}).click();
   await expect(page.getByText("Ungraded practice")).toBeVisible();
  }
@@ -623,19 +623,19 @@ async function journey(page:Page,c:C){
  await expect(page.locator(".writing-revision-history")).toContainText(drafts[1]);
  await expect(page.locator(".writing-revision-history")).toContainText(drafts[2]);
  await page.getByRole("button",{name:"Restore revision 1"}).click();
- await expect(response).toHaveValue(drafts[1]);
+ await expect(phase36Response).toHaveValue(drafts[1]);
  await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
  await page.getByRole("button",{name:"Restore last revised draft"}).click();
- await expect(response).toHaveValue(drafts[3]);
+ await expect(phase36Response).toHaveValue(drafts[3]);
  await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
  await page.getByRole("button",{name:"Review writing"}).click();
  await page.getByText("Compare first draft").click();
  await expect(page.locator(".writing-draft-comparison")).toContainText(drafts[0]);
  await page.getByRole("button",{name:"Restore first draft"}).click();
- await expect(response).toHaveValue(drafts[0]);
+ await expect(phase36Response).toHaveValue(drafts[0]);
  await expect(page.getByRole("button",{name:"Continue"})).toBeDisabled();
  await page.getByRole("button",{name:"Restore last revised draft"}).click();
- await expect(response).toHaveValue(drafts[3]);
+ await expect(phase36Response).toHaveValue(drafts[3]);
  await page.getByRole("button",{name:"Review writing"}).click();
  await expect(page.getByText("Ungraded practice")).toBeVisible();
  await page.getByRole("button",{name:"Continue"}).click();
