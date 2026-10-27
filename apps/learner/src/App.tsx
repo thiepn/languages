@@ -236,7 +236,7 @@ function ExerciseView({
         <button className="secondary-action" type="button" disabled={!canRecoverSecondProtectedDraft}
           onClick={onRestoreSecondProtectedDraft}>Restore second unsent draft</button>
       </details>}
-    {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>
+    {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>}
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
     {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>{exercise.kind==="free-production"?"Review writing":"Check answer"}</button>}
   </form>;
