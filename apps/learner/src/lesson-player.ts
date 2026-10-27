@@ -20,6 +20,8 @@ export interface FrameAttempt {
   readonly firstSubmittedDraft?: string;
   /** Last independently revised submission, retained only in the current tab until reset/load. */
   readonly latestRevisedDraft?: string;
+  /** Bounded distinct revisions, oldest to newest, volatile and never in checkpoints. */
+  readonly submittedRevisions?: readonly string[];
 }
 export interface LessonPlayerState {
   readonly bundle: LessonBundleV1;
@@ -36,6 +38,7 @@ export type LessonPlayerAction =
   | {readonly type:"revise"}
   | {readonly type:"restore-first-draft"}
   | {readonly type:"restore-last-revision"}
+  | {readonly type:"restore-revision";readonly index:number}
   | {readonly type:"reveal"}
   | {readonly type:"next"}
   | {readonly type:"previous"}
@@ -105,7 +108,10 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
       ...(exercise.kind==="free-production"&&!attempt.firstSubmittedDraft?
         {firstSubmittedDraft:attempt.draft}:{}),
       ...(exercise.kind==="free-production"&&attempt.firstSubmittedDraft&&
-        attempt.firstSubmittedDraft!==attempt.draft?{latestRevisedDraft:attempt.draft}:{})
+        attempt.firstSubmittedDraft!==attempt.draft?{
+          latestRevisedDraft:attempt.draft,
+          submittedRevisions:[...(attempt.submittedRevisions??[]).filter(v=>v!==attempt.draft),attempt.draft].slice(-3)
+        }:{})
     });
   }
   if(action.type==="revise"){
@@ -127,6 +133,16 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
       attempt.latestRevisedDraft===attempt.draft)return state;
     const {outcome:_previousOutcome,...editable}=attempt;
     return updateAttempt(state,frame,{...editable,draft:attempt.latestRevisedDraft});
+  }
+  if(action.type==="restore-revision"){
+    const history=attempt.submittedRevisions;
+    if(exercise.kind!=="free-production"||
+      (attempt.outcome!==undefined&&attempt.outcome.kind!=="ungraded")||
+      attempt.submissions<3||!history||history.length<2||
+      !Number.isSafeInteger(action.index)||action.index<0||
+      action.index>=history.length-1||history[action.index]===attempt.draft)return state;
+    const {outcome:_previousOutcome,...editable}=attempt;
+    return updateAttempt(state,frame,{...editable,draft:history[action.index]!});
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
