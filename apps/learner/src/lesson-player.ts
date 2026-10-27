@@ -22,6 +22,8 @@ export interface FrameAttempt {
   readonly latestRevisedDraft?: string;
   /** Bounded distinct revisions, oldest to newest, volatile and never in checkpoints. */
   readonly submittedRevisions?: readonly string[];
+  /** One protected unpublished working copy; never persisted or silently overwritten. */
+  readonly protectedUnsubmittedDraft?: string;
 }
 export interface LessonPlayerState {
   readonly bundle: LessonBundleV1;
@@ -39,6 +41,7 @@ export type LessonPlayerAction =
   | {readonly type:"restore-first-draft"}
   | {readonly type:"restore-last-revision"}
   | {readonly type:"restore-revision";readonly index:number}
+  | {readonly type:"restore-protected-draft"}
   | {readonly type:"reveal"}
   | {readonly type:"next"}
   | {readonly type:"previous"}
@@ -79,6 +82,31 @@ export function hasUnsubmittedWriting(state:LessonPlayerState):boolean {
     const attempt=state.attempts[frame.id];
     return !!attempt?.draft.trim()&&attempt.outcome===undefined;
   });
+}
+
+/** Capture a genuinely unsent, independently edited response before any historical swap.
+ * A second distinct unsent edit is never silently allowed to overwrite the first. */
+function protectedHistoricalSwap(attempt:FrameAttempt,target:string):FrameAttempt|null {
+  if(target===attempt.draft)return null;
+  const isKnown=attempt.draft===attempt.firstSubmittedDraft||
+    (attempt.submittedRevisions??[]).includes(attempt.draft);
+  if(attempt.outcome===undefined&&attempt.draft.trim()&&!isKnown){
+    if(attempt.protectedUnsubmittedDraft&&attempt.protectedUnsubmittedDraft!==attempt.draft)return null;
+    const {outcome:_old,...editable}=attempt;
+    return {...editable,protectedUnsubmittedDraft:attempt.draft,draft:target};
+  }
+  const {outcome:_old,...editable}=attempt;
+  return {...editable,draft:target};
+}
+
+/** The original reducer stays the sole writer for volatile draft protection. */
+export function canRestoreProtectedDraft(attempt:FrameAttempt):boolean {
+  if(!attempt.protectedUnsubmittedDraft||
+    attempt.protectedUnsubmittedDraft===attempt.draft)return false;
+  const isKnown=attempt.draft===attempt.firstSubmittedDraft||
+    (attempt.submittedRevisions??[]).includes(attempt.draft);
+  return attempt.outcome?.kind==="ungraded"||
+    (attempt.outcome===undefined&&(!attempt.draft.trim()||isKnown));
 }
 
 function updateAttempt(state:LessonPlayerState,frame:LearningFrame,attempt:FrameAttempt):LessonPlayerState {
@@ -131,8 +159,8 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
       (attempt.outcome!==undefined&&attempt.outcome.kind!=="ungraded")||
       attempt.submissions<2||!attempt.latestRevisedDraft||
       attempt.latestRevisedDraft===attempt.draft)return state;
-    const {outcome:_previousOutcome,...editable}=attempt;
-    return updateAttempt(state,frame,{...editable,draft:attempt.latestRevisedDraft});
+    const editable=protectedHistoricalSwap(attempt,attempt.latestRevisedDraft);
+    return editable?updateAttempt(state,frame,editable):state;
   }
   if(action.type==="restore-revision"){
     const history=attempt.submittedRevisions;
@@ -141,8 +169,13 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
       attempt.submissions<3||!history||history.length<2||
       !Number.isSafeInteger(action.index)||action.index<0||
       action.index>=history.length-1||history[action.index]===attempt.draft)return state;
-    const {outcome:_previousOutcome,...editable}=attempt;
-    return updateAttempt(state,frame,{...editable,draft:history[action.index]!});
+    const editable=protectedHistoricalSwap(attempt,history[action.index]!);
+    return editable?updateAttempt(state,frame,editable):state;
+  }
+  if(action.type==="restore-protected-draft"){
+    if(exercise.kind!=="free-production"||!canRestoreProtectedDraft(attempt))return state;
+    const {outcome:_old,...editable}=attempt;
+    return updateAttempt(state,frame,{...editable,draft:attempt.protectedUnsubmittedDraft!});
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
