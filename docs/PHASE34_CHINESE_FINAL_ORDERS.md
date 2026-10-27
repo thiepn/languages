@@ -1,0 +1,34 @@
+# Phase 34 — sixth contextual source order and written Pinyin transfer
+
+## Original evidence and release boundary
+
+Implementation-first: four **new**, original-source-pinned unpublished Chinese beginner lessons reusing the established Phase 22–33 `compilePinnedSourceIntake` compiler, `LessonV1/ExerciseV1/LanguagePluginV1` schema and original Phase 05 local player. All three original snippets and their **exact written tone-marked Pinyin** come from the same Phase 16 quotation whitelist and Phase 25 original source manifest for `thiepn/chinese@9688e7354142b7127fd5f6eb69b03b595a437008:src/demo-lessons.mjs`. Extra dialog characters, interlocutors and situations are newly authored editorial exercises, **never** claimed to be original recorded Chinese conversations, native audio or official HSK curricula.
+
+This phase leaves **all prior 53 compiled editorial candidate bundles entirely unchanged**, including four Phase 33 source-bound lessons (44 exercises, 49 frames, 11 ungraded writings each), **12 canonical lessons and 126 canonical exercises**, original course navigation, source IDs, source revisions, DEMO_ONLY `review-required`/`editorialReview:pending`/`redistributionVerified:false`, Phase 21 correction, source rights holds, original Pinyin, Chinese native FSRS/progress/history, Account/Core/Hub, checkpoints and all native database authority. There are no rights grants, migration, publication, activation, staging/production write, merge, rebase, forced update or deployment.
+
+## Four practical new source-backed lessons
+
+1. **Three students rotate the speaking role:** a new representative addresses listeners `你们`, a moderator reports the team's collective `我们` position and an individual delegate identifies themself with `我`. Final unused order: `你们 → 我们 → 我`. Separate written tone-marked Pinyin recognition of `我们` as `wǒmen`.
+2. **A vendor returns to the first customer:** a tea-preference question `你喜欢喝茶吗？` to an already-present companion, then `你好` when a different buyer enters, then `这个苹果很好吃。` about the apple to the returning customer. Final unused order: tea → greeting → apple, with exact original `你好` Pinyin `nǐ hǎo`.
+3. **A clerk corrects a second identity dispute:** deny a freshly mistaken role `不是`, identify the separate real teacher `他是老师。` and then positively introduce the speaking student `我是学生。`. Final unused order: denial → teacher → student, with source-attested `bú shì`.
+4. **A visitor changes badge custody and job claims:** first deny a newly assigned false job title `不是`, then let the authentic owner say `我的`, and finally confirm a different colleague truly also holds a role with `也是`. Final unused order: denial → possession → additional true job, with source-attested `yě shì`.
+
+Each **new** Phase 34 bundle inherits the existing 44 original-engine Chinese exercises and adds four genuinely distinct tasks: (1) a new speaker-purpose `reading` with two different authentic but contextually wrong Hanzi source alternatives and distinct precise feedback; (2) the **sixth and final unused permutation** of the three independently attested original quotes in the original `ordering` engine, with **all five previously valid orders** evaluated as wrong and explained individually; (3) exact original tone-marked written Pinyin `typed` recall, rejecting the unmarked answer and a separate attested but different source quote reading with separate corrections; (4) a **twelfth** fully learner-authored and ungraded multi-person dialog, with concrete criteria, first-draft comparison, explicit restore, revision and resubmission using the original Phase 05 player.
+
+There are now **57 internal-only authoring candidates**; the new four each contain **48 exercises, 53 frames and 12 ungraded writing opportunities**. No native learner progress and no new evaluator or scheduler is manufactured.
+
+## Fail-closed original-source contract
+
+The optional `ChineseSixthTransferV1` compiler authoring input is accepted only after the same existing original pinned Mandarin evidence and earlier Phase 25–33 original lesson contracts. It explicitly checks all three source-attested Hanzi options, valid original source IDs, unchanged original quoted Hanzi, original exact tone-marked Pinyin and a different original source reading as a distractor, five prior source-order permutations plus a sixth unique three-source permutation, contextual original-source meaning, two independently meaningful misconception feedback entries, and three substantive source-conscious human writing criteria. It never repairs source rights by broadening the whitelist and never asserts pronunciation quality or fluency.
+
+## Tests
+
+An executable Node regression suite checks unchanged 53-candidate predecessor prefix, 12/126 canonical original identities, 4×48 new original-engine exercise contracts, 4×53 player frames, 4×12 ungraded writing tasks, all six unique three-source contextual permutations, five context-specific wrong-order corrections, exact Hanzi/Pinyin/source provenance, accentless and different-original-reading rejection, all twelve original-player writing revisions, original canonical checkpoint isolation, and adversarial source/permission/locale/reading/order tampering.
+
+The original comprehensive Playwright source-driven learner journey is extended for all four *complete* 53-frame Phase 34 lessons and 320px mobile, under genuine desktop/mobile Chromium/Firefox/WebKit. It exercises both wrong contextual Hanzi selections, all five wrong previous source orders, correct sixth order, wrong original/diacritic-free Pinyin, and the twelfth independent dialogue with initial draft, revision, comparison, restoration and third submission. Strict TypeScript/Vite and all existing independent Node/browser suites remain enabled with no assertion weakening.
+
+Baseline [Phase 33 exact-head workflow #40400699425](https://github.com/thiepn/languages/actions/runs/40400699425) had genuinely passed Node and strict TypeScript/Vite, but its long-running Playwright job had not completed at the initial Phase 34 check; it cannot be claimed PASS or FAIL before final completion. Its root compatibility still encounters the existing private Account SSH dependency, preventing root verify/package execution independently of the learner. Qualification for this batch is the new **exact Phase 34 commit** workflow, not the earlier phase's result.
+
+## Phase 35
+
+Inspect genuinely completed exact-head Phase 34 Node, TypeScript/Vite and real browser results. Correct demonstrated learner defects without weakening source rights or existing assertions, then expand meaningful learner-controlled Chinese practical conversation/revision and source-specific reading through original intake/compiler/Phase 05 engines on the same open draft PR; do not introduce duplicate schedulers, fabricated voice data or public rights grants.

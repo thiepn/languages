@@ -1,0 +1,88 @@
+import raw from "../../../contracts/fixtures/phase02-source-lessons.json";
+import nextRaw from "../../../contracts/fixtures/phase15-source-lessons.json";
+import bridgeRaw from "../../../contracts/fixtures/phase17-cross-source-lessons.json";
+import continuationRaw from "../../../contracts/fixtures/phase18-next-source-lessons.json";
+import {admitInternalPilot,sourceCoverage,type SourceCoverage} from "./source-coverage";
+import {compilePinnedSourceIntake,PHASE22_AUTHORING} from "./source-intake";
+import {PHASE23_FRENCH_AUTHORING} from "./phase23-french-authoring";
+import {PHASE24_JAPANESE_AUTHORING} from "./phase24-japanese-authoring";
+import {PHASE25_CHINESE_AUTHORING} from "./phase25-chinese-authoring";
+import {PHASE26_CHINESE_DEPTH} from "./phase26-chinese-depth";
+import {PHASE27_CHINESE_TRANSFER} from "./phase27-chinese-transfer";
+import {PHASE28_CHINESE_SEQUENCES} from "./phase28-chinese-sequences";
+import {PHASE29_CHINESE_CONVERSATIONS} from "./phase29-chinese-conversations";
+import {PHASE30_ENRICHED_PERSPECTIVES} from "./phase30-revision-overlay";
+import {PHASE31_CHINESE_HANDOFFS} from "./phase31-chinese-handoffs";
+import {PHASE32_CHINESE_NEGOTIATIONS} from "./phase32-chinese-negotiations";
+import {PHASE33_CHINESE_COUNTERFACTUALS} from "./phase33-chinese-counterfactuals";
+import {PHASE34_CHINESE_FINAL_ORDERS} from "./phase34-chinese-final-orders";
+import {PHASE35_CHINESE_EVIDENCE_SWITCHES} from "./phase35-chinese-evidence-switches";
+import {PHASE36_CHINESE_DELAYED_VERIFICATIONS} from "./phase36-chinese-delayed-verifications";
+import {PHASE37_CHINESE_CONTESTED_CLAIMS} from "./phase37-chinese-contested-claims";
+import {PHASE38_CHINESE_CHRONOLOGY_AUDITS} from "./phase38-chinese-chronology-audits";
+import {
+  validateLessonBundleV1,
+  type LessonBundleV1
+} from "../../../packages/content-schema/src/index.js";
+
+/** This is an internal fixture catalog only: never a live course registry. */
+export const LANGUAGES = [
+  {id: "fr", label: "French", nativeLabel: "Français"},
+  {id: "ja", label: "Japanese", nativeLabel: "日本語"},
+  {id: "zh", label: "Chinese", nativeLabel: "中文"}
+] as const;
+
+export type LanguageChoice = typeof LANGUAGES[number]["id"];
+
+const originalBundles = raw.bundles as unknown as LessonBundleV1[];
+const newBundles = nextRaw.bundles as unknown as LessonBundleV1[];
+const bridgeBundles=bridgeRaw.bundles as unknown as LessonBundleV1[];
+const continuationBundles=continuationRaw.bundles as unknown as LessonBundleV1[];
+const bundles = [...originalBundles,...newBundles,...bridgeBundles,...continuationBundles];
+if (raw.purpose !== "internal-contract-testing-only" ||
+    nextRaw.purpose !== "internal-contract-testing-only" ||
+    bridgeRaw.purpose !== "internal-contract-testing-only" ||
+    continuationRaw.purpose !== "internal-contract-testing-only" ||
+    originalBundles.length !== LANGUAGES.length ||
+    newBundles.length !== LANGUAGES.length ||
+    bridgeBundles.length !== LANGUAGES.length ||
+    continuationBundles.length !== LANGUAGES.length ||
+    bundles.length !== LANGUAGES.length*4 ||
+    new Set(bundles.map(bundle=>bundle.lesson.id)).size !== bundles.length ||
+    bundles.some(bundle =>
+      bundle.lesson.publication !== "internal-fixture" ||
+      bundle.lesson.sources.some(source => source.redistributionVerified || source.editorialReview !== "pending") ||
+      !admitInternalPilot(bundle).length
+    ) ||
+    LANGUAGES.some(language => originalBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
+      newBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
+      bridgeBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1 ||
+      continuationBundles.filter(bundle => bundle.lesson.languageId === language.id).length !== 1)) {
+  throw new Error("The internal learner requires exactly four admitted internal lessons per language.");
+}
+
+export const DEMO_BUNDLES: Readonly<Record<LanguageChoice, LessonBundleV1>> =
+  Object.freeze(Object.fromEntries(originalBundles.map(bundle => [bundle.lesson.languageId, bundle])) as Record<LanguageChoice, LessonBundleV1>);
+
+export function languageLabel(id: LanguageChoice): string {
+  return LANGUAGES.find(language => language.id === id)?.label ?? id;
+}
+
+/** Authoring coverage is never learner progress or a review/scheduling count. */
+export const DEMO_SOURCE_COVERAGE:Readonly<Record<LanguageChoice,readonly SourceCoverage[]>> =
+  Object.freeze(Object.fromEntries(originalBundles.map(bundle=>[
+    bundle.lesson.languageId,sourceCoverage(bundle)
+  ])) as Record<LanguageChoice,readonly SourceCoverage[]>);
+
+/** Read-only authoring catalog. Original pilot remains first for every language. */
+export const COURSE_BUNDLES:Readonly<Record<LanguageChoice,readonly LessonBundleV1[]>> =
+  Object.freeze(Object.fromEntries(LANGUAGES.map(language=>[
+    language.id,Object.freeze(bundles.filter(bundle=>bundle.lesson.languageId===language.id))
+  ])) as Record<LanguageChoice,readonly LessonBundleV1[]>);
+export const SOURCE_COVERAGE_BY_LESSON:Readonly<Record<string,readonly SourceCoverage[]>> =
+  Object.freeze(Object.fromEntries(bundles.map(bundle=>[bundle.lesson.id,sourceCoverage(bundle)])));
+
+/** Explicitly separate, unpublished authoring candidates; excluded from source-app history and saved checkpoints. */
+const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH,...PHASE27_CHINESE_TRANSFER,...PHASE28_CHINESE_SEQUENCES,...PHASE29_CHINESE_CONVERSATIONS,...PHASE30_ENRICHED_PERSPECTIVES,...PHASE31_CHINESE_HANDOFFS,...PHASE32_CHINESE_NEGOTIATIONS,...PHASE33_CHINESE_COUNTERFACTUALS,...PHASE34_CHINESE_FINAL_ORDERS,...PHASE35_CHINESE_EVIDENCE_SWITCHES,...PHASE36_CHINESE_DELAYED_VERIFICATIONS,...PHASE37_CHINESE_CONTESTED_CLAIMS,...PHASE38_CHINESE_CHRONOLOGY_AUDITS]);
+if(intake.issues.length||intake.candidates.length!==73)throw new Error("Internal source intake requires seventy-three verified candidate lessons");
+export const INTAKE_CANDIDATES:readonly LessonBundleV1[]=Object.freeze(intake.candidates);

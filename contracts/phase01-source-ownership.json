@@ -1,0 +1,537 @@
+{
+  "schema": "thiepn.languages.phase01.ownership-inventory",
+  "schemaVersion": 1,
+  "snapshotDate": "2026-10-22",
+  "scope": "architecture and source boundaries only; no content import, production configuration, or learner data write",
+  "primaryRepository": "thiepn/languages",
+  "sources": [
+    {
+      "repo": "thiepn/languages",
+      "mainSha": "387462ba39c6c1ea9721ede69f947887fa158497",
+      "snapshotKind": "immutable-ref",
+      "productionStatus": "not inferred from repository main"
+    },
+    {
+      "repo": "thiepn/french",
+      "mainSha": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+      "snapshotKind": "immutable-ref",
+      "productionStatus": "not inferred from repository main"
+    },
+    {
+      "repo": "thiepn/japanese",
+      "mainSha": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+      "snapshotKind": "immutable-ref",
+      "productionStatus": "not inferred from repository main"
+    },
+    {
+      "repo": "thiepn/chinese",
+      "mainSha": "9688e7354142b7127fd5f6eb69b03b595a437008",
+      "snapshotKind": "immutable-ref",
+      "productionStatus": "not inferred from repository main"
+    }
+  ],
+  "currentAuthority": {
+    "thiepn/languages": "shared contracts, read-only Hub projections and compatibility; not yet an authoritative study app",
+    "thiepn/french": "French content, grading, native review, persistence and existing learner evidence",
+    "thiepn/japanese": "Japanese structured content, StudyPlayer, FSRS, StudyEvents, storage and native learner journey",
+    "thiepn/chinese": "Chinese editorial content, exercises, local-only learner state, original review and native course navigation"
+  },
+  "futureAuthorities": {
+    "learnerApp": "thiepn/languages",
+    "courseAuthoring": "thiepn/languages",
+    "lessonRuntime": "thiepn/languages",
+    "exerciseRuntime": "thiepn/languages",
+    "learnerEvidence": "thiepn/languages",
+    "memoryScheduling": "thiepn/languages",
+    "languageContent": "versioned language packages sourced from each original repo with provenance",
+    "accountIdentity": "existing THIEPN Account/Core; Languages does not create a new identity service",
+    "sync": "existing Account/Core after authorized adoption; no Phase 01 writes",
+    "hub": "read-only until an explicit, separately qualified authority cutover"
+  },
+  "capabilities": [
+    {
+      "id": "curriculum-content",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "adapt",
+      "targetPath": "packages/content-schema/src/index.ts",
+      "sources": [
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "packages/curriculum/src/index.ts",
+          "decision": "reuse",
+          "detail": "prerequisite DAG validation"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/core/unified/u22-course.ts",
+          "decision": "adapt",
+          "detail": "authored units and transfers; do not infer external-source redistribution"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "apps/web/src/study/beginnerCourse.ts",
+          "decision": "adapt",
+          "detail": "seed/overlay assembly remains required"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/course-journey.mjs",
+          "decision": "adapt",
+          "detail": "original course pathway; target HSK bands are not certification"
+        }
+      ]
+    },
+    {
+      "id": "lesson-player",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "adapt",
+      "targetPath": "apps/learner",
+      "sources": [
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "packages/study-player/src/index.ts",
+          "decision": "adapt",
+          "detail": "typed StudyPrompt/StudyLesson and event input as first runtime candidate"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "apps/web/src/study/StudyPlayer.tsx",
+          "decision": "adapt",
+          "detail": "React interaction baseline; do not copy language-specific visual clutter"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/routes/course.ts",
+          "decision": "replace-after-parity",
+          "detail": "legacy course route stays operational until parity"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/course-journey.mjs",
+          "decision": "replace-after-parity",
+          "detail": "legacy journey remains operational until parity"
+        }
+      ]
+    },
+    {
+      "id": "exercise-and-grading",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "adapt",
+      "targetPath": "packages/exercises",
+      "sources": [
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "packages/study-player/src/index.ts",
+          "decision": "adapt",
+          "detail": "deterministic answers; structural textarea/speech checks are not human language assessment"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/core/learner/grader.ts",
+          "decision": "adapt",
+          "detail": "review French-specific normalization, inflection and feedback"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/exercises.mjs",
+          "decision": "adapt",
+          "detail": "preserve tone-aware Pinyin parser and conservative evaluation"
+        }
+      ]
+    },
+    {
+      "id": "scheduler",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "reuse",
+      "targetPath": "packages/scheduler/src/index.ts",
+      "sources": [
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "packages/scheduler/src/index.ts",
+          "decision": "reuse",
+          "detail": "shared adapter boundary; validate review trace replay before write authority"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/core/learner/scheduler.ts",
+          "decision": "migrate",
+          "detail": "FSRS-5-compatible home-grown weights, leech and learning/relearning states"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "packages/scheduler/src/index.ts",
+          "decision": "migrate",
+          "detail": "ts-fsrs 5.4.2 with original card snapshots and revisions"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/study-storage.mjs",
+          "decision": "preserve",
+          "detail": "local learner data; review semantics require separate study.mjs inspection"
+        }
+      ]
+    },
+    {
+      "id": "learner-events-and-progress",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "reuse",
+      "targetPath": "packages/learner-engine/src/index.ts",
+      "sources": [
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "packages/learner-engine/src/index.ts",
+          "decision": "reuse",
+          "detail": "replayable mastery and memory evidence stay distinct"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/core/learner/repository.ts",
+          "decision": "migrate",
+          "detail": "preserve native review history and identity"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "packages/learner-engine/src/index.ts",
+          "decision": "migrate",
+          "detail": "StudyEvents and FSRS traces must remain separate"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/study-storage.mjs",
+          "decision": "migrate",
+          "detail": "local revisions and original backup format preserved"
+        }
+      ]
+    },
+    {
+      "id": "media-and-illustrations",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "adapt",
+      "targetPath": "packages/media",
+      "sources": [
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "packages/content-schema/src/index.ts",
+          "decision": "reuse",
+          "detail": "AudioAsset with source and license metadata"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "packages/audio/src/index.ts",
+          "decision": "adapt",
+          "detail": "audio provider and TTS fallback; verify licensing"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/core/unified/u22-course.ts",
+          "decision": "preserve",
+          "detail": "authored source-linked materials; do not assume all audio is native"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/exercises.mjs",
+          "decision": "preserve",
+          "detail": "Pinyin source text and tonal fidelity"
+        },
+        {
+          "repo": "thiepn/languages",
+          "ref": "cb38b6ae5cb6922d0bc00078f6e3a68174e7eb22",
+          "path": "packages/visual-lexicon/README.md",
+          "decision": "adapt",
+          "detail": "shared visual lexicon pending PR #29; not on main"
+        }
+      ]
+    },
+    {
+      "id": "identity-sync-and-offline",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "adapt",
+      "targetPath": "apps/learner",
+      "sources": [
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "apps/hub/src/data-plane.ts",
+          "decision": "reuse",
+          "detail": "privacy-minimal read-only Hub; not an enrollment or event authority"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/core/storage/idb.ts",
+          "decision": "migrate",
+          "detail": "IndexedDB thiepn-french-vnext schema 5; origin-isolated"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "packages/local-db/src/backup.ts",
+          "decision": "migrate",
+          "detail": "owner-locked backup excludes remote sync cursor"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/study-storage.mjs",
+          "decision": "migrate",
+          "detail": "IndexedDB character-study-local-v2; revision CAS and local backup"
+        }
+      ]
+    },
+    {
+      "id": "provenance-validation",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "platform-contract",
+      "migrationIntent": "reuse",
+      "targetPath": "packages/content-validation/src/index.ts",
+      "sources": [
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "packages/content-validation/src/index.ts",
+          "decision": "reuse",
+          "detail": "fail-closed structural and source-rights validation"
+        },
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "packages/adapter-sdk/src/index.ts",
+          "decision": "reuse",
+          "detail": "migration issues must expose dropped or ambiguous data"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/core/migration/legacy-contract.ts",
+          "decision": "preserve",
+          "detail": "rights-restricted external source positions cannot become public lesson bodies"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "packages/local-db/src/backup.ts",
+          "decision": "preserve",
+          "detail": "private learner files and audio stay private"
+        }
+      ]
+    },
+    {
+      "id": "navigation-and-design",
+      "futureOwner": "thiepn/languages",
+      "currentMode": "legacy-authoritative",
+      "migrationIntent": "replace",
+      "targetPath": "apps/learner",
+      "sources": [
+        {
+          "repo": "thiepn/languages",
+          "ref": "387462ba39c6c1ea9721ede69f947887fa158497",
+          "path": "apps/hub/src/data-plane.ts",
+          "decision": "preserve",
+          "detail": "existing read-only Hub remains unchanged during V1 development"
+        },
+        {
+          "repo": "thiepn/french",
+          "ref": "3fb5c720cfeceaf682ce53c897701b489b7eaf6f",
+          "path": "app/src/routes/course.ts",
+          "decision": "adapt",
+          "detail": "preserve original course functions, not filler/fragmentation"
+        },
+        {
+          "repo": "thiepn/japanese",
+          "ref": "951030c4cdb256e76c99c253f22bddc679bc81ab",
+          "path": "apps/web/src/design/J4Learn.tsx",
+          "decision": "adapt",
+          "detail": "reuse working entry behavior, not competing destinations"
+        },
+        {
+          "repo": "thiepn/chinese",
+          "ref": "9688e7354142b7127fd5f6eb69b03b595a437008",
+          "path": "src/course-journey.mjs",
+          "decision": "adapt",
+          "detail": "course-first start and native lesson continuity"
+        }
+      ]
+    }
+  ],
+  "openBranches": [
+    {
+      "repo": "thiepn/languages",
+      "pr": 27,
+      "head": "92474afbd2db7bb94b272d4ab0217b561910ec7e",
+      "state": "open",
+      "relationToMain": "diverged",
+      "classification": "reconcile",
+      "paths": [
+        "scripts/ecosystem-inventory.mjs",
+        "docs/ECOSYSTEM_E0.md"
+      ],
+      "note": "Existing executable inventory is source-derived with adjacent checkouts. Reuse it; Phase 01 ownership manifest is a different static authority snapshot."
+    },
+    {
+      "repo": "thiepn/languages",
+      "pr": 29,
+      "head": "cb38b6ae5cb6922d0bc00078f6e3a68174e7eb22",
+      "state": "draft",
+      "relationToMain": "ahead",
+      "classification": "adopt-after-qualification",
+      "paths": [
+        "packages/visual-lexicon/README.md"
+      ],
+      "note": "Asset packs and word-sense bindings stay on feature branch; never assert already merged."
+    },
+    {
+      "repo": "thiepn/french",
+      "pr": 79,
+      "head": "e91099ffc32444e3aae2148806998d8a00526a17",
+      "state": "open",
+      "relationToMain": "ahead",
+      "classification": "reconcile-ux",
+      "paths": [
+        "app/src/routes/course.ts"
+      ],
+      "note": "Course-first navigation is reference, not a competing future learner app."
+    },
+    {
+      "repo": "thiepn/french",
+      "pr": 80,
+      "head": "d8d9476be2fe0b9a92b97b36304b6b3bbb9b7fda",
+      "state": "draft",
+      "relationToMain": "ahead",
+      "classification": "coordinate-media",
+      "paths": [],
+      "note": "Visual lexicon consumer depends on source concept IDs."
+    },
+    {
+      "repo": "thiepn/japanese",
+      "pr": 102,
+      "head": "0cb9533f2bd6d438cc03de7e4f2399dbbe6b9458",
+      "state": "open",
+      "relationToMain": "ahead",
+      "classification": "integration-base",
+      "paths": [],
+      "note": "Integration branch forms historical base for PR 104; check ancestry before porting."
+    },
+    {
+      "repo": "thiepn/japanese",
+      "pr": 103,
+      "head": "1e3667ebdcb0cd50491c126b948c11f47414decb",
+      "state": "draft",
+      "relationToMain": "ahead",
+      "classification": "course-content-candidate",
+      "paths": [
+        "apps/web/src/study/courseFirstA1.ts"
+      ],
+      "note": "13 original A1 units and 78 lessons in current PR description; content is not on main."
+    },
+    {
+      "repo": "thiepn/japanese",
+      "pr": 104,
+      "head": "b6b0191488f71a0d6a4c749ef1d29c0ade929b81",
+      "state": "draft",
+      "relationToMain": "depends-on-102",
+      "classification": "coordinate-media",
+      "paths": [],
+      "note": "Branch base points to PR 102, not direct main; reconcile lineage."
+    },
+    {
+      "repo": "thiepn/chinese",
+      "pr": 91,
+      "head": "1a89c7cdba8f0a60f79260d953bba38d09b6eb21",
+      "state": "draft",
+      "relationToMain": "diverged",
+      "classification": "course-and-recovery-candidate",
+      "paths": [
+        "src/course-catalog-p1.mjs"
+      ],
+      "note": "Large HSK-target course branch; original HSK target does not establish official mapping."
+    },
+    {
+      "repo": "thiepn/chinese",
+      "pr": 93,
+      "head": "643e895f19938619f31749f964bf99f1895d5871",
+      "state": "draft",
+      "relationToMain": "ahead",
+      "classification": "coordinate-media",
+      "paths": [],
+      "note": "Approved visual library consumer candidate."
+    },
+    {
+      "repo": "thiepn/chinese",
+      "pr": 94,
+      "head": "223f6017e8a5637eea81e611e54890a1fe14cd85",
+      "state": "draft",
+      "relationToMain": "ahead",
+      "classification": "superseded-do-not-port",
+      "paths": [],
+      "note": "PR superseded by #93; no automated closing."
+    }
+  ],
+  "preservation": [
+    "Never mutate production deployment, authorization, Core/Account state or any learner database in Phase 01.",
+    "Do not delete, clear, import or rewrite IndexedDB, browser localStorage, review histories, private content, sync outboxes or service workers.",
+    "Maintain original content identifiers, source rights, attribution, language varieties and versioned vocabulary source references.",
+    "Do not synthesize StudyEvents, memoryReview grades, FSRS traces, confidence, CEFR/HSK/JLPT equivalence, or official proficiency labels.",
+    "Treat old applications as current write authorities until an explicit, validated per-language cutover with reversible backup.",
+    "Treat source snapshot SHAs as observations from 2026-10-22, not claims of current deployment or continuous source drift validation.",
+    "Keep Hub projections read-only and distinct from learner event and enrollment write authorities.",
+    "Never equate an accepted prompt structure or speech transcript with human-validated pronunciation/production.",
+    "Source-restricted lessons and private learner assets cannot be copied into public packages without verified redistribution permission.",
+    "Every future learner migration requires an explicitly approved, idempotent and reversible import with loss and conflict reporting; no silent cross-origin transfer."
+  ],
+  "phase02Handoff": {
+    "requiredInputs": [
+      "LessonV1 with typed steps and pedagogical objectives",
+      "ExerciseV1 with evidence and grading policy",
+      "LanguagePlugin capability boundary",
+      "three source-owned real lesson fixtures",
+      "a non-production learner entry that does not write to legacy accounts"
+    ],
+    "candidateReuse": [
+      "packages/content-schema/src/index.ts",
+      "packages/curriculum/src/index.ts",
+      "packages/adapter-sdk/src/index.ts",
+      "thiepn/japanese:packages/study-player/src/index.ts"
+    ],
+    "blockedUntil": [
+      "Explicit canonical media/source rights",
+      "Original lesson identifiers and version mapping",
+      "Scheduler replay compatibility for write migration",
+      "Language-authorized learner-state import"
+    ],
+    "nonGoals": [
+      "No new CI requirements for the current production Hub",
+      "No lesson rendering production feature in Phase 01",
+      "No release or legacy PR merge"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+name: Phase 01 architecture ownership
+
+on:
+  pull_request:
+    paths:
+      - "contracts/phase01-source-ownership.json"
+      - "scripts/check-phase01-architecture.mjs"
+      - "docs/PHASE01_SOURCE_AND_AUTHORITY.md"
+      - "AGENTS.md"
+      - ".github/workflows/phase01-ownership.yml"
+  push:
+    paths:
+      - "contracts/phase01-source-ownership.json"
+      - "scripts/check-phase01-architecture.mjs"
+      - ".github/workflows/phase01-ownership.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  architecture-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Offline ownership and local-source path check
+        run: node scripts/check-phase01-architecture.mjs --check
+      - name: Negative invariant self-tests
+        run: node scripts/check-phase01-architecture.mjs --self-test
