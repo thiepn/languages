@@ -1,7 +1,7 @@
 import {useEffect,useMemo,useReducer,useRef,useState,type RefObject} from "react";
 import type {AnswerResult, LearningFrame} from "./lesson-model";
 import type {ExerciseSourceComparisonV1} from "../../../packages/content-schema/src/lesson-v1";
-import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance,hasUnsubmittedWriting,canRestoreProtectedDraft} from "./lesson-player";
+import {createLessonPlayerState,reduceLessonPlayer,activeAttempt,isLessonComplete,mayAdvance,hasUnsubmittedWriting,canRestoreProtectedDraft,canProtectSecondUnsubmittedDraft,canRestoreSecondProtectedDraft} from "./lesson-player";
 import {
   checkpointId, DEMO_CHECKPOINT_KEY,
   framesFor, parseOrderingDraft, moveOrderingToken, parseDemoCheckpoint, serializeDemoCheckpoint
@@ -54,7 +54,7 @@ function SourceComparisonView({comparison,languageId}:{
   </details>;
 }
 function ExerciseView({
-  frame,draft,result,firstSubmittedDraft,latestRevisedDraft,submittedRevisions,protectedUnsubmittedDraft,canRecoverProtectedDraft,submissionCount,onDraft,onSubmit,onRetry,onReveal,onRevise,onRestoreFirstDraft,onRestoreLastRevision,onRestoreRevision,onRestoreProtectedDraft,headingRef
+  frame,draft,result,firstSubmittedDraft,latestRevisedDraft,submittedRevisions,protectedUnsubmittedDraft,secondProtectedUnsubmittedDraft,canRecoverProtectedDraft,canProtectSecondDraft,canRecoverSecondProtectedDraft,submissionCount,onDraft,onSubmit,onRetry,onReveal,onRevise,onRestoreFirstDraft,onRestoreLastRevision,onRestoreRevision,onRestoreProtectedDraft,onProtectSecondDraft,onRestoreSecondProtectedDraft,headingRef
 }:{
   frame:LearningFrame;
   draft:string;
@@ -63,7 +63,10 @@ function ExerciseView({
   latestRevisedDraft?:string|undefined;
   submittedRevisions?:readonly string[]|undefined;
   protectedUnsubmittedDraft?:string|undefined;
+  secondProtectedUnsubmittedDraft?:string|undefined;
   canRecoverProtectedDraft:boolean;
+  canProtectSecondDraft:boolean;
+  canRecoverSecondProtectedDraft:boolean;
   submissionCount:number;
   onDraft:(value:string)=>void;
   onSubmit:()=>void;
@@ -74,6 +77,8 @@ function ExerciseView({
   onRestoreLastRevision:()=>void;
   onRestoreRevision:(index:number)=>void;
   onRestoreProtectedDraft:()=>void;
+  onProtectSecondDraft:()=>void;
+  onRestoreSecondProtectedDraft:()=>void;
   headingRef:RefObject<HTMLHeadingElement|null>;
 }){
   const composing=useRef(false);
@@ -92,7 +97,8 @@ function ExerciseView({
   if(!exercise)return null;
   const workingCopyConflict=exercise.kind==="free-production"&&result===undefined&&
     !!protectedUnsubmittedDraft&&!!draft.trim()&&draft!==protectedUnsubmittedDraft&&
-    draft!==firstSubmittedDraft&&!(submittedRevisions??[]).includes(draft);
+    draft!==firstSubmittedDraft&&draft!==secondProtectedUnsubmittedDraft&&
+    !(submittedRevisions??[]).includes(draft);
   const order=exercise.kind==="ordering"?parseOrderingDraft(draft,exercise.tokens.length):[];
   const canCheck=exercise.kind==="ordering"?order.length===exercise.tokens.length:!!draft.trim();
   return <form ref={formRef} className="activity" aria-label={stageName(frame)}
@@ -219,9 +225,18 @@ function ExerciseView({
         <blockquote lang={exercise.languageId}>{protectedUnsubmittedDraft}</blockquote>
         <button className="secondary-action" type="button" disabled={!canRecoverProtectedDraft}
           onClick={onRestoreProtectedDraft}>Restore unsent draft</button>
-        {workingCopyConflict&&<p role="status">Review the current unsent edit before another restoration.</p>}
+        {canProtectSecondDraft&&<button className="secondary-action" type="button"
+          onClick={onProtectSecondDraft}>Protect this second unsent draft</button>}
+        {workingCopyConflict&&<p role="status">Protect this second unsent draft or review the current edit before another restoration.</p>}
       </details>}
-    {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>}
+    {exercise.kind==="free-production"&&secondProtectedUnsubmittedDraft!==undefined&&
+      <details className="writing-second-protected-copy">
+        <summary>Second protected unsent draft</summary>
+        <blockquote lang={exercise.languageId}>{secondProtectedUnsubmittedDraft}</blockquote>
+        <button className="secondary-action" type="button" disabled={!canRecoverSecondProtectedDraft}
+          onClick={onRestoreSecondProtectedDraft}>Restore second unsent draft</button>
+      </details>}
+    {result?.kind==="ungraded"&&<button className="secondary-action revise-action" type="button" onClick={onRevise}>Revise writing</button>
     {result?.kind==="incorrect"&&<div className="retry-actions"><button className="secondary-action" type="button" onClick={onRetry}>Try again</button><button className="text-button" type="button" onClick={onReveal}>Show answer</button></div>}
     {result===undefined&&<button className="check-button" type="submit" disabled={!canCheck}>{exercise.kind==="free-production"?"Review writing":"Check answer"}</button>}
   </form>;
@@ -485,12 +500,17 @@ export function App(){
                 latestRevisedDraft={activeAttempt(player).latestRevisedDraft}
                 submittedRevisions={activeAttempt(player).submittedRevisions}
                 protectedUnsubmittedDraft={activeAttempt(player).protectedUnsubmittedDraft}
+                secondProtectedUnsubmittedDraft={activeAttempt(player).secondProtectedUnsubmittedDraft}
                 canRecoverProtectedDraft={canRestoreProtectedDraft(activeAttempt(player))}
+                canProtectSecondDraft={canProtectSecondUnsubmittedDraft(activeAttempt(player))}
+                canRecoverSecondProtectedDraft={canRestoreSecondProtectedDraft(activeAttempt(player))}
                 submissionCount={activeAttempt(player).submissions} headingRef={activityHeadingRef}
                 onRestoreFirstDraft={()=>dispatch({type:"restore-first-draft"})}
                 onRestoreLastRevision={()=>dispatch({type:"restore-last-revision"})}
                 onRestoreRevision={index=>dispatch({type:"restore-revision",index})}
                 onRestoreProtectedDraft={()=>dispatch({type:"restore-protected-draft"})}
+                onProtectSecondDraft={()=>dispatch({type:"protect-second-unsent-draft"})}
+                onRestoreSecondProtectedDraft={()=>dispatch({type:"restore-second-protected-draft"})}
                 onDraft={value=>dispatch({type:"draft",value})} onSubmit={()=>dispatch({type:"submit"})} onRetry={()=>dispatch({type:"retry"})} onReveal={()=>dispatch({type:"reveal"})} onRevise={()=>{
                   if(currentRepair)setSourceRepair({...currentRepair,revised:true});
                   if(applicationWriting)reviseApplicationWriting();else dispatch({type:"revise"});

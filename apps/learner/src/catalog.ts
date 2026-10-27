@@ -19,6 +19,7 @@ import {PHASE34_CHINESE_FINAL_ORDERS} from "./phase34-chinese-final-orders";
 import {PHASE35_CHINESE_EVIDENCE_SWITCHES} from "./phase35-chinese-evidence-switches";
 import {PHASE36_CHINESE_DELAYED_VERIFICATIONS} from "./phase36-chinese-delayed-verifications";
 import {PHASE37_CHINESE_CONTESTED_CLAIMS} from "./phase37-chinese-contested-claims";
+import {PHASE38_CHINESE_CHRONOLOGY_AUDITS} from "./phase38-chinese-chronology-audits";
 import {
   validateLessonBundleV1,
   type LessonBundleV1
@@ -82,6 +83,6 @@ export const SOURCE_COVERAGE_BY_LESSON:Readonly<Record<string,readonly SourceCov
   Object.freeze(Object.fromEntries(bundles.map(bundle=>[bundle.lesson.id,sourceCoverage(bundle)])));
 
 /** Explicitly separate, unpublished authoring candidates; excluded from source-app history and saved checkpoints. */
-const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH,...PHASE27_CHINESE_TRANSFER,...PHASE28_CHINESE_SEQUENCES,...PHASE29_CHINESE_CONVERSATIONS,...PHASE30_ENRICHED_PERSPECTIVES,...PHASE31_CHINESE_HANDOFFS,...PHASE32_CHINESE_NEGOTIATIONS,...PHASE33_CHINESE_COUNTERFACTUALS,...PHASE34_CHINESE_FINAL_ORDERS,...PHASE35_CHINESE_EVIDENCE_SWITCHES,...PHASE36_CHINESE_DELAYED_VERIFICATIONS,...PHASE37_CHINESE_CONTESTED_CLAIMS]);
-if(intake.issues.length||intake.candidates.length!==69)throw new Error("Internal source intake requires sixty-nine verified candidate lessons");
+const intake=compilePinnedSourceIntake(bundles,[...PHASE22_AUTHORING,...PHASE23_FRENCH_AUTHORING,...PHASE24_JAPANESE_AUTHORING,...PHASE25_CHINESE_AUTHORING,...PHASE26_CHINESE_DEPTH,...PHASE27_CHINESE_TRANSFER,...PHASE28_CHINESE_SEQUENCES,...PHASE29_CHINESE_CONVERSATIONS,...PHASE30_ENRICHED_PERSPECTIVES,...PHASE31_CHINESE_HANDOFFS,...PHASE32_CHINESE_NEGOTIATIONS,...PHASE33_CHINESE_COUNTERFACTUALS,...PHASE34_CHINESE_FINAL_ORDERS,...PHASE35_CHINESE_EVIDENCE_SWITCHES,...PHASE36_CHINESE_DELAYED_VERIFICATIONS,...PHASE37_CHINESE_CONTESTED_CLAIMS,...PHASE38_CHINESE_CHRONOLOGY_AUDITS]);
+if(intake.issues.length||intake.candidates.length!==73)throw new Error("Internal source intake requires seventy-three verified candidate lessons");
 export const INTAKE_CANDIDATES:readonly LessonBundleV1[]=Object.freeze(intake.candidates);

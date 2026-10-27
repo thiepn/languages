@@ -24,6 +24,8 @@ export interface FrameAttempt {
   readonly submittedRevisions?: readonly string[];
   /** One protected unpublished working copy; never persisted or silently overwritten. */
   readonly protectedUnsubmittedDraft?: string;
+  /** Explicitly protected second independent unsent draft, volatile and never checkpointed. */
+  readonly secondProtectedUnsubmittedDraft?: string;
 }
 export interface LessonPlayerState {
   readonly bundle: LessonBundleV1;
@@ -42,6 +44,8 @@ export type LessonPlayerAction =
   | {readonly type:"restore-last-revision"}
   | {readonly type:"restore-revision";readonly index:number}
   | {readonly type:"restore-protected-draft"}
+  | {readonly type:"protect-second-unsent-draft"}
+  | {readonly type:"restore-second-protected-draft"}
   | {readonly type:"reveal"}
   | {readonly type:"next"}
   | {readonly type:"previous"}
@@ -91,9 +95,11 @@ function protectedHistoricalSwap(attempt:FrameAttempt,target:string):FrameAttemp
   const isKnown=attempt.draft===attempt.firstSubmittedDraft||
     (attempt.submittedRevisions??[]).includes(attempt.draft);
   if(attempt.outcome===undefined&&attempt.draft.trim()&&!isKnown){
-    if(attempt.protectedUnsubmittedDraft&&attempt.protectedUnsubmittedDraft!==attempt.draft)return null;
+    if(attempt.protectedUnsubmittedDraft&&
+       attempt.protectedUnsubmittedDraft!==attempt.draft&&
+       attempt.secondProtectedUnsubmittedDraft!==attempt.draft)return null;
     const {outcome:_old,...editable}=attempt;
-    return {...editable,protectedUnsubmittedDraft:attempt.draft,draft:target};
+    return {...editable,protectedUnsubmittedDraft:attempt.protectedUnsubmittedDraft??attempt.draft,draft:target};
   }
   const {outcome:_old,...editable}=attempt;
   return {...editable,draft:target};
@@ -106,7 +112,27 @@ export function canRestoreProtectedDraft(attempt:FrameAttempt):boolean {
   const isKnown=attempt.draft===attempt.firstSubmittedDraft||
     (attempt.submittedRevisions??[]).includes(attempt.draft);
   return attempt.outcome?.kind==="ungraded"||
-    (attempt.outcome===undefined&&(!attempt.draft.trim()||isKnown));
+    (attempt.outcome===undefined&&(!attempt.draft.trim()||isKnown||
+      attempt.draft===attempt.secondProtectedUnsubmittedDraft));
+}
+
+/** Explicit two-copy recovery: never replace the protected original, or overwrite a second copy. */
+export function canProtectSecondUnsubmittedDraft(attempt:FrameAttempt):boolean {
+  if(attempt.outcome!==undefined||!attempt.protectedUnsubmittedDraft||
+    attempt.secondProtectedUnsubmittedDraft||!attempt.draft.trim()||
+    attempt.draft===attempt.protectedUnsubmittedDraft)return false;
+  return attempt.draft!==attempt.firstSubmittedDraft&&
+    !(attempt.submittedRevisions??[]).includes(attempt.draft);
+}
+
+export function canRestoreSecondProtectedDraft(attempt:FrameAttempt):boolean {
+  if(!attempt.secondProtectedUnsubmittedDraft||
+    attempt.secondProtectedUnsubmittedDraft===attempt.draft)return false;
+  const isKnown=attempt.draft===attempt.firstSubmittedDraft||
+    (attempt.submittedRevisions??[]).includes(attempt.draft);
+  return attempt.outcome?.kind==="ungraded"||
+    (attempt.outcome===undefined&&(!attempt.draft.trim()||isKnown||
+      attempt.draft===attempt.protectedUnsubmittedDraft));
 }
 
 function updateAttempt(state:LessonPlayerState,frame:LearningFrame,attempt:FrameAttempt):LessonPlayerState {
@@ -176,6 +202,15 @@ export function reduceLessonPlayer(state:LessonPlayerState,action:LessonPlayerAc
     if(exercise.kind!=="free-production"||!canRestoreProtectedDraft(attempt))return state;
     const {outcome:_old,...editable}=attempt;
     return updateAttempt(state,frame,{...editable,draft:attempt.protectedUnsubmittedDraft!});
+  }
+  if(action.type==="protect-second-unsent-draft"){
+    if(exercise.kind!=="free-production"||!canProtectSecondUnsubmittedDraft(attempt))return state;
+    return updateAttempt(state,frame,{...attempt,secondProtectedUnsubmittedDraft:attempt.draft});
+  }
+  if(action.type==="restore-second-protected-draft"){
+    if(exercise.kind!=="free-production"||!canRestoreSecondProtectedDraft(attempt))return state;
+    const {outcome:_old,...editable}=attempt;
+    return updateAttempt(state,frame,{...editable,draft:attempt.secondProtectedUnsubmittedDraft!});
   }
   if(action.type==="retry"){
     if(attempt.outcome?.kind!=="incorrect")return state;
